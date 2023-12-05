@@ -39,10 +39,10 @@ export const GlobalStyles = createGlobalStyle`
     body{
         font-family: 'KBO-Dia';
         letter-spacing: -0.03cap;
-    }
-   
-   
- 
+        margin: 0;
+}
+    
+  
 
     
 `;
