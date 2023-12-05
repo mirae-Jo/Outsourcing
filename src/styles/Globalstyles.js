@@ -1,8 +1,8 @@
 import {createGlobalStyle} from 'styled-components';
 import reset from 'styled-reset';
-import kbodiabold from '../fonts/KBO Dia Gothic_WOFF/KBO-Dia-Gothic_bold.woff';
-import kbodia from '../fonts/KBO Dia Gothic_WOFF/KBO-Dia-Gothic_medium.woff';
-import kbodialight from '../fonts/KBO Dia Gothic_WOFF/KBO-Dia-Gothic_light.woff';
+import kbodiabold from '../assets/fonts/KBO-Dia-Gothic_bold.woff';
+import kbodia from '../assets/fonts/KBO-Dia-Gothic_medium.woff';
+import kbodialight from '../assets/fonts/KBO-Dia-Gothic_light.woff';
 
 export const GlobalStyles = createGlobalStyle`
 
