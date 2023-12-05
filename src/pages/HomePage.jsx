@@ -1,7 +1,12 @@
+import KakaoMap from 'components/Home/KakaoMap';
 import React from 'react';
 
 function Home() {
-  return <></>;
+  return (
+    <>
+      <KakaoMap />
+    </>
+  );
 }
 
 export default Home;
