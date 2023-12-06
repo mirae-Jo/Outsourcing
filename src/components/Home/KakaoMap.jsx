@@ -1,5 +1,5 @@
 import React, {useState} from 'react';
-import {Map, MapMarker, useKakaoLoader} from 'react-kakao-maps-sdk';
+import {Map, MapMarker} from 'react-kakao-maps-sdk';
 
 function KakaoMap() {
   const [level, setLevel] = useState(5);
