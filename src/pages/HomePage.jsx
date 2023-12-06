@@ -1,12 +1,18 @@
 import KakaoMap from 'components/Home/KakaoMap';
-import React from 'react';
+import React, {useState} from 'react';
+import LoginModal from 'components/Login/LoginModal';
+import SignUpModal from 'components/Login/SignUpModal';
 
-function Home() {
+function HomePage() {
+  const [isLoginModal, setIsLoginModal] = useState(true);
+
   return (
     <>
+      {isLoginModal ? <LoginModal /> : null}
+
       <KakaoMap />
     </>
   );
 }
 
-export default Home;
+export default HomePage;
