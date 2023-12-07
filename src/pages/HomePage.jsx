@@ -9,7 +9,7 @@ function HomePage() {
 
   const [state, setState] = useState({
     // 지도의 초기 위치
-    center: {lat: 37.49676871972202, lng: 127.02474726969814},
+    center: {lat: 33.3766655632143, lng: 126.54222094512},
     // 지도 위치 변경시 panto를 이용할지(부드럽게 이동)
     isPanto: true,
   });
