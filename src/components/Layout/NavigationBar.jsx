@@ -1,8 +1,9 @@
-import React from 'react';
+import React, {useState} from 'react';
 import styled from 'styled-components';
-
+import LoginModal from 'components/Login/LoginModal';
 const NavigationBar = () => {
-  return <ScNavigationContainer>NavigationBar</ScNavigationContainer>;
+  const [isLoginModal, setIsLoginModal] = useState(true);
+  return <ScNavigationContainer>{isLoginModal ? <LoginModal /> : null}</ScNavigationContainer>;
 };
 
 export default NavigationBar;

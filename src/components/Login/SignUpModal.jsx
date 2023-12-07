@@ -28,9 +28,10 @@ function SignUpModal({isSignUpModal, setIsSignUpModal}) {
     }
   };
 
+  //회원가입 버튼 기능
   const changeSignUp = event => {
     event.preventDefault();
-    createUserWithEmailAndPassword(auth, email, password)
+    createUserWithEmailAndPassword(auth, email, password, nickname)
       .then(userCredential => {
         // 회원가입 성공시
         console.log(userCredential);
