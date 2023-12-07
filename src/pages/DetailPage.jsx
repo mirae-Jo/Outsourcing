@@ -1,17 +1,36 @@
 import React, { useState } from 'react';
-import MountainData from '../mountain/mountainData.json';
+import axios from 'axios';
+import { useQuery } from '@tanstack/react-query';
 
 function DetailPage() {
-  const [mountain, setMountain] = useState(MountainData.mountains);
-  console.log(mountain);
 
+  const getMountain = async () => {
+    const response = await axios.get(process.env.REACT_APP_MOUNTAIN_API);
+    return response.data;
+  }
+
+  const { isLoading, error, data } = useQuery({
+    queryKey: ['mountain'],
+    queryFn: getMountain,
+  });
+
+
+  if (isLoading) return <p>Loading...</p>;
+  if (error) return <p>{error}</p>;
+
+  console.log(data);
   return (
     <>
-      <h1>{mountain[0].name}</h1>
-      <img src={mountain[0].imgUrl} alt='mountain' />
-      <p> 위치 : {mountain[0].location}</p>
-      <p>고도 : {mountain[0].height}m</p>
-      <p>난이도 : {mountain[0].difficulty}</p>
+      {data.map(mountain =>
+      (
+        <li>
+          <h1>{mountain.name}</h1>
+          <img src={mountain.imgUrl} alt='mountain' />
+          <p> 위치 : {mountain.location}</p>
+          <p>고도 : {mountain.height}m</p>
+          <p>난이도 : {mountain.difficulty}</p>
+        </li>
+      ))}
     </>
   );
 }
