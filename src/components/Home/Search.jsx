@@ -2,9 +2,10 @@ import React, {useState} from 'react';
 import styled from 'styled-components';
 import {FiSearch} from 'react-icons/fi';
 import DropDown from './DropDown';
+import SearchingPage from './SearchinPage';
 
-const Search = ({state, setState}) => {
-  const [searchAddress, setSearchAddress] = useState();
+const Search = ({state, setState, searchAddress, setSearchAddress}) => {
+  const [isSearch, setIsSearch] = useState(false);
 
   const SearchMap = e => {
     e.preventDefault();
@@ -19,7 +20,9 @@ const Search = ({state, setState}) => {
       }
     };
     ps.keywordSearch(`${searchAddress}`, placesSearchCB);
+    setIsSearch(true);
     e.target.reset();
+    setSearchAddress('');
   };
 
   const handleSearchAddress = e => {
@@ -35,6 +38,7 @@ const Search = ({state, setState}) => {
           }}
         >
           <ScInput
+            value={searchAddress}
             type="text"
             placeholder="검색할 산을 입력하세요"
             onChange={e => {
@@ -44,7 +48,7 @@ const Search = ({state, setState}) => {
           <ScSearchIcon />
         </ScSearchForm>
       </div>
-      <DropDown />
+      {isSearch ? <SearchingPage /> : <DropDown />}
     </>
   );
 };
