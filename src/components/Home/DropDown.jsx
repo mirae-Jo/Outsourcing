@@ -31,7 +31,7 @@ const DropDown = () => {
 
   useEffect(() => {
     const handleClickOutside = e => {
-      if (dropdownRef.current && !dropdownRef.current.contain(e.target)) {
+      if (dropdownRef.current && !dropdownRef.current.contains(e.target)) {
         setSelectedMenu(null);
       }
     };
@@ -39,13 +39,14 @@ const DropDown = () => {
     return () => {
       document.removeEventListener('mousedown', handleClickOutside);
     };
-  }, []);
+  }, [dropdownRef]); //의존성 배열 사용
 
   return (
     <ScDropDownContainer>
       {Object.keys(dropDownMenu).map((menu, index) => {
         return (
-          <ScDropDownWrapper key={index}>
+          <ScDropDownWrapper key={index} ref={dropdownRef}>
+            {/**마우스 다운 이벤트 감지 외부or 내부 */}{' '}
             <ScBtnWrapper>
               <button>{menu}</button>
               <ScArrowIcon
@@ -54,7 +55,6 @@ const DropDown = () => {
                 }}
               />
             </ScBtnWrapper>
-
             {selectedMenu === menu && (
               <ScDropDown>
                 <ul>
