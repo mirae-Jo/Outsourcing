@@ -1,7 +1,7 @@
-import KakaoMap from 'components/Home/KakaoMap';
 import React, {useState} from 'react';
+import KakaoMap from 'components/Home/KakaoMap';
+import Search from 'components/Home/Search';
 import LoginModal from 'components/Login/LoginModal';
-import SignUpModal from 'components/Login/SignUpModal';
 
 function HomePage() {
   const [isLoginModal, setIsLoginModal] = useState(true);
@@ -9,7 +9,7 @@ function HomePage() {
   return (
     <>
       {isLoginModal ? <LoginModal /> : null}
-
+      <Search />
       <KakaoMap />
     </>
   );
