@@ -7,6 +7,7 @@ import {auth} from 'shared/firebase';
 
 function HomePage() {
   useEffect(() => {
+    const currentauthUser = auth.currentUser;
     onAuthStateChanged(
       auth,
       user => {
