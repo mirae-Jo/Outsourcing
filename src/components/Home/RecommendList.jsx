@@ -1,4 +1,4 @@
-import React, {useEffect, useState} from 'react';
+import React, {useEffect, useState, useRef} from 'react';
 import styled from 'styled-components';
 import {PiMountainsFill} from 'react-icons/pi';
 import axios from 'axios';
@@ -12,8 +12,10 @@ const RecommendList = () => {
     queryKey: ['mountains'],
     queryFn: getMountains,
   });
-
-  const randomNumber = Math.floor(Math.random() * 100);
+  const randomNumber = useRef(0);
+  useEffect(() => {
+    randomNumber.current = Math.floor(Math.random() * 100);
+  }, []);
 
   if (isLoading) {
     return <p>로딩중입니다...</p>;
@@ -25,8 +27,7 @@ const RecommendList = () => {
   if (!data || data.length === 0) {
     return <p>산 정보가 없습니다.</p>;
   }
-
-  const randomMountain = data[randomNumber];
+  const randomMountain = data[randomNumber.current];
 
   getMountains();
 
