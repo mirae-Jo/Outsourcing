@@ -15,6 +15,7 @@ const Search = ({state, setState}) => {
         setState({
           center: {lat: newSearch.y, lng: newSearch.x},
         });
+        console.log({lat: newSearch.y, lng: newSearch.x});
       }
     };
     ps.keywordSearch(`${searchAddress}`, placesSearchCB);
