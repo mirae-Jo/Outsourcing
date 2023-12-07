@@ -3,6 +3,7 @@ import Router from './shared/Router';
 import {GlobalStyles} from './styles/Globalstyles';
 
 const queryClient = new QueryClient();
+
 function App() {
   return (
     <QueryClientProvider client={queryClient}>

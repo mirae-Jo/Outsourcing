@@ -2,9 +2,36 @@ import React, {useEffect, useState} from 'react';
 import styled from 'styled-components';
 import {PiMountainsFill} from 'react-icons/pi';
 import axios from 'axios';
+import {getMountains} from 'api/mountains';
+import {useQuery} from '@tanstack/react-query';
 
 const RecommendList = () => {
   const [mountain, setMountain] = useState();
+  useEffect(() => {
+    (async () => {
+      const randomMountain = await mountainData();
+      setMountain(randomMountain);
+    })();
+  }, []);
+  const {isLoading, isError, data} = useQuery({
+    queryKey: ['mountains'],
+    queryFn: getMountains,
+  });
+
+  console.log(data);
+
+  if (isLoading) {
+    return <p>로딩중입니다...</p>;
+  }
+  if (isError) {
+    return <p>오류가 발생했습니다...</p>;
+  }
+
+  if (!data || data.length === 0) {
+    return <p>산 정보가 없습니다.</p>;
+  }
+
+  getMountains();
 
   const mountainData = async () => {
     const {data} = await axios.get(`${process.env.REACT_APP_MOUNTAIN_API}`);
@@ -12,13 +39,6 @@ const RecommendList = () => {
     const randomNumber = Math.floor(Math.random() * 100);
     return data[randomNumber];
   };
-
-  useEffect(() => {
-    (async () => {
-      const randomMountain = await mountainData();
-      setMountain(randomMountain);
-    })();
-  }, []);
 
   return (
     <ScRecommendList>
