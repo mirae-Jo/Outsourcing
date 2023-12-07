@@ -25,9 +25,12 @@ function HomePage() {
       [],
     );
   });
+
+  const [searchAddress, setSearchAddress] = useState();
+
   return (
     <>
-      <Search state={state} setState={setState} />
+      <Search state={state} setState={setState} searchAddress={searchAddress} setSearchAddress={setSearchAddress} />
       <RecommendList />
       <KakaoMap state={state} setState={setState} />
     </>
