@@ -1,6 +1,13 @@
 import React from 'react';
 import styled from 'styled-components';
 import {PiMountainsFill} from 'react-icons/pi';
+import axios from 'axios';
+
+const mountainData = async () => {
+  const response = await axios.get(`${process.env.REACT_APP_MOUNTAIN_API}`);
+  console.log(response.data);
+};
+mountainData();
 
 const RecommendList = () => {
   return (
@@ -50,12 +57,15 @@ const RecommendList = () => {
 export default RecommendList;
 
 const ScRecommendList = styled.div`
-  width: 80%;
-  margin: 40px auto;
+  max-width: 100%;
+  width: 1000px;
+  margin: 20px auto;
   height: fit-content;
   display: flex;
   flex-direction: column;
   align-items: flex-start;
+  position: relative;
+  user-select: none;
 `;
 
 const ScTitle = styled.div`
@@ -76,17 +86,21 @@ const ScMountainIcon = styled(PiMountainsFill)`
 `;
 
 const ScMountainListWarapper = styled.div`
+  width: 100%;
+  max-width: 1200px;
   display: flex;
   flex-direction: row;
-  justify-content: space-between;
+  justify-content: center;
   flex-wrap: wrap;
+  gap: 20px;
+  margin: 0 auto;
 `;
 
 const ScMountainCard = styled.div`
-  width: 400px;
+  width: 100%;
+  max-width: 490px;
   height: 120px;
   background-color: lightgray;
-  margin-bottom: 15px;
   padding: 20px;
   line-height: 1.5;
   display: flex;
