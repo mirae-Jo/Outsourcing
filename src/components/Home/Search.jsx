@@ -1,15 +1,48 @@
-import React from 'react';
+import React, {useState} from 'react';
 import styled from 'styled-components';
 import {FiSearch} from 'react-icons/fi';
 import DropDown from './DropDown';
 
-const Search = () => {
+const Search = ({state, setState}) => {
+  const [searchAddress, setSearchAddress] = useState();
+
+  const SearchMap = e => {
+    e.preventDefault();
+    const ps = new window.kakao.maps.services.Places();
+    const placesSearchCB = function (data, status, pagination) {
+      if (status === window.kakao.maps.services.Status.OK) {
+        const newSearch = data[0];
+        setState({
+          center: {lat: newSearch.y, lng: newSearch.x},
+        });
+      }
+    };
+    ps.keywordSearch(`${searchAddress}`, placesSearchCB);
+    e.target.reset();
+  };
+
+  const handleSearchAddress = e => {
+    setSearchAddress(e.target.value);
+  };
+
   return (
     <>
-      <ScSearchContainer>
-        <ScInput type="text" placeholder="검색할 산을 입력하세요" />
-        <ScSearchIcon />
-      </ScSearchContainer>
+      <div>
+        <ScSearchForm
+          onSubmit={e => {
+            SearchMap(e);
+          }}
+        >
+          <ScInput
+            type="text"
+            placeholder="검색할 산을 입력하세요"
+            onChange={e => {
+              handleSearchAddress(e);
+            }}
+          />
+          <ScSearchIcon />
+        </ScSearchForm>
+      </div>
       <DropDown />
     </>
   );
@@ -17,7 +50,7 @@ const Search = () => {
 
 export default Search;
 
-const ScSearchContainer = styled.div`
+const ScSearchForm = styled.form`
   width: 400px;
   height: 40px;
   margin: 25px auto;
