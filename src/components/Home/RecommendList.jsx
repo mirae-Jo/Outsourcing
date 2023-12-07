@@ -7,6 +7,13 @@ import {useQuery} from '@tanstack/react-query';
 
 const RecommendList = () => {
   const [mountain, setMountain] = useState();
+
+  const mountainData = async () => {
+    const {data} = await axios.get(`${process.env.REACT_APP_MOUNTAIN_API}`);
+    // console.log(data);
+    const randomNumber = Math.floor(Math.random() * 100);
+    return data[randomNumber];
+  };
   useEffect(() => {
     (async () => {
       const randomMountain = await mountainData();
@@ -32,13 +39,6 @@ const RecommendList = () => {
   }
 
   getMountains();
-
-  const mountainData = async () => {
-    const {data} = await axios.get(`${process.env.REACT_APP_MOUNTAIN_API}`);
-    // console.log(data);
-    const randomNumber = Math.floor(Math.random() * 100);
-    return data[randomNumber];
-  };
 
   return (
     <ScRecommendList>

@@ -5,7 +5,7 @@ import LoginModal from 'components/Login/LoginModal';
 import {onAuthStateChanged} from '@firebase/auth';
 import {auth} from 'shared/firebase';
 import RecommendList from 'components/Home/RecommendList';
-
+import db from 'shared/firebase';
 function HomePage() {
   const [isLoginModal, setIsLoginModal] = useState(true);
 
@@ -21,6 +21,7 @@ function HomePage() {
       auth,
       user => {
         console.log('user', user);
+        console.log('db', db);
       },
       [],
     );
