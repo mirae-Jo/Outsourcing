@@ -28,8 +28,17 @@ function SignUpModal({isSignUpModal, setIsSignUpModal}) {
     }
   };
 
-  const changeSignUp = () => {
-    setIsSignUpModal(false);
+  const changeSignUp = event => {
+    event.preventDefault();
+    createUserWithEmailAndPassword(auth, email, password)
+      .then(userCredential => {
+        // 회원가입 성공시
+        console.log(userCredential);
+      })
+      .catch(error => {
+        // 회원가입 실패시
+        console.error(error);
+      });
   };
 
   const onCloseModal = () => {
@@ -39,35 +48,50 @@ function SignUpModal({isSignUpModal, setIsSignUpModal}) {
   return (
     <div>
       {isSignUpModal && (
-        <ScLoginMoDal className="modal">
-          <ScModalCloseBT onClick={onCloseModal}>X</ScModalCloseBT>
-          <h2>회원가입</h2>
-          <section>
-            <p>이메일 : </p>
-            <input type="email" value={email} name="email" onChange={inputChange} />
-          </section>
+        <ScModalOverlay>
+          <ScLoginMoDal className="modal">
+            <ScModalCloseBT onClick={onCloseModal}>X</ScModalCloseBT>
+            <h2>회원가입</h2>
+            <section>
+              <p>이메일 : </p>
+              <input type="email" value={email} name="email" onChange={inputChange} />
+            </section>
 
-          <section>
-            <p>패스워드 : </p>
-            <input type="password" value={password} name="password" onChange={inputChange} />
-          </section>
-          <section>
-            <p>닉네임 : </p>
-            <input type="nickname" value={nickname} name="nickname" onChange={inputChange}></input>
-          </section>
+            <section>
+              <p>패스워드 : </p>
+              <input type="password" value={password} name="password" onChange={inputChange} />
+            </section>
+            <section>
+              <p>닉네임 : </p>
+              <input type="nickname" value={nickname} name="nickname" onChange={inputChange}></input>
+            </section>
 
-          <button onClick={changeSignUp}>회원가입 하기</button>
-        </ScLoginMoDal>
+            <button onClick={changeSignUp}>회원가입 하기</button>
+          </ScLoginMoDal>
+        </ScModalOverlay>
       )}
     </div>
   );
 }
 
+const ScModalOverlay = styled.div`
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 1000;
+`;
+
 const ScLoginMoDal = styled.div`
   width: 500px;
   height: 500px;
   background-color: red;
-  margin: 0 auto;
+  z-index: 1001;
 `;
 
 const ScModalCloseBT = styled.button`
@@ -76,5 +100,4 @@ const ScModalCloseBT = styled.button`
   height: 30px;
   font-weight: bold;
 `;
-
 export default SignUpModal;
