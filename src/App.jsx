@@ -1,5 +1,6 @@
 import Router from './shared/Router';
 import {GlobalStyles} from './styles/Globalstyles';
+
 function App() {
   return (
     <>
