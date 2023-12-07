@@ -2,9 +2,11 @@ import React, {useState} from 'react';
 import styled from 'styled-components';
 import {FiSearch} from 'react-icons/fi';
 import DropDown from './DropDown';
+import SearchingPage from './SearchinPage';
 
 const Search = ({state, setState}) => {
   const [searchAddress, setSearchAddress] = useState();
+  const [isSearch, setIsSearch] = useState(false);
 
   const SearchMap = e => {
     e.preventDefault();
@@ -19,6 +21,7 @@ const Search = ({state, setState}) => {
       }
     };
     ps.keywordSearch(`${searchAddress}`, placesSearchCB);
+    setIsSearch(true);
     e.target.reset();
   };
 
@@ -44,7 +47,7 @@ const Search = ({state, setState}) => {
           <ScSearchIcon />
         </ScSearchForm>
       </div>
-      <DropDown />
+      {isSearch ? <SearchingPage /> : <DropDown />}
     </>
   );
 };
