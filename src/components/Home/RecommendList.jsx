@@ -1,15 +1,48 @@
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import styled from 'styled-components';
-import {PiMountainsFill} from 'react-icons/pi';
+import { PiMountainsFill } from 'react-icons/pi';
 import axios from 'axios';
-
-const mountainData = async () => {
-  const response = await axios.get(`${process.env.REACT_APP_MOUNTAIN_API}`);
-  console.log(response.data);
-};
-mountainData();
+import { useNavigate } from 'react-router-dom';
+import { getMountains } from 'api/mountains';
+import { useQuery } from '@tanstack/react-query';
 
 const RecommendList = () => {
+  const [mountain, setMountain] = useState();
+  const navigate = useNavigate();
+  const mountainData = async () => {
+    const { data } = await axios.get(`${process.env.REACT_APP_MOUNTAIN_API}`);
+    // console.log(data);
+    const randomNumber = Math.floor(Math.random() * 100);
+    return data[randomNumber];
+  };
+
+  useEffect(() => {
+    (async () => {
+      const randomMountain = await mountainData();
+      setMountain(randomMountain);
+    })();
+  }, []);
+  const { isLoading, isError, data } = useQuery({
+    queryKey: ['mountains'],
+    queryFn: getMountains,
+  });
+
+  console.log(data);
+
+  if (isLoading) {
+    return <p>로딩중입니다...</p>;
+  }
+  if (isError) {
+    return <p>오류가 발생했습니다...</p>;
+  }
+
+  if (!data || data.length === 0) {
+    return <p>산 정보가 없습니다.</p>;
+  }
+
+  getMountains();
+
+
   return (
     <ScRecommendList>
       <ScTitle>
@@ -17,37 +50,37 @@ const RecommendList = () => {
         <ScMountainIcon />
       </ScTitle>
       <ScMountainListWarapper>
-        <ScMountainCard>
+        <ScMountainCard onClick={() => navigate(`/detail/${mountain.name}`)}>
           <div>
-            <h3>아차산</h3>
-            <p>난이도:</p>
-            <p>소요시간:</p>
+            <h3>{mountain?.name}</h3>
+            <p>난이도:{mountain?.difficulty}</p>
+            <p>소요시간:{mountain?.time}</p>
           </div>
-          <ScTag>서울</ScTag>
+          <ScTag>{mountain?.filterlocation}</ScTag>
         </ScMountainCard>
         <ScMountainCard>
           <div>
-            <h3>하남검단산</h3>
-            <p>난이도:</p>
-            <p>소요시간:</p>
+            <h3>{mountain?.name}</h3>
+            <p>난이도:{mountain?.difficulty}</p>
+            <p>소요시간:{mountain?.time}</p>
           </div>
-          <ScTag>경기</ScTag>
+          <ScTag>{mountain?.filterlocation}</ScTag>
         </ScMountainCard>
         <ScMountainCard>
           <div>
-            <h3>소백산</h3>
-            <p>난이도:</p>
-            <p>소요시간:</p>
+            <h3>{mountain?.name}</h3>
+            <p>난이도:{mountain?.difficulty}</p>
+            <p>소요시간:{mountain?.time}</p>
           </div>
-          <ScTag>경북</ScTag>
+          <ScTag>{mountain?.filterlocation}</ScTag>
         </ScMountainCard>
         <ScMountainCard>
           <div>
-            <h3>한라산</h3>
-            <p>난이도:</p>
-            <p>소요시간:</p>
+            <h3>{mountain?.name}</h3>
+            <p>난이도:{mountain?.difficulty}</p>
+            <p>소요시간:{mountain?.time}</p>
           </div>
-          <ScTag>제주</ScTag>
+          <ScTag>{mountain?.filterlocation}</ScTag>
         </ScMountainCard>
       </ScMountainListWarapper>
     </ScRecommendList>

@@ -12,7 +12,7 @@ const Router = () => {
       <Header />
       <Routes>
         <Route path="/" element={<HomePage />} />
-        <Route path="detail/:id" element={<DetailPage />} />
+        <Route path="detail/:mountainName" element={<DetailPage />} />
       </Routes>
     </BrowserRouter>
   );

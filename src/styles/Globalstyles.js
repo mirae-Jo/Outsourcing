@@ -11,10 +11,15 @@ export const GlobalStyles = createGlobalStyle`
     :root{
         --color-background:#E8F6EF;
         --color-main:#08C466;
+        --color-yellow:#ffe194;
     }
    
     *{
         box-sizing:border-box;
+    }
+    body{
+        width:100vw;
+        height:100vh;
     }
     button{
         background-color: none;

@@ -1,38 +1,85 @@
-import React, { useState } from 'react';
-import axios from 'axios';
+import React from 'react';
 import { useQuery } from '@tanstack/react-query';
+import { getMountains } from 'api/mountains';
+import { useParams } from 'react-router';
+import { styled } from 'styled-components';
 
 function DetailPage() {
-
-  const getMountain = async () => {
-    const response = await axios.get(process.env.REACT_APP_MOUNTAIN_API);
-    return response.data;
-  }
-
-  const { isLoading, error, data } = useQuery({
+  const params = useParams();
+  const { isLoading, error, data: mountains } = useQuery({
     queryKey: ['mountain'],
-    queryFn: getMountain,
+    queryFn: getMountains,
   });
 
+  const filterMountain = mountains?.filter(mountain => mountain.name === params.mountainName)
 
   if (isLoading) return <p>Loading...</p>;
   if (error) return <p>{error}</p>;
 
-  console.log(data);
+
   return (
     <>
-      {data.map(mountain =>
-      (
-        <li>
-          <h1>{mountain.name}</h1>
-          <img src={mountain.imgUrl} alt='mountain' />
-          <p> 위치 : {mountain.location}</p>
-          <p>고도 : {mountain.height}m</p>
-          <p>난이도 : {mountain.difficulty}</p>
-        </li>
-      ))}
+      {filterMountain.map(mountain => {
+        const { name, imgUrl, summary, location, height, time, difficulty } = mountain;
+        return (
+          <ScMountainInfo key={name}>
+            <ScMountainImg img={imgUrl}>
+              <h1>{name}</h1>
+              <p>{summary}</p>
+            </ScMountainImg>
+            <ScMountainDetail>
+              <p> 위치 : {location}</p>
+              <p>고도 : {height}m</p>
+              <p>난이도 : {difficulty}</p>
+              <p>소요시간 : {time}</p>
+            </ScMountainDetail>
+          </ScMountainInfo>
+        );
+      })}
     </>
   );
 }
+
+const ScMountainInfo = styled.div`
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+`
+
+const ScMountainImg = styled.div`
+width:100%;
+height:300px;
+position:relative;
+background:url(${props => props.img}) no-repeat center;
+background-size:cover;
+margin-bottom: 1rem;
+
+
+h1{
+   position:fixed;
+   left:10%;
+   top:35%;
+   font-size:2rem;
+   color:white;
+    padding:0.5rem;
+  }
+
+  p{
+    position:fixed;
+    left:10%;
+    top:40%;
+    color:white;
+    font-size:1.5rem;
+    padding:1rem 1.5rem;
+  }
+`;
+
+const ScMountainDetail = styled.div`
+  width:450px;
+  padding:2rem;
+  background-color: var(--color-yellow);
+  border-radius: 1rem;
+`
 
 export default DetailPage;
