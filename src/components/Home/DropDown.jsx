@@ -4,7 +4,7 @@ import {TiArrowSortedDown} from 'react-icons/ti';
 
 const DropDown = () => {
   const [selectedMenu, setSelectedMenu] = useState(null);
-  const dropdownRef = useRef(null);
+  const dropDownRef = useRef(null);
 
   const dropDownMenu = {
     지역별: [
@@ -31,7 +31,7 @@ const DropDown = () => {
 
   useEffect(() => {
     const handleClickOutside = e => {
-      if (dropdownRef.current && !dropdownRef.current.contain(e.target)) {
+      if (dropDownRef && !dropDownRef.current.contains(e.target)) {
         setSelectedMenu(null);
       }
     };
@@ -39,22 +39,28 @@ const DropDown = () => {
     return () => {
       document.removeEventListener('mousedown', handleClickOutside);
     };
+  }, [selectedMenu, dropDownRef]);
+
+  useEffect(() => {
+    return () => {
+      dropDownRef.current = null;
+    };
   }, []);
 
   return (
     <ScDropDownContainer>
       {Object.keys(dropDownMenu).map((menu, index) => {
         return (
-          <ScDropDownWrapper key={index}>
+          <ScDropDownWrapper
+            key={index}
+            onClick={() => {
+              setSelectedMenu(selectedMenu === menu ? null : menu);
+            }}
+          >
             <ScBtnWrapper>
               <button>{menu}</button>
-              <ScArrowIcon
-                onClick={() => {
-                  setSelectedMenu(selectedMenu === menu ? null : menu);
-                }}
-              />
+              <ScArrowIcon />
             </ScBtnWrapper>
-
             {selectedMenu === menu && (
               <ScDropDown>
                 <ul>
@@ -90,6 +96,7 @@ const ScDropDownWrapper = styled.div`
   justify-content: center;
   align-items: center;
   border: 1px solid #f0eeee;
+  user-select: none;
 `;
 
 const ScBtnWrapper = styled.div`
@@ -104,7 +111,7 @@ const ScBtnWrapper = styled.div`
     font-weight: 700;
     padding: 10px;
     position: relative;
-    cursor: default;
+    cursor: pointer;
   }
 `;
 

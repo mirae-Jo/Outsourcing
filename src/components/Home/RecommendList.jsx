@@ -7,12 +7,21 @@ import {useQuery} from '@tanstack/react-query';
 
 const RecommendList = () => {
   const [mountain, setMountain] = useState();
+
+  const mountainData = async () => {
+    const {data} = await axios.get(`${process.env.REACT_APP_MOUNTAIN_API}`);
+    // console.log(data);
+    const randomNumber = Math.floor(Math.random() * 100);
+    return data[randomNumber];
+  };
+
   useEffect(() => {
     (async () => {
       const randomMountain = await mountainData();
       setMountain(randomMountain);
     })();
   }, []);
+
   const {isLoading, isError, data} = useQuery({
     queryKey: ['mountains'],
     queryFn: getMountains,
@@ -32,13 +41,6 @@ const RecommendList = () => {
   }
 
   getMountains();
-
-  const mountainData = async () => {
-    const {data} = await axios.get(`${process.env.REACT_APP_MOUNTAIN_API}`);
-    // console.log(data);
-    const randomNumber = Math.floor(Math.random() * 100);
-    return data[randomNumber];
-  };
 
   return (
     <ScRecommendList>
@@ -150,7 +152,7 @@ const ScTag = styled.div`
   font-size: 13px;
   font-weight: 300;
   text-align: center;
-  width: 70px;
+  width: 85px;
   height: fit-content;
   padding: 2px;
   color: white;
