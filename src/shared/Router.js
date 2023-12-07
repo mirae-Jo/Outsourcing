@@ -1,8 +1,9 @@
-import {BrowserRouter, Routes, Route} from 'react-router-dom';
-import Home from '../pages/HomePage';
-import Detail from '../pages/DetailPage';
+import { BrowserRouter, Routes, Route } from 'react-router-dom';
+import NavigationBar from './../components/Layout/NavigationBar';
 import Header from 'components/Layout/Header';
-import NavigationBar from 'components/Layout/NavigationBar';
+import HomePage from '../pages/HomePage';
+import DetailPage from '../pages/DetailPage';
+
 
 const Router = () => {
   return (
@@ -10,8 +11,8 @@ const Router = () => {
       <NavigationBar />
       <Header />
       <Routes>
-        <Route path="/" element={<Home />} />
-        <Route path="detail/:id" element={<Detail />} />
+        <Route path="/" element={<HomePage />} />
+        <Route path="detail/:id" element={<DetailPage />} />
       </Routes>
     </BrowserRouter>
   );
