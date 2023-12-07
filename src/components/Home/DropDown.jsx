@@ -1,10 +1,13 @@
 import React, {useEffect, useRef, useState} from 'react';
 import styled from 'styled-components';
 import {TiArrowSortedDown} from 'react-icons/ti';
+import {useQuery} from '@tanstack/react-query';
+import {getMountains} from 'api/mountains';
 
 const DropDown = () => {
   const [selectedMenu, setSelectedMenu] = useState(null);
-  const dropDownRef = useRef(null);
+  const [selectedFilter, setSelectedFilter] = useState();
+  const dropdownRef = useRef(null);
 
   const dropDownMenu = {
     지역별: [
@@ -31,21 +34,34 @@ const DropDown = () => {
 
   useEffect(() => {
     const handleClickOutside = e => {
-      if (dropDownRef && !dropDownRef.current.contains(e.target)) {
+      if (dropdownRef.current && !dropdownRef.current.contains(e.target)) {
         setSelectedMenu(null);
       }
     };
+
     document.addEventListener('mousedown', handleClickOutside);
+
+    // 클린업
     return () => {
       document.removeEventListener('mousedown', handleClickOutside);
     };
-  }, [selectedMenu, dropDownRef]);
+  }, [dropdownRef]); //의존성 배열 사용
 
-  useEffect(() => {
-    return () => {
-      dropDownRef.current = null;
-    };
-  }, []);
+  const {isLoading, isError, data} = useQuery({
+    queryKey: ['mountains'],
+    queryFn: getMountains,
+  });
+
+  if (isLoading) {
+    return <p>로딩중입니다...</p>;
+  }
+  if (isError) {
+    return <p>오류가 발생했습니다...</p>;
+  }
+
+  if (!data || data.length === 0) {
+    return <p>산 정보가 없습니다.</p>;
+  }
 
   return (
     <ScDropDownContainer>
@@ -53,10 +69,12 @@ const DropDown = () => {
         return (
           <ScDropDownWrapper
             key={index}
+            ref={dropdownRef}
             onClick={() => {
               setSelectedMenu(selectedMenu === menu ? null : menu);
             }}
           >
+            {/**마우스 다운 이벤트 감지 외부or 내부 */}
             <ScBtnWrapper>
               <button>{menu}</button>
               <ScArrowIcon />

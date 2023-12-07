@@ -90,7 +90,7 @@ export default RecommendList;
 
 const ScRecommendList = styled.div`
   max-width: 100%;
-  width: 1000px;
+  width: 920px;
   margin: 20px auto;
   height: fit-content;
   display: flex;
@@ -119,7 +119,7 @@ const ScMountainIcon = styled(PiMountainsFill)`
 
 const ScMountainListWarapper = styled.div`
   width: 100%;
-  max-width: 1200px;
+  max-width: 920px;
   display: flex;
   flex-direction: row;
   justify-content: center;
@@ -130,7 +130,7 @@ const ScMountainListWarapper = styled.div`
 
 const ScMountainCard = styled.div`
   width: 100%;
-  max-width: 490px;
+  max-width: 450px;
   height: 120px;
   background-color: lightgray;
   padding: 20px;
