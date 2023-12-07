@@ -1,5 +1,5 @@
 import React, {useState} from 'react';
-import {Map} from 'react-kakao-maps-sdk';
+import {Map, MapMarker} from 'react-kakao-maps-sdk';
 import styled from 'styled-components';
 import searchIcon from '../../assets/imgs/baseline_search_black.png';
 
@@ -10,7 +10,7 @@ function KakaoMap() {
     // 지도 위치 변경시 panto를 이용할지(부드럽게 이동)
     isPanto: true,
   });
-  const [searchAddress, SetSearchAddress] = useState();
+  const [searchAddress, setSearchAddress] = useState();
 
   // 키워드 입력후 검색 클릭 시 원하는 키워드의 주소로 이동
   const SearchMap = e => {
@@ -25,10 +25,12 @@ function KakaoMap() {
       }
     };
     ps.keywordSearch(`${searchAddress}`, placesSearchCB);
+
+    setSearchAddress('');
   };
 
   const handleSearchAddress = e => {
-    SetSearchAddress(e.target.value);
+    setSearchAddress(e.target.value);
   };
 
   return (
@@ -50,6 +52,7 @@ function KakaoMap() {
           </ScSearchBtn>
         </ScSearchBox>
       </ScSearchWrap>
+
       <Map // 지도를 표시할 Container
         center={state.center}
         isPanto={state.isPanto}
@@ -59,7 +62,9 @@ function KakaoMap() {
           height: '450px',
         }}
         level={3} // 지도의 확대 레벨
-      ></Map>
+      >
+        <MapMarker style={{border: 'tranparent'}} position={state.center}></MapMarker>
+      </Map>
     </ScWrap>
   );
 }
