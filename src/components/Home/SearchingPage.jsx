@@ -26,6 +26,7 @@ function SearchingPage({searchAddress, setSearchAddress}) {
     return mountainName.includes(searchAddress);
   });
   console.log(filteredData);
+
   return (
     <ScSearchingWrap>
       {filteredData.map(mountain => {
