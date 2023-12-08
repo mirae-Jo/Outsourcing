@@ -52,7 +52,7 @@ function SignUpModal({isSignUpModal, setIsSignUpModal}) {
       await setDoc(doc(db, 'users', userCredential.user.uid), {
         email: email,
         nickname: nickname,
-        avartar: profilenormal,
+        avatar: profilenormal,
       });
       // 회원가입 성공시
       // 여기에서 추가적인 로직 수행 가능
