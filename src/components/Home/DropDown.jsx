@@ -9,29 +9,6 @@ const DropDown = () => {
   const [selectedDetailCategory, setSelectedDetailCategory] = useState(null);
   const dropdownRef = useRef(null);
 
-  const dropDownMenu = {
-    지역별: [
-      '강원도',
-      '경기도',
-      '경상남도',
-      '경상북도',
-      '광주광역시',
-      '대구광역시',
-      '대전광역시',
-      '부산광역시',
-      '서울특별시',
-      '울산광역시',
-      '인천광역시',
-      '전라남도',
-      '전라북도',
-      '제주특별자치도',
-      '충청남도',
-      '충청북도',
-    ],
-    난이도별: ['초급', '중급', '고급'],
-    소요시간별: ['1시간 미만', '1~2시간', '2~3시간', '3~4시간', '4시간 이상'],
-  };
-
   useEffect(() => {
     const handleClickOutside = e => {
       if (dropdownRef.current && !dropdownRef.current.contains(e.target)) {
@@ -50,7 +27,7 @@ const DropDown = () => {
     <>
       <ScDropDownContainer ref={dropdownRef}>
         {/* <ScDropDownContainer> */}
-        {Object.keys(dropDownMenu).map((category, index) => {
+        {Object.keys(DROPDOWN_MENU).map((category, index) => {
           return (
             <ScDropDownWrapper key={index}>
               {/**마우스 다운 이벤트 감지 외부or 내부 */}
@@ -67,7 +44,7 @@ const DropDown = () => {
               {isOpen && selectedCategory === category && (
                 <ScDropDown>
                   <ul>
-                    {dropDownMenu[category].map((detailCategory, index) => {
+                    {DROPDOWN_MENU[category].map((detailCategory, index) => {
                       return (
                         <li
                           key={index}
@@ -89,7 +66,7 @@ const DropDown = () => {
       </ScDropDownContainer>
       {selectedDetailCategory && (
         <FilteredMountain
-          dropDownMenu={dropDownMenu}
+          DROPDOWN_MENU={DROPDOWN_MENU}
           selectedCategory={selectedCategory}
           selectedDetailCategory={selectedDetailCategory}
         />
@@ -99,6 +76,29 @@ const DropDown = () => {
 };
 
 export default DropDown;
+
+const DROPDOWN_MENU = {
+  지역별: [
+    '강원도',
+    '경기도',
+    '경상남도',
+    '경상북도',
+    '광주광역시',
+    '대구광역시',
+    '대전광역시',
+    '부산광역시',
+    '서울특별시',
+    '울산광역시',
+    '인천광역시',
+    '전라남도',
+    '전라북도',
+    '제주특별자치도',
+    '충청남도',
+    '충청북도',
+  ],
+  난이도별: ['초급', '중급', '고급'],
+  소요시간별: ['1시간 미만', '1~2시간', '2~3시간', '3~4시간', '4시간 이상'],
+};
 
 const ScDropDownContainer = styled.div`
   display: flex;
