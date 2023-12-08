@@ -25,8 +25,6 @@ const RecommendList = () => {
     queryFn: getMountains,
   });
 
-  console.log(data);
-
   if (isLoading) {
     return <p>로딩중입니다...</p>;
   }
