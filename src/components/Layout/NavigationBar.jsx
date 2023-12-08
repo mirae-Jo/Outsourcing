@@ -23,10 +23,14 @@ const NavigationBar = () => {
         // Firestore에서 사용자 정보 가져오기
         const userDocRef = doc(db, 'users', user.uid);
         const userDocSnapshot = await getDoc(userDocRef);
-        console.log(userDocSnapshot);
+        const photoURL = user.photoURL;
+
         if (userDocSnapshot.exists()) {
           // 사용자 정보가 있으면 avatar URL 가져오기
-          setAvatarUrl(userDocSnapshot.data().avartar || null);
+          const avatarURL = userDocSnapshot.data().avatar;
+
+          // Google 로그인인 경우 photoURL을, 일반 로그인인 경우 avatar를 표시
+          setAvatarUrl(avatarURL);
         }
       }
     });
@@ -39,13 +43,17 @@ const NavigationBar = () => {
     navigate(`/`);
   };
 
-  const clickOnProfile = () => {};
+  const clickOnProfile = () => {
+    navigate(`/ProFilePage:id`);
+  };
 
   return (
     <ScNavigationContainer>
       {isLoginModal ? <LoginModal /> : null}
       <ScHomeBT onClick={goHomeBT}>홈으로 </ScHomeBT>
-      <ScProfile onClick={clickOnProfile}>내 프로필 </ScProfile>
+
+      {userDisplayName && <ScProfile onClick={clickOnProfile}>내 프로필 </ScProfile>}
+
       {userDisplayName ? (
         <ScLoginContext>
           {avatarUrl && <ScProfileIMG src={avatarUrl} alt="Avatar" />}
@@ -114,5 +122,6 @@ const ScProfileIMG = styled.img`
   margin-right: 10px;
   margin-top: 10px;
   border-radius: 50%;
+  border: 3px solid white;
 `;
 export default NavigationBar;

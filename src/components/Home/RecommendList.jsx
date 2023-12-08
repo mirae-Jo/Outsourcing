@@ -1,14 +1,14 @@
-import React, { useEffect, useState, useRef } from 'react';
+import React, {useEffect, useState, useRef} from 'react';
 import styled from 'styled-components';
-import { PiMountainsFill } from 'react-icons/pi';
-import { useNavigate } from 'react-router-dom';
-import { getMountains } from 'api/mountains';
-import { useQuery } from '@tanstack/react-query';
+import {PiMountainsFill} from 'react-icons/pi';
+import {useNavigate} from 'react-router-dom';
+import {getMountains} from 'api/mountains';
+import {useQuery} from '@tanstack/react-query';
 
 const RecommendList = () => {
   const [mountain, setMountain] = useState();
   const navigate = useNavigate();
-  const { isLoading, isError, data } = useQuery({
+  const {isLoading, isError, data} = useQuery({
     queryKey: ['mountains'],
     queryFn: getMountains,
   });
