@@ -1,5 +1,4 @@
 import {useQuery} from '@tanstack/react-query';
-import axios from 'axios';
 import React from 'react';
 import styled from 'styled-components';
 import {getMountains} from 'api/mountains';
