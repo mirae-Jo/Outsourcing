@@ -5,6 +5,7 @@ import { addCommentStore } from 'shared/firebase';
 import { addComment } from 'shared/redux/modules/commentSlice';
 import { styled } from 'styled-components';
 import { v4 as uuidv4 } from 'uuid';
+import CommentList from './CommentList';
 
 export default function AddComment() {
     const [text, setText] = useState('');
@@ -29,10 +30,13 @@ export default function AddComment() {
     }
 
     return (
-        <ScAddCommentLayout onSubmit={handleSubmit}>
-            <ScComment type='text' value={text} onChange={handleChange} placeholder='댓글을 작성해주세요' />
-            <button>등록하기</button>
-        </ScAddCommentLayout>
+        <>
+            <ScAddCommentLayout onSubmit={handleSubmit}>
+                <ScComment type='text' value={text} onChange={handleChange} placeholder='댓글을 작성해주세요' />
+                <button>등록하기</button>
+            </ScAddCommentLayout>
+            <CommentList />
+        </>
     );
 }
 

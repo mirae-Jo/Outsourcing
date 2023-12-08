@@ -42,7 +42,7 @@ function DetailPage() {
         );
       })}
       <AddComment />
-      <CommentList />
+      {/* <CommentList /> */}
     </>
   );
 }
