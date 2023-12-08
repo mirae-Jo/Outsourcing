@@ -28,6 +28,7 @@ const ScMountainCard = styled.div`
   display: flex;
   flex-direction: row;
   justify-content: space-between;
+  cursor: pointer;
   & h3 {
     font-size: x-large;
     margin-bottom: 5px;
