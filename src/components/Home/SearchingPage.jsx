@@ -1,15 +1,15 @@
-import { useQuery } from '@tanstack/react-query';
-import axios from 'axios';
+import {useQuery} from '@tanstack/react-query';
 import React from 'react';
 import styled from 'styled-components';
-import { getMountains } from 'api/mountains';
-import { useNavigate } from 'react-router-dom';
+import {useNavigate} from 'react-router-dom';
+import {getMountains} from 'common/api/mountains';
 
-function SearchingPage({ searchAddress, setSearchAddress }) {
-  const { isLoading, isError, data } = useQuery({
+function SearchingPage({searchAddress, setSearchAddress}) {
+  const {isLoading, isError, data} = useQuery({
     queryKey: ['mountains'],
     queryFn: getMountains,
   });
+
   const navigate = useNavigate();
 
   if (isLoading) {

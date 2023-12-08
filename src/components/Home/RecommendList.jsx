@@ -1,13 +1,12 @@
-import React, {useEffect, useState, useRef} from 'react';
+import React, {useEffect, useRef} from 'react';
 import styled from 'styled-components';
 import {PiMountainsFill} from 'react-icons/pi';
-import {useNavigate} from 'react-router-dom';
-import {getMountains} from 'api/mountains';
 import {useQuery} from '@tanstack/react-query';
+import MountainCard from 'common/MountainCard';
+import {getMountains} from 'common/api/mountains';
 
 const RecommendList = () => {
-  const [mountain, setMountain] = useState();
-  const navigate = useNavigate();
+  // const [mountain, setMountain] = useState();
   const {isLoading, isError, data} = useQuery({
     queryKey: ['mountains'],
     queryFn: getMountains,
@@ -23,7 +22,6 @@ const RecommendList = () => {
   if (isError) {
     return <p>오류가 발생했습니다...</p>;
   }
-
   if (!data || data.length === 0) {
     return <p>산 정보가 없습니다.</p>;
   }
@@ -38,7 +36,20 @@ const RecommendList = () => {
         <ScMountainIcon />
       </ScTitle>
       <ScMountainListWarapper>
-        <ScMountainCard onClick={() => navigate(`/detail/${randomMountain.name}`)}>
+        <MountainCard mountain={randomMountain} />
+        <MountainCard mountain={randomMountain} />
+        <MountainCard mountain={randomMountain} />
+        <MountainCard mountain={randomMountain} />
+
+        {/* <ScMountainCard onClick={() => navigate(`/detail/${randomMountain.name}`)}>
+          <div>
+            <h3>{randomMountain.name}</h3>
+            <p>난이도:{randomMountain.difficulty}</p>
+            <p>소요시간:{randomMountain.time}</p>
+          </div>
+          <ScTag>{randomMountain.filterlocation}</ScTag>
+        </ScMountainCard> */}
+        {/* <ScMountainCard>
           <div>
             <h3>{randomMountain.name}</h3>
             <p>난이도:{randomMountain.difficulty}</p>
@@ -61,15 +72,7 @@ const RecommendList = () => {
             <p>소요시간:{randomMountain.time}</p>
           </div>
           <ScTag>{randomMountain.filterlocation}</ScTag>
-        </ScMountainCard>
-        <ScMountainCard>
-          <div>
-            <h3>{randomMountain.name}</h3>
-            <p>난이도:{randomMountain.difficulty}</p>
-            <p>소요시간:{randomMountain.time}</p>
-          </div>
-          <ScTag>{randomMountain.filterlocation}</ScTag>
-        </ScMountainCard>
+        </ScMountainCard> */}
       </ScMountainListWarapper>
     </ScRecommendList>
   );
@@ -79,7 +82,7 @@ export default RecommendList;
 
 const ScRecommendList = styled.div`
   max-width: 100%;
-  width: 1000px;
+  width: 920px;
   margin: 20px auto;
   height: fit-content;
   display: flex;
@@ -108,7 +111,7 @@ const ScMountainIcon = styled(PiMountainsFill)`
 
 const ScMountainListWarapper = styled.div`
   width: 100%;
-  max-width: 1200px;
+  max-width: 920px;
   display: flex;
   flex-direction: row;
   justify-content: center;
@@ -117,34 +120,34 @@ const ScMountainListWarapper = styled.div`
   margin: 0 auto;
 `;
 
-const ScMountainCard = styled.div`
-  width: 100%;
-  max-width: 490px;
-  height: 120px;
-  background-color: lightgray;
-  padding: 20px;
-  line-height: 1.5;
-  display: flex;
-  flex-direction: row;
-  justify-content: space-between;
-  & h3 {
-    font-size: x-large;
-    margin-bottom: 5px;
-  }
-  & p {
-    font-size: small;
-  }
-`;
+// const ScMountainCard = styled.div`
+//   width: 100%;
+//   max-width: 450px;
+//   height: 120px;
+//   background-color: lightgray;
+//   padding: 20px;
+//   line-height: 1.5;
+//   display: flex;
+//   flex-direction: row;
+//   justify-content: space-between;
+//   & h3 {
+//     font-size: x-large;
+//     margin-bottom: 5px;
+//   }
+//   & p {
+//     font-size: small;
+//   }
+// `;
 
-const ScTag = styled.div`
-  font-family: sans-serif;
-  font-size: 13px;
-  font-weight: 300;
-  text-align: center;
-  width: 70px;
-  height: fit-content;
-  padding: 2px;
-  color: white;
-  background-color: #1b9c85;
-  border-radius: 4px;
-`;
+// const ScTag = styled.div`
+//   font-family: sans-serif;
+//   font-size: 13px;
+//   font-weight: 300;
+//   text-align: center;
+//   width: 85px;
+//   height: fit-content;
+//   padding: 2px;
+//   color: white;
+//   background-color: #1b9c85;
+//   border-radius: 4px;
+// `;
