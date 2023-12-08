@@ -4,40 +4,17 @@ import {TiArrowSortedDown} from 'react-icons/ti';
 import FilteredMountain from './FilteredMountain';
 
 const DropDown = () => {
-  const [selectedCategory, setSelectedCategory] = useState(null);
-  const [selectedDetailCategory, setSelectedDetailCategory] = useState(null);
+  const [isOpen, setIsOpen] = useState(false);
+  const [selectedCategories, setSelectedCategories] = useState(null);
+  const [selectedDetailCategories, setSelectedDetailCategories] = useState(null);
   const dropdownRef = useRef(null);
-
-  const dropDownMenu = {
-    지역별: [
-      '강원도',
-      '경기도',
-      '경상남도',
-      '경상북도',
-      '광주광역시',
-      '대구광역시',
-      '대전광역시',
-      '부산광역시',
-      '서울특별시',
-      '울산광역시',
-      '인천광역시',
-      '전라남도',
-      '전라북도',
-      '제주특별자치도',
-      '충청남도',
-      '충청북도',
-    ],
-    난이도별: ['초급', '중급', '고급'],
-    소요시간별: ['1시간 미만', '1~2시간', '2~3시간', '3~4시간', '4시간 이상'],
-  };
 
   useEffect(() => {
     const handleClickOutside = e => {
       if (dropdownRef.current && !dropdownRef.current.contains(e.target)) {
-        setSelectedCategory(null);
+        setIsOpen(false);
       }
     };
-
     document.addEventListener('mousedown', handleClickOutside);
 
     // 클린업
@@ -49,36 +26,31 @@ const DropDown = () => {
   return (
     <>
       <ScDropDownContainer ref={dropdownRef}>
-        {Object.keys(dropDownMenu).map((category, index) => {
+        {/* <ScDropDownContainer> */}
+        {Object.keys(DROPDOWN_MENU).map((category, index) => {
           return (
-            <ScDropDownWrapper
-              key={index}
-              onClick={() => {
-                setSelectedCategory(prevCategory => {
-                  const newCategory = prevCategory === category ? null : category;
-                  console.log(newCategory);
-                  return newCategory;
-                });
-              }}
-            >
+            <ScDropDownWrapper key={index}>
               {/**마우스 다운 이벤트 감지 외부or 내부 */}
-              <ScBtnWrapper>
+              <ScBtnWrapper
+                onClick={() => {
+                  setIsOpen(true);
+                  setSelectedCategories(category);
+                }}
+              >
                 <button>{category}</button>
                 <ScArrowIcon />
               </ScBtnWrapper>
-              {selectedCategory === category && (
+
+              {isOpen && selectedCategories === category && (
                 <ScDropDown>
                   <ul>
-                    {dropDownMenu[category].map((detailCategory, index) => {
+                    {DROPDOWN_MENU[category].map((detailCategory, index) => {
                       return (
                         <li
                           key={index}
                           onClick={() => {
-                            setSelectedDetailCategory(prevDetailCategory => {
-                              const newDetailCategory = prevDetailCategory === detailCategory ? null : detailCategory;
-                              console.log(newDetailCategory);
-                              return newDetailCategory;
-                            });
+                            setIsOpen(false);
+                            setSelectedDetailCategories(detailCategory);
                           }}
                         >
                           {detailCategory}
@@ -92,12 +64,41 @@ const DropDown = () => {
           );
         })}
       </ScDropDownContainer>
-      <FilteredMountain selectedDetailCategory={selectedDetailCategory} />
+      {selectedDetailCategories && (
+        <FilteredMountain
+          DROPDOWN_MENU={DROPDOWN_MENU}
+          selectedCategories={selectedCategories}
+          selectedDetailCategories={selectedDetailCategories}
+        />
+      )}
     </>
   );
 };
 
 export default DropDown;
+
+const DROPDOWN_MENU = {
+  지역별: [
+    '강원도',
+    '경기도',
+    '경상남도',
+    '경상북도',
+    '광주광역시',
+    '대구광역시',
+    '대전광역시',
+    '부산광역시',
+    '서울특별시',
+    '울산광역시',
+    '인천광역시',
+    '전라남도',
+    '전라북도',
+    '제주특별자치도',
+    '충청남도',
+    '충청북도',
+  ],
+  난이도별: ['초급', '중급', '고급'],
+  소요시간별: ['1시간 미만', '1~2시간', '2~3시간', '3~4시간', '4시간 이상'],
+};
 
 const ScDropDownContainer = styled.div`
   display: flex;
