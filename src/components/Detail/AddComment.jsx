@@ -1,15 +1,20 @@
 import React, { useState } from 'react';
-import { useDispatch } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
+import { addCommentStore } from 'shared/firebase';
 import { addComment } from 'shared/redux/modules/commentSlice';
 import { styled } from 'styled-components';
 
 export default function AddComment() {
     const [text, setText] = useState('');
+    const { user } = useSelector((state) => state.user_auth);
+    console.log(user);
     const dispatch = useDispatch();
 
     const handleSubmit = (e) => {
         e.preventDefault();
-        dispatch(addComment({ comment: text, date: new Date() }));
+        const newComment = { ...user, comment: text, createdAt: new Date() };
+        addCommentStore(newComment);
+        dispatch(addComment(newComment));
         setText('');
     }
     const handleChange = (e) => {

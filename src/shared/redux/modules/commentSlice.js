@@ -11,8 +11,8 @@ const commentSlice = createSlice({
         addComment: (state, action) => {
             //나중에 추가할 내용들
             //const {userId,comment,date,mountain} = action.payload;
-            const { comment, date } = action.payload;
-            console.log({ comment, date });
+            const { uid, comment, displayName, photoURL, createdAt } = action.payload;
+            console.log({ uid, comment, displayName, photoURL, createdAt });
             state.comments.push(action.payload);
         }
     }

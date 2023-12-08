@@ -1,6 +1,6 @@
 import {initializeApp} from 'firebase/app';
 import {getAuth} from 'firebase/auth';
-import {getFirestore} from 'firebase/firestore';
+import {getFirestore, collection, addDoc} from 'firebase/firestore';
 import {getStorage} from 'firebase/storage';
 
 //파이어베이스 키 .env.local에  저장
@@ -22,5 +22,9 @@ export const auth = getAuth(app);
 const db = getFirestore(app);
 //스토리지 생성
 export const storage = getStorage(app);
-console.log(storage);
+
+export const addCommentStore = async comment => {
+  await addDoc(collection(db, 'comments'), comment);
+};
+
 export default db;
