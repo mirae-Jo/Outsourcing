@@ -7,6 +7,9 @@ import CommentList from 'components/Detail/CommentList';
 import {useSelector} from 'react-redux';
 import {getMountains} from 'common/api/mountains';
 
+import MapDetail from 'components/Detail/MapDetail';
+
+
 function DetailPage() {
   const params = useParams();
   const auth = useSelector(state => state.user_auth);
@@ -28,22 +31,27 @@ function DetailPage() {
   return (
     <>
       {filterMountain.map(mountain => {
-        const {name, imgUrl, summary, location, height, time, difficulty} = mountain;
+        const {name, imgUrl, summary, location, height, time, difficulty, xCoordinate, yCoordinate} = mountain;
+
         return (
-          <ScMountainInfo key={name}>
-            <ScMountainImg img={imgUrl}>
-              <h1>{name}</h1>
-              <p>{summary}</p>
-            </ScMountainImg>
-            <ScMountainDetail>
-              <p> 위치 : {location}</p>
-              <p>고도 : {height}m</p>
-              <p>난이도 : {difficulty}</p>
-              <p>소요시간 : {time}</p>
-            </ScMountainDetail>
-          </ScMountainInfo>
+          <>
+            <ScMountainInfo key={name}>
+              <ScMountainImg img={imgUrl}>
+                <h1>{name}</h1>
+                <p>{summary}</p>
+              </ScMountainImg>
+              <ScMountainDetail>
+                <p> 위치 : {location}</p>
+                <p>고도 : {height}m</p>
+                <p>난이도 : {difficulty}</p>
+                <p>소요시간 : {time}</p>
+              </ScMountainDetail>
+            </ScMountainInfo>
+            <MapDetail name={name} xCoordinate={xCoordinate} yCoordinate={yCoordinate} />
+          </>
         );
       })}
+
       <AddComment />
       <CommentList />
     </>

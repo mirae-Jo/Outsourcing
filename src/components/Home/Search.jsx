@@ -4,8 +4,10 @@ import {FiSearch} from 'react-icons/fi';
 import DropDown from './DropDown';
 import SearchingPage from './SearchingPage';
 
-const Search = ({state, setState, searchAddress, setSearchAddress}) => {
+const Search = ({location, setLocation}) => {
   const [isSearch, setIsSearch] = useState(false);
+
+  const [searchAddress, setSearchAddress] = useState();
 
   const searchMap = e => {
     e.preventDefault();
@@ -13,7 +15,7 @@ const Search = ({state, setState, searchAddress, setSearchAddress}) => {
     const placesSearchCB = function (data, status, pagination) {
       if (status === window.kakao.maps.services.Status.OK) {
         const newSearch = data[0];
-        setState({
+        setLocation({
           center: {lat: newSearch.y, lng: newSearch.x},
         });
         console.log({lat: newSearch.y, lng: newSearch.x});
@@ -33,7 +35,7 @@ const Search = ({state, setState, searchAddress, setSearchAddress}) => {
       <div>
         <ScSearchForm onSubmit={searchMap}>
           <ScInput
-            value={searchAddress}
+            value={searchAddress || ''}
             type="text"
             placeholder="검색할 산을 입력하세요"
             onChange={handleSearchAddress}
@@ -41,7 +43,7 @@ const Search = ({state, setState, searchAddress, setSearchAddress}) => {
           <ScSearchIcon />
         </ScSearchForm>
       </div>
-      {isSearch ? <SearchingPage searchAddress={searchAddress} setSearchAddress={setSearchAddress} /> : <DropDown />}
+      {isSearch ? <SearchingPage searchAddress={searchAddress} /> : <DropDown />}
     </>
   );
 };
