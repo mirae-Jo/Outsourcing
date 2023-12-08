@@ -29,18 +29,22 @@ function SearchingPage({searchAddress, setSearchAddress}) {
 
   return (
     <ScSearchingWrap>
-      {filteredData.map(mountain => {
-        return (
-          <ScMountainCard>
-            <div>
-              <h3>{mountain.name}</h3>
-              <p>난이도:{mountain.difficulty}</p>
-              <p>소요시간:{mountain.time}</p>
-            </div>
-            <ScTag>{mountain.filterlocation}</ScTag>
-          </ScMountainCard>
-        );
-      })}
+      {filteredData.length === 0 ? (
+        <p>산 정보가 없습니다.</p>
+      ) : (
+        filteredData.map(mountain => {
+          return (
+            <ScMountainCard>
+              <div>
+                <h3>{mountain.name}</h3>
+                <p>난이도:{mountain.difficulty}</p>
+                <p>소요시간:{mountain.time}</p>
+              </div>
+              <ScTag>{mountain.filterlocation}</ScTag>
+            </ScMountainCard>
+          );
+        })
+      )}
     </ScSearchingWrap>
   );
 }
