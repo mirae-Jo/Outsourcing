@@ -1,41 +1,43 @@
 import React, {useEffect, useState} from 'react';
 import styled from 'styled-components';
 import LoginModal from 'components/Login/LoginModal';
-import {useNavigate} from 'react-router';
+import {useLocation, useNavigate} from 'react-router';
 import {auth} from 'shared/firebase';
 import {onAuthStateChanged} from '@firebase/auth';
 import {doc, getDoc} from '@firebase/firestore';
 import db from 'shared/firebase';
+
 const NavigationBar = () => {
   const navigate = useNavigate();
   const [isLoginModal, setIsLoginModal] = useState(true);
   const [userDisplayName, setUserDisplayName] = useState(null);
+  const [userNickName, setUserNickName] = useState(null);
   const [avatarUrl, setAvatarUrl] = useState(null);
-
   useEffect(() => {
-    // 인증 상태가 변경될 때마다 호출되는 콜백 함수 등록
     const unsubscribe = onAuthStateChanged(auth, async user => {
-      // user가 null이면 로그아웃 상태
-      // user가 값이 있으면 로그인 상태
       setUserDisplayName(user?.displayName || null);
+      setUserNickName(user?.nickname || null);
 
       if (user) {
-        // Firestore에서 사용자 정보 가져오기
         const userDocRef = doc(db, 'users', user.uid);
         const userDocSnapshot = await getDoc(userDocRef);
-        const photoURL = user.photoURL;
 
         if (userDocSnapshot.exists()) {
-          // 사용자 정보가 있으면 avatar URL 가져오기
-          const avatarURL = userDocSnapshot.data().avatar;
+          const userData = userDocSnapshot.data();
+          const avatarURL = userData.avatar;
+          const userNickname = userData.nickName;
 
-          // Google 로그인인 경우 photoURL을, 일반 로그인인 경우 avatar를 표시
-          setAvatarUrl(avatarURL);
+          if (userData.provider === 'google.com') {
+            setAvatarUrl(userData.photoURL || user.photoURL);
+          } else {
+            setAvatarUrl(avatarURL || user.photoURL);
+          }
+
+          setUserNickName(userNickname || null);
         }
       }
     });
 
-    // 컴포넌트가 언마운트될 때 cleanup
     return () => unsubscribe();
   }, []);
 
@@ -57,7 +59,7 @@ const NavigationBar = () => {
       {userDisplayName ? (
         <ScLoginContext>
           {avatarUrl && <ScProfileIMG src={avatarUrl} alt="Avatar" />}
-          <p>{userDisplayName} 님 반갑습니다.</p>
+          <p>{userNickName ? <>{userNickName} 님 반갑습니다.</> : `${userDisplayName} 님 반갑습니다.`}</p>
         </ScLoginContext>
       ) : (
         <ScLoginContext>
@@ -67,7 +69,6 @@ const NavigationBar = () => {
     </ScNavigationContainer>
   );
 };
-
 const ScHomeBT = styled.button`
   border-radius: 5px;
   background-color: #ffffff;
@@ -84,7 +85,6 @@ const ScHomeBT = styled.button`
 
 const ScNavigationContainer = styled.div`
   height: 50px;
-
   color: white;
   background-color: #1b9c85;
   p {
@@ -106,6 +106,7 @@ const ScProfile = styled.button`
     background-color: #ddd;
   }
 `;
+
 const ScLoginContext = styled.div`
   float: right;
   margin-right: 10px;
@@ -116,6 +117,7 @@ const ScLoginContext = styled.div`
     margin-top: 10px;
   }
 `;
+
 const ScProfileIMG = styled.img`
   width: 30px;
   height: 30px;
@@ -123,5 +125,7 @@ const ScProfileIMG = styled.img`
   margin-top: 10px;
   border-radius: 50%;
   border: 3px solid white;
+  object-fit: cover;
 `;
+
 export default NavigationBar;
