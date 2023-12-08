@@ -5,8 +5,8 @@ import FilteredMountain from './FilteredMountain';
 
 const DropDown = () => {
   const [isOpen, setIsOpen] = useState(false);
-  const [selectedCategory, setSelectedCategory] = useState(null);
-  const [selectedDetailCategory, setSelectedDetailCategory] = useState(null);
+  const [selectedCategories, setSelectedCategories] = useState(null);
+  const [selectedDetailCategories, setSelectedDetailCategories] = useState(null);
   const dropdownRef = useRef(null);
 
   useEffect(() => {
@@ -34,14 +34,14 @@ const DropDown = () => {
               <ScBtnWrapper
                 onClick={() => {
                   setIsOpen(true);
-                  setSelectedCategory(category);
+                  setSelectedCategories(category);
                 }}
               >
                 <button>{category}</button>
                 <ScArrowIcon />
               </ScBtnWrapper>
 
-              {isOpen && selectedCategory === category && (
+              {isOpen && selectedCategories === category && (
                 <ScDropDown>
                   <ul>
                     {DROPDOWN_MENU[category].map((detailCategory, index) => {
@@ -50,7 +50,7 @@ const DropDown = () => {
                           key={index}
                           onClick={() => {
                             setIsOpen(false);
-                            setSelectedDetailCategory(detailCategory);
+                            setSelectedDetailCategories(detailCategory);
                           }}
                         >
                           {detailCategory}
@@ -64,11 +64,11 @@ const DropDown = () => {
           );
         })}
       </ScDropDownContainer>
-      {selectedDetailCategory && (
+      {selectedDetailCategories && (
         <FilteredMountain
           DROPDOWN_MENU={DROPDOWN_MENU}
-          selectedCategory={selectedCategory}
-          selectedDetailCategory={selectedDetailCategory}
+          selectedCategories={selectedCategories}
+          selectedDetailCategories={selectedDetailCategories}
         />
       )}
     </>

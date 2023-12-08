@@ -4,7 +4,7 @@ import styled from 'styled-components';
 import {getMountains} from 'common/api/mountains';
 import MountainCard from 'common/MountainCard';
 
-const FilteredMountain = ({dropDownMenu, selectedCategory, selectedDetailCategory}) => {
+const FilteredMountain = ({DROPDOWN_MENU, selectedCategories, selectedDetailCategories}) => {
   const [filteredMountains, setFilteredMountains] = useState([]);
   const {isLoading, isError, data} = useQuery({
     queryKey: ['mountains'],
@@ -28,13 +28,13 @@ const FilteredMountain = ({dropDownMenu, selectedCategory, selectedDetailCategor
   useEffect(() => {
     if (data && data.length > 0) {
       const filtered = data.filter(mountain => {
-        switch (selectedCategory) {
+        switch (selectedCategories) {
           case '지역별':
-            return mountain.filterlocation === selectedDetailCategory;
+            return mountain.filterlocation === selectedDetailCategories;
           case '난이도별':
-            return mountain.difficulty === selectedDetailCategory;
+            return mountain.difficulty === selectedDetailCategories;
           case '소요시간별':
-            return filterTime(mountain.filtertime) === selectedDetailCategory;
+            return filterTime(mountain.filtertime) === selectedDetailCategories;
           default:
             return false;
         }
@@ -42,7 +42,7 @@ const FilteredMountain = ({dropDownMenu, selectedCategory, selectedDetailCategor
       console.log(filtered);
       setFilteredMountains(filtered);
     }
-  }, [selectedCategory, selectedDetailCategory, data]);
+  }, [selectedCategories, selectedDetailCategories, data]);
 
   if (isLoading) {
     return <p>로딩중입니다...</p>;
