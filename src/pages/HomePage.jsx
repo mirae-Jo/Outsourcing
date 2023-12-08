@@ -12,7 +12,7 @@ function HomePage() {
   const [isLoginModal, setIsLoginModal] = useState(true);
   const dispatch = useDispatch();
 
-  const [state, setState] = useState({
+  const [location, setLocation] = useState({
     // 지도의 초기 위치
     center: {lat: 33.3766655632143, lng: 126.54222094512},
     // 지도 위치 변경시 panto를 이용할지(부드럽게 이동)
@@ -36,13 +36,11 @@ function HomePage() {
     );
   });
 
-  const [searchAddress, setSearchAddress] = useState();
-
   return (
     <>
-      <Search state={state} setState={setState} searchAddress={searchAddress} setSearchAddress={setSearchAddress} />
+      <Search location={location} setLocation={setLocation} />
       <RecommendList />
-      <KakaoMap state={state} setState={setState} />
+      <KakaoMap location={location} setLocation={setLocation} />
     </>
   );
 }
