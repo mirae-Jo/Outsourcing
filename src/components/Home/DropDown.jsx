@@ -1,12 +1,11 @@
 import React, {useEffect, useRef, useState} from 'react';
 import styled from 'styled-components';
 import {TiArrowSortedDown} from 'react-icons/ti';
-import {useQuery} from '@tanstack/react-query';
-import {getMountains} from 'api/mountains';
+import FilteredMountain from './FilteredMountain';
 
 const DropDown = () => {
-  const [selectedMenu, setSelectedMenu] = useState(null);
-  const [selectedFilter, setSelectedFilter] = useState();
+  const [selectedCategory, setSelectedCategory] = useState(null);
+  const [selectedDetailCategory, setSelectedDetailCategory] = useState(null);
   const dropdownRef = useRef(null);
 
   const dropDownMenu = {
@@ -35,7 +34,7 @@ const DropDown = () => {
   useEffect(() => {
     const handleClickOutside = e => {
       if (dropdownRef.current && !dropdownRef.current.contains(e.target)) {
-        setSelectedMenu(null);
+        setSelectedCategory(null);
       }
     };
 
@@ -45,53 +44,56 @@ const DropDown = () => {
     return () => {
       document.removeEventListener('mousedown', handleClickOutside);
     };
-  }, [dropdownRef]); //의존성 배열 사용
-
-  const {isLoading, isError, data} = useQuery({
-    queryKey: ['mountains'],
-    queryFn: getMountains,
-  });
-
-  if (isLoading) {
-    return <p>로딩중입니다...</p>;
-  }
-  if (isError) {
-    return <p>오류가 발생했습니다...</p>;
-  }
-
-  if (!data || data.length === 0) {
-    return <p>산 정보가 없습니다.</p>;
-  }
+  }, [dropdownRef]);
 
   return (
-    <ScDropDownContainer>
-      {Object.keys(dropDownMenu).map((menu, index) => {
-        return (
-          <ScDropDownWrapper
-            key={index}
-            ref={dropdownRef}
-            onClick={() => {
-              setSelectedMenu(selectedMenu === menu ? null : menu);
-            }}
-          >
-            {/**마우스 다운 이벤트 감지 외부or 내부 */}
-            <ScBtnWrapper>
-              <button>{menu}</button>
-              <ScArrowIcon />
-            </ScBtnWrapper>
-            {selectedMenu === menu && (
-              <ScDropDown>
-                <ul>
-                  {dropDownMenu[menu].map((detailMenu, index) => {
-                    return <li key={index}>{detailMenu}</li>;
-                  })}
-                </ul>
-              </ScDropDown>
-            )}
-          </ScDropDownWrapper>
-        );
-      })}
-    </ScDropDownContainer>
+    <>
+      <ScDropDownContainer ref={dropdownRef}>
+        {Object.keys(dropDownMenu).map((category, index) => {
+          return (
+            <ScDropDownWrapper
+              key={index}
+              onClick={() => {
+                setSelectedCategory(prevCategory => {
+                  const newCategory = prevCategory === category ? null : category;
+                  console.log(newCategory);
+                  return newCategory;
+                });
+              }}
+            >
+              {/**마우스 다운 이벤트 감지 외부or 내부 */}
+              <ScBtnWrapper>
+                <button>{category}</button>
+                <ScArrowIcon />
+              </ScBtnWrapper>
+              {selectedCategory === category && (
+                <ScDropDown>
+                  <ul>
+                    {dropDownMenu[category].map((detailCategory, index) => {
+                      return (
+                        <li
+                          key={index}
+                          onClick={() => {
+                            setSelectedDetailCategory(prevDetailCategory => {
+                              const newDetailCategory = prevDetailCategory === detailCategory ? null : detailCategory;
+                              console.log(newDetailCategory);
+                              return newDetailCategory;
+                            });
+                          }}
+                        >
+                          {detailCategory}
+                        </li>
+                      );
+                    })}
+                  </ul>
+                </ScDropDown>
+              )}
+            </ScDropDownWrapper>
+          );
+        })}
+      </ScDropDownContainer>
+      <FilteredMountain selectedDetailCategory={selectedDetailCategory} />
+    </>
   );
 };
 
