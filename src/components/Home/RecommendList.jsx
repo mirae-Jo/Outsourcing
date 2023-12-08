@@ -1,14 +1,14 @@
-import React, {useEffect, useState, useRef} from 'react';
+import React, { useEffect, useState, useRef } from 'react';
 import styled from 'styled-components';
-import {PiMountainsFill} from 'react-icons/pi';
-import axios from 'axios';
-import {getMountains} from 'api/mountains';
-import {useQuery} from '@tanstack/react-query';
+import { PiMountainsFill } from 'react-icons/pi';
+import { useNavigate } from 'react-router-dom';
+import { getMountains } from 'api/mountains';
+import { useQuery } from '@tanstack/react-query';
 
 const RecommendList = () => {
   const [mountain, setMountain] = useState();
-
-  const {isLoading, isError, data} = useQuery({
+  const navigate = useNavigate();
+  const { isLoading, isError, data } = useQuery({
     queryKey: ['mountains'],
     queryFn: getMountains,
   });
@@ -38,7 +38,7 @@ const RecommendList = () => {
         <ScMountainIcon />
       </ScTitle>
       <ScMountainListWarapper>
-        <ScMountainCard>
+        <ScMountainCard onClick={() => navigate(`/detail/${randomMountain.name}`)}>
           <div>
             <h3>{randomMountain.name}</h3>
             <p>난이도:{randomMountain.difficulty}</p>

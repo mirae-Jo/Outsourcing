@@ -1,7 +1,7 @@
-import React, {useState, useEffect, useRef} from 'react';
-import {useNavigate} from 'react-router-dom';
+import React, { useState, useEffect, useRef } from 'react';
+import { useNavigate } from 'react-router-dom';
 import styled from 'styled-components';
-import {app} from 'shared/firebase';
+import { app } from 'shared/firebase';
 import {
   createUserWithEmailAndPassword,
   signInWithEmailAndPassword,
@@ -11,12 +11,14 @@ import {
   signInWithPopup,
   signInWithRedirect,
 } from 'firebase/auth';
-import {auth} from 'shared/firebase';
+import { auth } from 'shared/firebase';
 import SignUpModal from './SignUpModal';
 import googleicon from '../../assets/imgs/googleSignUpBtn.png';
-import {doc, getDoc, setDoc} from '@firebase/firestore';
+import { doc, getDoc, setDoc } from '@firebase/firestore';
 import db from 'shared/firebase';
 import profilenormal from '../../assets/imgs/profilenormal.jpg';
+import { useDispatch } from 'react-redux';
+import { login, logout } from 'shared/redux/modules/authSlice';
 
 const LoginModal = () => {
   const [emailValidationMessage, setEmailValidationMessage] = useState('');
@@ -27,10 +29,12 @@ const LoginModal = () => {
   const [password, setPassword] = useState('');
   const [user, setUser] = useState(null);
   const emailRef = useRef(null);
+  const dispatch = useDispatch();
 
   // 추가: 로그인 상태 변경 감지 및 유저 정보 업데이트
   useEffect(() => {
     const unsubscribe = onAuthStateChanged(auth, user => {
+      console.log(user);
       setUser(user);
     });
 
@@ -52,7 +56,7 @@ const LoginModal = () => {
   //로그인
   const inputChange = event => {
     const {
-      target: {name, value},
+      target: { name, value },
     } = event;
     if (name === 'email') {
       setEmail(value);
@@ -103,7 +107,7 @@ const LoginModal = () => {
     // 사용자가 '예'를 선택한 경우에만 로그아웃
     if (isConfirmed) {
       await signOut(auth);
-
+      dispatch(logout());
       // 로그아웃 후 페이지 새로고침
       window.location.reload();
     }
@@ -147,6 +151,8 @@ const LoginModal = () => {
 
       // 추가: 로그인 후 유저 정보 갱신
       setUser(result.user);
+      const { uid, displayName, photoURL } = result.user;
+      dispatch(login({ uid, displayName, photoURL }));
 
       // 추가: Firestore에 사용자 정보 저장
     } catch (error) {
@@ -172,12 +178,12 @@ const LoginModal = () => {
             <ScSection>
               <p>이메일 </p>
               <input type="email" value={email} name="email" onChange={inputChange} />
-              {emailValidationMessage && <p style={{color: 'red'}}>{emailValidationMessage}</p>}
+              {emailValidationMessage && <p style={{ color: 'red' }}>{emailValidationMessage}</p>}
             </ScSection>
             <ScSection>
               <p>패스워드 </p>
               <input type="password" value={password} name="password" onChange={inputChange} />
-              {passwordValidationMessage && <p style={{color: 'red'}}>{passwordValidationMessage}</p>}
+              {passwordValidationMessage && <p style={{ color: 'red' }}>{passwordValidationMessage}</p>}
             </ScSection>
 
             <ScLoginButton onClick={signIn}>로그인</ScLoginButton>
