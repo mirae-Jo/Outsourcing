@@ -1,15 +1,16 @@
-import { useQuery } from '@tanstack/react-query';
-import axios from 'axios';
+import {useQuery} from '@tanstack/react-query';
 import React from 'react';
 import styled from 'styled-components';
-import { getMountains } from 'api/mountains';
-import { useNavigate } from 'react-router-dom';
+import {useNavigate} from 'react-router-dom';
+import {getMountains} from 'common/api/mountains';
 
-function SearchingPage({ searchAddress, setSearchAddress }) {
-  const { isLoading, isError, data } = useQuery({
+
+function SearchingPage({searchAddress, setSearchAddress}) {
+  const {isLoading, isError, data} = useQuery({
     queryKey: ['mountains'],
     queryFn: getMountains,
   });
+
   const navigate = useNavigate();
 
   if (isLoading) {
@@ -31,18 +32,22 @@ function SearchingPage({ searchAddress, setSearchAddress }) {
 
   return (
     <ScSearchingWrap>
-      {filteredData.map(mountain => {
-        return (
-          <ScMountainCard onClick={() => navigate(`/detail/${mountain.name}`)}>
-            <div>
-              <h3>{mountain.name}</h3>
-              <p>난이도:{mountain.difficulty}</p>
-              <p>소요시간:{mountain.time}</p>
-            </div>
-            <ScTag>{mountain.filterlocation}</ScTag>
-          </ScMountainCard>
-        );
-      })}
+      {filteredData.length === 0 ? (
+        <p>산 정보가 없습니다.</p>
+      ) : (
+        filteredData.map(mountain => {
+          return (
+            <ScMountainCard onClick={() => navigate(`/detail/${mountain.name}`)} key={mountain.xCoordinate}>
+              <div>
+                <h3>{mountain.name}</h3>
+                <p>난이도:{mountain.difficulty}</p>
+                <p>소요시간:{mountain.time}</p>
+              </div>
+              <ScTag>{mountain.filterlocation}</ScTag>
+            </ScMountainCard>
+          );
+        })
+      )}
     </ScSearchingWrap>
   );
 }

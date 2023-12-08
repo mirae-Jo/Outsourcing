@@ -6,13 +6,14 @@ import {auth} from 'shared/firebase';
 import db from 'shared/firebase';
 import {onAuthStateChanged} from 'firebase/auth';
 import {storage} from 'shared/firebase';
+import {useNavigate} from 'react-router';
 export const ProFilePage = () => {
   const [nickname, setNickname] = useState('');
   const [profileImage, setProfileImage] = useState('');
   const [newNickname, setNewNickname] = useState('');
   const [newProfileImage, setNewProfileImage] = useState('');
   const [isEditMode, setIsEditMode] = useState(false);
-
+  const navigate = useNavigate();
   useEffect(() => {
     const unsubscribe = onAuthStateChanged(auth, user => {
       console.log('user', user);
@@ -42,7 +43,16 @@ export const ProFilePage = () => {
     setIsEditMode(true);
   };
 
-  const handleSaveClick = async user => {
+  const handleSaveClick = async (event, user) => {
+    event.preventDefault(); // 기본 동작(새로고침) 막기
+    // 변경된 내용이 있는지 확인
+    const hasChanges = newNickname !== nickname || (newProfileImage && newProfileImage !== profileImage);
+
+    // 변경된 내용이 없는 경우에는 확인 메시지 없이 종료
+    if (!hasChanges || !window.confirm('수정하시겠습니까?')) {
+      setIsEditMode(false);
+      return;
+    }
     const userDocRef = doc(db, 'users', user.uid);
 
     // Firestore에 사용자 데이터가 있는지 확인
@@ -51,16 +61,18 @@ export const ProFilePage = () => {
     if (userDocSnapshot.exists()) {
       // 이미 데이터가 있는 경우 업데이트
       await updateDoc(userDocRef, {
-        nickName: newNickname || nickname,
+        // 닉네임은 모든 사용자에게 공통으로 업데이트
+        nickName: newNickname !== '' ? newNickname : nickname,
         // Google 로그인 사용자는 photoURL로, 일반 사용자는 avatar로 업데이트
         photoURL:
           auth.currentUser.providerData[0]?.providerId === 'google.com' ? newProfileImage || profileImage : null,
-        avatar: auth.currentUser.providerData[0]?.providerId === 'google.com' ? null : newProfileImage || profileImage,
+        avatar: auth.currentUser.providerData[0]?.providerId === 'google.com' ? newProfileImage || profileImage : null,
       });
     } else {
       // 데이터가 없는 경우 새로운 문서를 만들어 저장
       const userData = {
         uid: auth.currentUser.uid,
+        // 닉네임은 모든 사용자에게 공통으로 저장
         nickName: newNickname || nickname,
         // Google 로그인 사용자는 photoURL로, 일반 사용자는 avatar로 설정
         photoURL:
@@ -75,7 +87,12 @@ export const ProFilePage = () => {
     setNickname(newNickname || nickname);
     setProfileImage(newProfileImage || profileImage);
     setIsEditMode(false);
+    setTimeout(() => {
+      window.location.reload();
+    }, 500);
   };
+
+  //이미지 업로드
   const handleImageUpload = async file => {
     try {
       const storageRef = ref(storage, `images/${auth.currentUser.uid}/${file.name}`);
@@ -95,13 +112,14 @@ export const ProFilePage = () => {
         if (userData.provider === 'google') {
           // Google 로그인 사용자는 photoURL로 업데이트
           await updateDoc(userDocRef, {
-            nickName: newNickname || nickname,
+            nickName: newNickname,
             photoURL: downloadURL,
+            avatar: downloadURL,
           });
         } else {
           // 일반 사용자는 avatar로 업데이트
           await updateDoc(userDocRef, {
-            nickName: newNickname || nickname,
+            nickName: newNickname,
             avatar: downloadURL,
           });
         }
@@ -112,7 +130,7 @@ export const ProFilePage = () => {
           nickName: newNickname || nickname,
           // Google 로그인인 경우 photoURL로, 일반 사용자인 경우 avatar로 설정
           photoURL: auth.currentUser.providerData[0]?.providerId === 'google.com' ? downloadURL : null,
-          avatar: auth.currentUser.providerData[0]?.providerId === 'google.com' ? null : downloadURL,
+          avatar: auth.currentUser.providerData[0]?.providerId === 'google.com' ? downloadURL : null,
           // provider 정보 추가
           provider: auth.currentUser.providerData[0]?.providerId,
         };
@@ -134,89 +152,113 @@ export const ProFilePage = () => {
     }
   };
   return (
-    <Container>
+    <ScContainer>
       <h1>프로필 페이지</h1>
-      <ProfileContainer>
+      <ScProfileContainer>
         <ProfileImage src={isEditMode ? newProfileImage || profileImage : profileImage} alt="프로필" />
-        <Nickname>{isEditMode ? newNickname || nickname : nickname}</Nickname>
-      </ProfileContainer>
+        <ScNickname>닉네임 : {isEditMode ? newNickname || nickname : nickname}</ScNickname>
+      </ScProfileContainer>
 
       {isEditMode ? (
-        <EditForm>
-          <label>새 닉네임</label>
-          <input type="text" value={newNickname} onChange={e => setNewNickname(e.target.value)} />
+        <>
+          <ScEditForm>
+            <label>닉네임 수정하기</label>
+            <ScNicnameUpdate
+              type="text"
+              value={newNickname}
+              onChange={e => setNewNickname(e.target.value)}
+              maxLength={6}
+              placeholder="닉네임은 6글자 까지 입니다."
+            />
 
-          <label>새 프로필 이미지</label>
-          <input type="file" onChange={handleImageSelect} accept="image/*" />
-
-          <SaveButton onClick={() => handleSaveClick(auth.currentUser)}>저장</SaveButton>
-        </EditForm>
+            <label>프로필 수정하기</label>
+            <ScImageInput type="file" onChange={handleImageSelect} accept="image/*" />
+          </ScEditForm>
+          <ScSaveButton onClick={event => handleSaveClick(event, auth.currentUser)}>저장</ScSaveButton>
+        </>
       ) : (
-        <EditButton onClick={handleEditClick}>프로필 편집</EditButton>
+        <ScEditButton onClick={handleEditClick}>프로필 편집</ScEditButton>
       )}
-    </Container>
+    </ScContainer>
   );
 };
 
-const Container = styled.div`
+const ScContainer = styled.div`
   max-width: 600px;
+  height: 600px;
   margin: 0 auto;
   text-align: center;
+  border: 3px solid black;
+  border-radius: 5px;
+  margin-top: 20px;
+  h1 {
+    margin-top: 30px;
+    font-size: 30px;
+  }
 `;
 
-const ProfileContainer = styled.div`
+const ScProfileContainer = styled.div`
   margin-top: 20px;
 `;
 
 const ProfileImage = styled.img`
-  width: 150px;
-  height: 150px;
+  width: 170px;
+  height: 170px;
   border-radius: 50%;
+  border: 3px solid black;
   object-fit: cover;
 `;
 
-const Nickname = styled.h2`
+const ScNickname = styled.h1`
   margin-top: 10px;
 `;
 
-const EditForm = styled.form`
+const ScEditForm = styled.form`
   margin-top: 20px;
-  text-align: left;
+  text-align: center;
 
   label {
     display: block;
     margin-bottom: 5px;
-  }
-
-  input {
-    width: 100%;
-    padding: 8px;
-    margin-bottom: 15px;
+    width: 67%;
   }
 `;
 
-const SaveButton = styled.button`
+const ScSaveButton = styled.button`
   background-color: #4caf50;
   color: white;
   padding: 10px 20px;
   border: none;
   border-radius: 5px;
+  float: right;
+  margin-right: 150px;
   cursor: pointer;
-
   &:hover {
     background-color: #45a049;
   }
 `;
 
-const EditButton = styled.button`
+const ScEditButton = styled.button`
   background-color: #008cba;
   color: white;
   padding: 10px 20px;
   border: none;
   border-radius: 5px;
+  margin-top: 20px;
   cursor: pointer;
 
   &:hover {
     background-color: #007aa7;
   }
+`;
+const ScImageInput = styled.input`
+  width: 53%;
+  padding: 8px;
+  margin-bottom: 25px;
+`;
+const ScNicnameUpdate = styled.input`
+  width: 50%;
+  padding: 8px;
+  margin-bottom: 25px;
+  margin-top: 10px;
 `;
