@@ -81,7 +81,7 @@ export const ProFilePage = () => {
       const storageRef = ref(storage, `images/${auth.currentUser.uid}/${file.name}`);
       await uploadBytes(storageRef, file);
 
-      // 업로드된 이미지의 다운로드 URL을 얻어올 수 있습니다.
+      // 업로드된 이미지의 다운로드 URL을 얻어온다.
       const downloadURL = await getDownloadURL(storageRef);
 
       // Firestore에 사용자 데이터가 있는지 확인
