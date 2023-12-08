@@ -25,7 +25,7 @@ function MapDetail({xCoordinate, yCoordinate, name}) {
           position={location.center}
           clickable={true} // 마커를 클릭했을 때 지도의 클릭 이벤트가 발생하지 않도록 설정합니다
         >
-          {name}
+          <ScMakerOverlay>{name}</ScMakerOverlay>
         </MapMarker>
       </Map>
     </ScMapWrap>
@@ -35,6 +35,13 @@ function MapDetail({xCoordinate, yCoordinate, name}) {
 const ScMapWrap = styled.div`
   width: 600px;
   margin: 20px auto;
+`;
+
+const ScMakerOverlay = styled.p`
+  width: 150px;
+  height: 30px;
+  text-align: center;
+  line-height: 30px;
 `;
 
 export default MapDetail;
