@@ -2,12 +2,12 @@ import React, {useState} from 'react';
 import styled from 'styled-components';
 import {FiSearch} from 'react-icons/fi';
 import DropDown from './DropDown';
-import SearchingPage from './SearchinPage';
+import SearchingPage from './SearchingPage';
 
 const Search = ({state, setState, searchAddress, setSearchAddress}) => {
   const [isSearch, setIsSearch] = useState(false);
 
-  const SearchMap = e => {
+  const searchMap = e => {
     e.preventDefault();
     const ps = new window.kakao.maps.services.Places();
     const placesSearchCB = function (data, status, pagination) {
@@ -21,34 +21,27 @@ const Search = ({state, setState, searchAddress, setSearchAddress}) => {
     };
     ps.keywordSearch(`${searchAddress}`, placesSearchCB);
     setIsSearch(true);
-    e.target.reset();
-    setSearchAddress('');
   };
 
   const handleSearchAddress = e => {
     setSearchAddress(e.target.value);
   };
+  console.log('searchAddress', searchAddress);
 
   return (
     <>
       <div>
-        <ScSearchForm
-          onSubmit={e => {
-            SearchMap(e);
-          }}
-        >
+        <ScSearchForm onSubmit={searchMap}>
           <ScInput
             value={searchAddress}
             type="text"
             placeholder="검색할 산을 입력하세요"
-            onChange={e => {
-              handleSearchAddress(e);
-            }}
+            onChange={handleSearchAddress}
           />
           <ScSearchIcon />
         </ScSearchForm>
       </div>
-      {isSearch ? <SearchingPage /> : <DropDown />}
+      {isSearch ? <SearchingPage searchAddress={searchAddress} setSearchAddress={setSearchAddress} /> : <DropDown />}
     </>
   );
 };

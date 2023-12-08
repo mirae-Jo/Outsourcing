@@ -1,4 +1,4 @@
-import React, {useEffect, useState} from 'react';
+import React, {useEffect, useState, useRef} from 'react';
 import styled from 'styled-components';
 import {PiMountainsFill} from 'react-icons/pi';
 import axios from 'axios';
@@ -8,24 +8,14 @@ import {useQuery} from '@tanstack/react-query';
 const RecommendList = () => {
   const [mountain, setMountain] = useState();
 
-  const mountainData = async () => {
-    const {data} = await axios.get(`${process.env.REACT_APP_MOUNTAIN_API}`);
-    // console.log(data);
-    const randomNumber = Math.floor(Math.random() * 100);
-    return data[randomNumber];
-  };
-  useEffect(() => {
-    (async () => {
-      const randomMountain = await mountainData();
-      setMountain(randomMountain);
-    })();
-  }, []);
   const {isLoading, isError, data} = useQuery({
     queryKey: ['mountains'],
     queryFn: getMountains,
   });
-
-  console.log(data);
+  const randomNumber = useRef(0);
+  useEffect(() => {
+    randomNumber.current = Math.floor(Math.random() * 100);
+  }, []);
 
   if (isLoading) {
     return <p>로딩중입니다...</p>;
@@ -37,6 +27,7 @@ const RecommendList = () => {
   if (!data || data.length === 0) {
     return <p>산 정보가 없습니다.</p>;
   }
+  const randomMountain = data[randomNumber.current];
 
   getMountains();
 
@@ -49,35 +40,35 @@ const RecommendList = () => {
       <ScMountainListWarapper>
         <ScMountainCard>
           <div>
-            <h3>{mountain?.name}</h3>
-            <p>난이도:{mountain?.difficulty}</p>
-            <p>소요시간:{mountain?.time}</p>
+            <h3>{randomMountain.name}</h3>
+            <p>난이도:{randomMountain.difficulty}</p>
+            <p>소요시간:{randomMountain.time}</p>
           </div>
-          <ScTag>{mountain?.filterlocation}</ScTag>
+          <ScTag>{randomMountain.filterlocation}</ScTag>
         </ScMountainCard>
         <ScMountainCard>
           <div>
-            <h3>{mountain?.name}</h3>
-            <p>난이도:{mountain?.difficulty}</p>
-            <p>소요시간:{mountain?.time}</p>
+            <h3>{randomMountain.name}</h3>
+            <p>난이도:{randomMountain.difficulty}</p>
+            <p>소요시간:{randomMountain.time}</p>
           </div>
-          <ScTag>{mountain?.filterlocation}</ScTag>
+          <ScTag>{randomMountain.filterlocation}</ScTag>
         </ScMountainCard>
         <ScMountainCard>
           <div>
-            <h3>{mountain?.name}</h3>
-            <p>난이도:{mountain?.difficulty}</p>
-            <p>소요시간:{mountain?.time}</p>
+            <h3>{randomMountain.name}</h3>
+            <p>난이도:{randomMountain.difficulty}</p>
+            <p>소요시간:{randomMountain.time}</p>
           </div>
-          <ScTag>{mountain?.filterlocation}</ScTag>
+          <ScTag>{randomMountain.filterlocation}</ScTag>
         </ScMountainCard>
         <ScMountainCard>
           <div>
-            <h3>{mountain?.name}</h3>
-            <p>난이도:{mountain?.difficulty}</p>
-            <p>소요시간:{mountain?.time}</p>
+            <h3>{randomMountain.name}</h3>
+            <p>난이도:{randomMountain.difficulty}</p>
+            <p>소요시간:{randomMountain.time}</p>
           </div>
-          <ScTag>{mountain?.filterlocation}</ScTag>
+          <ScTag>{randomMountain.filterlocation}</ScTag>
         </ScMountainCard>
       </ScMountainListWarapper>
     </ScRecommendList>
