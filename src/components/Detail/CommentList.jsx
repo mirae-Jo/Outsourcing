@@ -10,11 +10,17 @@ export default function CommentList() {
         <ScCommentListLayout>
             <h1>Comment</h1>
             {comments?.map(c => {
-                const { comment, date } = c;
+                const { displayName, comment, photoURL, createdAt } = c;
                 return (
                     <li>
-                        <p>{comment}</p>
-                        <time>{new Date(date).toLocaleString()}</time>
+                        <div>
+                            <p>{comment}</p>
+                            <ScUserInfo>
+                                <p>{displayName}</p>
+                                <img src={photoURL} alt='avatar' />
+                            </ScUserInfo>
+                        </div>
+                        <time>{new Date(createdAt).toLocaleString()}</time>
                     </li>
                 );
             }
@@ -46,5 +52,19 @@ const ScCommentListLayout = styled.ul`
             transform: scale(1.1);
         }
     }
+    div{
+        display:flex;
+        justify-content:space-between;
+    }
+    img{
+        width:2rem;
+        height: 2rem;
+        border-radius: 50%;
+    }
+`
+const ScUserInfo = styled.div`
+    display:flex;
+    align-items: center;
+    gap:0.5rem;
 `
 

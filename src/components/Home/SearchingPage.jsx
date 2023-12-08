@@ -3,12 +3,14 @@ import axios from 'axios';
 import React from 'react';
 import styled from 'styled-components';
 import {getMountains} from 'api/mountains';
+import {useNavigate} from 'react-router-dom';
 
 function SearchingPage({searchAddress, setSearchAddress}) {
   const {isLoading, isError, data} = useQuery({
     queryKey: ['mountains'],
     queryFn: getMountains,
   });
+  const navigate = useNavigate();
 
   if (isLoading) {
     return <p>로딩중입니다...</p>;
@@ -34,7 +36,7 @@ function SearchingPage({searchAddress, setSearchAddress}) {
       ) : (
         filteredData.map(mountain => {
           return (
-            <ScMountainCard>
+            <ScMountainCard onClick={() => navigate(`/detail/${mountain.name}`)}>
               <div>
                 <h3>{mountain.name}</h3>
                 <p>난이도:{mountain.difficulty}</p>
