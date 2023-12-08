@@ -15,7 +15,6 @@ const RecommendList = () => {
     const randomNumber = Math.floor(Math.random() * 100);
     return data[randomNumber];
   };
-
   useEffect(() => {
     (async () => {
       const randomMountain = await mountainData();
@@ -41,7 +40,6 @@ const RecommendList = () => {
   }
 
   getMountains();
-
 
   return (
     <ScRecommendList>

@@ -3,9 +3,14 @@ import { useQuery } from '@tanstack/react-query';
 import { getMountains } from 'api/mountains';
 import { useParams } from 'react-router';
 import { styled } from 'styled-components';
+import AddComment from 'components/Detail/AddComment';
+import CommentList from 'components/Detail/CommentList';
+import { useSelector } from 'react-redux';
 
 function DetailPage() {
   const params = useParams();
+  const auth = useSelector((state) => state.user_auth);
+  console.log(auth);
   const { isLoading, error, data: mountains } = useQuery({
     queryKey: ['mountain'],
     queryFn: getMountains,
@@ -36,6 +41,8 @@ function DetailPage() {
           </ScMountainInfo>
         );
       })}
+      <AddComment />
+      <CommentList />
     </>
   );
 }
@@ -57,21 +64,22 @@ margin-bottom: 1rem;
 
 
 h1{
-   position:fixed;
-   left:10%;
-   top:35%;
+   position:absolute;
+   left:50%;
+   top:10%;
    font-size:2rem;
    color:white;
     padding:0.5rem;
   }
 
   p{
-    position:fixed;
+    position:absolute;
     left:10%;
-    top:40%;
+    top:30%;
+    font-size:1.2rem;
     color:white;
-    font-size:1.5rem;
-    padding:1rem 1.5rem;
+    padding:1rem 5rem;
+
   }
 `;
 

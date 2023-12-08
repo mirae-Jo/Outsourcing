@@ -14,7 +14,7 @@ function Header() {
 export default Header;
 
 const ScHeader = styled.div`
-  height: 150px;
+  height: 100px;
   background-color: #ffe194;
   display: flex;
   align-items: center;

@@ -1,7 +1,7 @@
-import React, {useState, useEffect, useRef} from 'react';
-import {useNavigate} from 'react-router-dom';
+import React, { useState, useEffect, useRef } from 'react';
+import { useNavigate } from 'react-router-dom';
 import styled from 'styled-components';
-import {app} from 'shared/firebase';
+import { app } from 'shared/firebase';
 import {
   createUserWithEmailAndPassword,
   signInWithEmailAndPassword,
@@ -9,10 +9,17 @@ import {
   onAuthStateChanged,
   GoogleAuthProvider,
   signInWithPopup,
+  signInWithRedirect,
 } from 'firebase/auth';
-import {auth} from 'shared/firebase';
+import { auth } from 'shared/firebase';
 import SignUpModal from './SignUpModal';
 import googleicon from '../../assets/imgs/googleSignUpBtn.png';
+import { doc, getDoc, setDoc } from '@firebase/firestore';
+import db from 'shared/firebase';
+import profilenormal from '../../assets/imgs/profilenormal.jpg';
+import { useDispatch } from 'react-redux';
+import { login, logout } from 'shared/redux/modules/authSlice';
+
 const LoginModal = () => {
   const [emailValidationMessage, setEmailValidationMessage] = useState('');
   const [passwordValidationMessage, setPasswordValidationMessage] = useState('');
@@ -22,10 +29,12 @@ const LoginModal = () => {
   const [password, setPassword] = useState('');
   const [user, setUser] = useState(null);
   const emailRef = useRef(null);
+  const dispatch = useDispatch();
 
   // 추가: 로그인 상태 변경 감지 및 유저 정보 업데이트
   useEffect(() => {
     const unsubscribe = onAuthStateChanged(auth, user => {
+      console.log(user);
       setUser(user);
     });
 
@@ -47,7 +56,7 @@ const LoginModal = () => {
   //로그인
   const inputChange = event => {
     const {
-      target: {name, value},
+      target: { name, value },
     } = event;
     if (name === 'email') {
       setEmail(value);
@@ -77,12 +86,14 @@ const LoginModal = () => {
       console.error(error);
       if (error.code === 'auth/invalid-email') {
         setEmailValidationMessage('이메일이 잘못되었습니다.');
+        setEmail('');
       } else if (error.code === 'auth/user-not-found') {
         setEmailValidationMessage('존재하지 않는 이메일입니다.');
       }
 
       if (error.code === 'auth/invalid-credential') {
         setPasswordValidationMessage('비밀번호가 잘못되었습니다.');
+        setPassword('');
       }
     }
   };
@@ -96,26 +107,54 @@ const LoginModal = () => {
     // 사용자가 '예'를 선택한 경우에만 로그아웃
     if (isConfirmed) {
       await signOut(auth);
-
+      dispatch(logout());
       // 로그아웃 후 페이지 새로고침
       window.location.reload();
     }
   };
+  // Firestore에 사용자 정보 저장 함수
+  const saveUserDataToFirestore = async user => {
+    const userDocRef = doc(db, 'users', user.uid);
 
+    // 사용자 정보가 이미 있는지 확인
+    const userDocSnapshot = await getDoc(userDocRef);
+
+    if (!userDocSnapshot.exists()) {
+      // 사용자 정보가 없다면 Firestore에 저장
+      await setDoc(userDocRef, {
+        email: user.email,
+        nickName: user.displayName,
+        avatar: profilenormal,
+        // 기타 필요한 사용자 정보 추가
+      });
+
+      console.log('사용자 정보 Firestore에 저장 완료');
+    } else {
+      console.log('이미 사용자 정보가 Firestore에 존재합니다.');
+    }
+  };
   //구글 로그인
   const googleLogin = async () => {
     try {
       // Firebase에서 제공하는 GoogleAuthProvider 사용
       const provider = new GoogleAuthProvider();
+      provider.setCustomParameters({
+        prompt: 'select_account',
+      });
 
       // 팝업을 통해 Google 로그인 창 열기
       const result = await signInWithPopup(auth, provider);
+      await saveUserDataToFirestore(result.user);
 
       // 성공 시, 로그인 모달 닫기
       setIsLoginModal(false);
 
       // 추가: 로그인 후 유저 정보 갱신
       setUser(result.user);
+      const { uid, displayName, photoURL } = result.user;
+      dispatch(login({ uid, displayName, photoURL }));
+
+      // 추가: Firestore에 사용자 정보 저장
     } catch (error) {
       console.error(error);
     }
@@ -139,12 +178,12 @@ const LoginModal = () => {
             <ScSection>
               <p>이메일 </p>
               <input type="email" value={email} name="email" onChange={inputChange} />
-              {emailValidationMessage && <p style={{color: 'red'}}>{emailValidationMessage}</p>}
+              {emailValidationMessage && <p style={{ color: 'red' }}>{emailValidationMessage}</p>}
             </ScSection>
             <ScSection>
               <p>패스워드 </p>
               <input type="password" value={password} name="password" onChange={inputChange} />
-              {passwordValidationMessage && <p style={{color: 'red'}}>{passwordValidationMessage}</p>}
+              {passwordValidationMessage && <p style={{ color: 'red' }}>{passwordValidationMessage}</p>}
             </ScSection>
 
             <ScLoginButton onClick={signIn}>로그인</ScLoginButton>
@@ -199,6 +238,9 @@ const ScModalCloseBT = styled.button`
   height: 30px;
   font-weight: bold;
   border-radius: 3px;
+  &:hover {
+    background-color: #ddd;
+  }
 `;
 const ScSignUpButton = styled.button`
   height: 40px;
@@ -209,6 +251,9 @@ const ScSignUpButton = styled.button`
   border: 1px solid black;
   border-radius: 5px;
   background-color: #ffffff;
+  &:hover {
+    background-color: #ddd;
+  }
 `;
 
 const ScSocialLoginButton = styled.button`
@@ -228,6 +273,9 @@ const ScSocialLoginButton = styled.button`
     height: 40px;
     width: 200px;
   }
+  &:hover {
+    background-color: #ddd;
+  }
 `;
 
 const ScLoginButton = styled.button`
@@ -239,6 +287,9 @@ const ScLoginButton = styled.button`
   border: 1px solid black;
   border-radius: 5px;
   background-color: #ffffff;
+  &:hover {
+    background-color: #ddd;
+  }
 `;
 
 const ScSection = styled.section`
@@ -264,6 +315,9 @@ const ScModalClickBt = styled.button`
   font-weight: bold;
   width: 100px;
   height: 30px;
+  &:hover {
+    background-color: #ddd;
+  }
   &:hover {
     background-color: #ddd;
   }

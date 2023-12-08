@@ -2,17 +2,21 @@ import React, {useState} from 'react';
 import {useNavigate} from 'react-router-dom';
 import styled from 'styled-components';
 import {app} from 'shared/firebase';
-import {createUserWithEmailAndPassword} from 'firebase/auth';
-import {auth} from 'shared/firebase';
+import {createUserWithEmailAndPassword, getAuth, signInWithEmailAndPassword} from 'firebase/auth';
+import db from 'shared/firebase';
+import {doc, setDoc} from '@firebase/firestore';
+import profilenormal from '../../assets/imgs/profilenormal.jpg';
 
 function SignUpModal({isSignUpModal, setIsSignUpModal}) {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [nickname, setNickname] = useState('');
+  const [emailError, setEmailError] = useState('');
+  const [passwordError, setPasswordError] = useState('');
 
   const navigate = useNavigate();
+  const auth = getAuth(app);
 
-  //회원가입
   const inputChange = event => {
     const {
       target: {name, value},
@@ -28,18 +32,50 @@ function SignUpModal({isSignUpModal, setIsSignUpModal}) {
     }
   };
 
-  //회원가입 버튼 기능
   const changeSignUp = event => {
     event.preventDefault();
-    createUserWithEmailAndPassword(auth, email, password, nickname)
-      .then(userCredential => {
-        // 회원가입 성공시
-        console.log(userCredential);
-      })
-      .catch(error => {
-        // 회원가입 실패시
-        console.error(error);
+
+    // 비밀번호 유효성 검사
+    if (!isPasswordValid(password)) {
+      setPasswordError('알파벳 대문자, 소문자, 숫자를 모두 포함하시오.');
+      return;
+    }
+
+    // 중복된 이메일 체크
+    checkDuplicateEmail(email);
+  };
+
+  const checkDuplicateEmail = async email => {
+    try {
+      const userCredential = await createUserWithEmailAndPassword(auth, email, password);
+      // 사용자 정보를 Firestore에 저장
+      await setDoc(doc(db, 'users', userCredential.user.uid), {
+        email: email,
+        nickname: nickname,
+        avartar: profilenormal,
       });
+      // 회원가입 성공시
+      // 여기에서 추가적인 로직 수행 가능
+      setIsSignUpModal(false);
+      setPassword('');
+      setEmail('');
+      setNickname('');
+      console.log('회원가입 성공');
+    } catch (error) {
+      // 중복된 이메일일 경우 에러 발생
+      console.error(error);
+      setEmailError('중복된 이메일입니다.');
+    }
+  };
+
+  const isPasswordValid = password => {
+    // 비밀번호에 대문자, 소문자, 숫자가 모두 포함되어 있는지 여부를 확인
+    const hasUpperCase = /[A-Z]/.test(password);
+    const hasLowerCase = /[a-z]/.test(password);
+    const hasNumber = /\d/.test(password);
+
+    // 조건을 모두 만족하면 true를 반환, 그렇지 않으면 false를 반환
+    return hasUpperCase && hasLowerCase && hasNumber;
   };
 
   const onCloseModal = () => {
@@ -56,11 +92,13 @@ function SignUpModal({isSignUpModal, setIsSignUpModal}) {
             <ScSection>
               <p>이메일 </p>
               <input type="email" value={email} name="email" onChange={inputChange} />
+              {emailError && <p style={{color: 'red'}}>{emailError}</p>}
             </ScSection>
 
             <ScSection>
               <p>패스워드 </p>
               <input type="password" value={password} name="password" onChange={inputChange} />
+              {passwordError && <p style={{color: 'red'}}>{passwordError}</p>}
             </ScSection>
             <ScSection>
               <p>닉네임 </p>
@@ -95,9 +133,9 @@ const ScLoginMoDal = styled.div`
 
   overflow: hidden;
   display: flex;
-  flex-direction: column; /* Stack children vertically */
-  align-items: center; /* Center children horizontally */
-  justify-content: center; /* Center children vertically */
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
   h2 {
     font-size: 30px;
     color: black;
@@ -112,6 +150,9 @@ const ScModalCloseBT = styled.button`
   height: 30px;
   font-weight: bold;
   border-radius: 3px;
+  &:hover {
+    background-color: #ddd;
+  }
 `;
 
 const ScSignUpButton = styled.button`
@@ -124,6 +165,9 @@ const ScSignUpButton = styled.button`
   border-radius: 5px;
   background-color: #ffffff;
   margin-top: 10px;
+  &:hover {
+    background-color: #ddd;
+  }
 `;
 
 const ScSection = styled.section`
@@ -131,12 +175,14 @@ const ScSection = styled.section`
   color: black;
   p {
     margin-bottom: 5px;
+    margin-top: 5px;
   }
 
   input {
-    width: 100%;
+    width: 300px;
     padding: 8px;
     box-sizing: border-box;
   }
 `;
+
 export default SignUpModal;

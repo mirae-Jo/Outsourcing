@@ -49,6 +49,9 @@ export const GlobalStyles = createGlobalStyle`
     ul,li{
         list-style: none;
     }
+    input{
+        outline:none;
+    }
 
     
 `;
