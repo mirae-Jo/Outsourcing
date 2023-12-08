@@ -17,6 +17,8 @@ import googleicon from '../../assets/imgs/googleSignUpBtn.png';
 import {doc, getDoc, setDoc} from '@firebase/firestore';
 import db from 'shared/firebase';
 import profilenormal from '../../assets/imgs/profilenormal.jpg';
+import {useDispatch} from 'react-redux';
+import {login, logout} from 'shared/redux/modules/authSlice';
 
 const LoginModal = () => {
   const [emailValidationMessage, setEmailValidationMessage] = useState('');
@@ -28,9 +30,12 @@ const LoginModal = () => {
   const [user, setUser] = useState(null);
   const emailRef = useRef(null);
   const navigate = useNavigate();
+  const dispatch = useDispatch();
+
   // 추가: 로그인 상태 변경 감지 및 유저 정보 업데이트
   useEffect(() => {
     const unsubscribe = onAuthStateChanged(auth, user => {
+      console.log(user);
       setUser(user);
     });
 
@@ -108,8 +113,8 @@ const LoginModal = () => {
       setTimeout(() => {
         navigate('/');
       }, 500);
-
-      // // 로그아웃 후 페이지 새로고침
+      dispatch(logout());
+      // 로그아웃 후 페이지 새로고침
       // window.location.reload();
     }
   };
@@ -153,6 +158,10 @@ const LoginModal = () => {
 
       // 추가: 로그인 후 유저 정보 갱신
       setUser(result.user);
+      const {uid, displayName, photoURL} = result.user;
+      dispatch(login({uid, displayName, photoURL}));
+
+      // 추가: Firestore에 사용자 정보 저장
     } catch (error) {
       console.error(error);
     }

@@ -1,4 +1,4 @@
-import {createGlobalStyle} from 'styled-components';
+import { createGlobalStyle } from 'styled-components';
 import reset from 'styled-reset';
 import kbodiabold from '../assets/fonts/KBO-Dia-Gothic_bold.woff';
 import kbodia from '../assets/fonts/KBO-Dia-Gothic_medium.woff';
@@ -11,10 +11,15 @@ export const GlobalStyles = createGlobalStyle`
     :root{
         --color-background:#E8F6EF;
         --color-main:#08C466;
+        --color-yellow:#ffe194;
     }
    
     *{
         box-sizing:border-box;
+    }
+    body{
+        width:100vw;
+        height:100vh;
     }
     button{
         background-color: none;
@@ -40,9 +45,13 @@ export const GlobalStyles = createGlobalStyle`
         font-family: 'KBO-Dia';
         letter-spacing: -0.03cap;
         margin: 0;
-}
-    
-  
+    }
+    ul,li{
+        list-style: none;
+    }
+    input{
+        outline:none;
+    }
 
     
 `;

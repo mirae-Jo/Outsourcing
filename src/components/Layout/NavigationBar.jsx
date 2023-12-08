@@ -24,7 +24,6 @@ const NavigationBar = () => {
         const userDocRef = doc(db, 'users', user.uid);
         const userDocSnapshot = await getDoc(userDocRef);
         const photoURL = user.photoURL;
-        console.log(photoURL);
 
         if (userDocSnapshot.exists()) {
           // 사용자 정보가 있으면 avatar URL 가져오기
