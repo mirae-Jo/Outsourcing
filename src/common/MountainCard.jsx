@@ -7,11 +7,22 @@ const MountainCard = ({mountain}) => {
   return (
     <ScMountainCard onClick={() => navigate(`/detail/${mountain.name}`)}>
       <div>
-        <h3>{mountain?.name}</h3>
-        <p>난이도: {mountain?.difficulty}</p>
-        <p>소요시간: {mountain?.time}</p>
+        <ScTagContainer>
+          <h3>{mountain?.name}</h3>
+          <ScTag>{mountain?.filterlocation}</ScTag>
+        </ScTagContainer>
+        <p>
+          <span>난이도: </span>
+          {mountain?.difficulty}
+        </p>
+        <p>
+          <span>소요시간: </span>
+          {mountain?.time}
+        </p>
       </div>
-      <ScTag>{mountain?.filterlocation}</ScTag>
+      <ScFigure>
+        <img src={`${mountain.imgUrl}`} alt={`${mountain?.name} 이미지`} />
+      </ScFigure>
     </ScMountainCard>
   );
 };
@@ -22,11 +33,12 @@ const ScMountainCard = styled.div`
   width: 100%;
   max-width: 450px;
   height: 120px;
-  background-color: lightgray;
+  background-color: #e0dede;
   padding: 20px;
   line-height: 1.5;
   display: flex;
   flex-direction: row;
+  align-items: center;
   justify-content: space-between;
   cursor: pointer;
   & h3 {
@@ -36,6 +48,16 @@ const ScMountainCard = styled.div`
   & p {
     font-size: small;
   }
+  & span {
+    color: #4c4c6d;
+  }
+`;
+
+const ScTagContainer = styled.div`
+  width: 100%;
+  display: flex;
+  flex-direction: row;
+  gap: 2px;
 `;
 
 const ScTag = styled.div`
@@ -43,10 +65,23 @@ const ScTag = styled.div`
   font-size: 13px;
   font-weight: 300;
   text-align: center;
-  width: 85px;
+  width: fit-content;
   height: fit-content;
-  padding: 2px;
+  padding: 1px 4px;
+  margin: 6px;
   color: white;
   background-color: #1b9c85;
   border-radius: 4px;
+`;
+
+const ScFigure = styled.figure`
+  width: 150px;
+  height: 90px;
+  border-radius: 5px;
+  overflow: hidden;
+  & img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+  }
 `;

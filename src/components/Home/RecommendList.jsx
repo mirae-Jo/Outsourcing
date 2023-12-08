@@ -40,39 +40,6 @@ const RecommendList = () => {
         <MountainCard mountain={randomMountain} />
         <MountainCard mountain={randomMountain} />
         <MountainCard mountain={randomMountain} />
-
-        {/* <ScMountainCard onClick={() => navigate(`/detail/${randomMountain.name}`)}>
-          <div>
-            <h3>{randomMountain.name}</h3>
-            <p>난이도:{randomMountain.difficulty}</p>
-            <p>소요시간:{randomMountain.time}</p>
-          </div>
-          <ScTag>{randomMountain.filterlocation}</ScTag>
-        </ScMountainCard> */}
-        {/* <ScMountainCard>
-          <div>
-            <h3>{randomMountain.name}</h3>
-            <p>난이도:{randomMountain.difficulty}</p>
-            <p>소요시간:{randomMountain.time}</p>
-          </div>
-          <ScTag>{randomMountain.filterlocation}</ScTag>
-        </ScMountainCard>
-        <ScMountainCard>
-          <div>
-            <h3>{randomMountain.name}</h3>
-            <p>난이도:{randomMountain.difficulty}</p>
-            <p>소요시간:{randomMountain.time}</p>
-          </div>
-          <ScTag>{randomMountain.filterlocation}</ScTag>
-        </ScMountainCard>
-        <ScMountainCard>
-          <div>
-            <h3>{randomMountain.name}</h3>
-            <p>난이도:{randomMountain.difficulty}</p>
-            <p>소요시간:{randomMountain.time}</p>
-          </div>
-          <ScTag>{randomMountain.filterlocation}</ScTag>
-        </ScMountainCard> */}
       </ScMountainListWarapper>
     </ScRecommendList>
   );

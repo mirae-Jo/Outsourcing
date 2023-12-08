@@ -4,6 +4,7 @@ import {TiArrowSortedDown} from 'react-icons/ti';
 import FilteredMountain from './FilteredMountain';
 
 const DropDown = () => {
+  const [isOpen, setIsOpen] = useState(false);
   const [selectedCategory, setSelectedCategory] = useState(null);
   const [selectedDetailCategory, setSelectedDetailCategory] = useState(null);
   const dropdownRef = useRef(null);
@@ -34,10 +35,9 @@ const DropDown = () => {
   useEffect(() => {
     const handleClickOutside = e => {
       if (dropdownRef.current && !dropdownRef.current.contains(e.target)) {
-        setSelectedCategory(null);
+        setIsOpen(false);
       }
     };
-
     document.addEventListener('mousedown', handleClickOutside);
 
     // 클린업
@@ -49,24 +49,22 @@ const DropDown = () => {
   return (
     <>
       <ScDropDownContainer ref={dropdownRef}>
+        {/* <ScDropDownContainer> */}
         {Object.keys(dropDownMenu).map((category, index) => {
           return (
-            <ScDropDownWrapper
-              key={index}
-              onClick={() => {
-                setSelectedCategory(prevCategory => {
-                  const newCategory = prevCategory === category ? null : category;
-                  console.log(newCategory);
-                  return newCategory;
-                });
-              }}
-            >
+            <ScDropDownWrapper key={index}>
               {/**마우스 다운 이벤트 감지 외부or 내부 */}
-              <ScBtnWrapper>
+              <ScBtnWrapper
+                onClick={() => {
+                  setIsOpen(true);
+                  setSelectedCategory(category);
+                }}
+              >
                 <button>{category}</button>
                 <ScArrowIcon />
               </ScBtnWrapper>
-              {selectedCategory === category && (
+
+              {isOpen && selectedCategory === category && (
                 <ScDropDown>
                   <ul>
                     {dropDownMenu[category].map((detailCategory, index) => {
@@ -74,11 +72,8 @@ const DropDown = () => {
                         <li
                           key={index}
                           onClick={() => {
-                            setSelectedDetailCategory(prevDetailCategory => {
-                              const newDetailCategory = prevDetailCategory === detailCategory ? null : detailCategory;
-                              console.log(newDetailCategory);
-                              return newDetailCategory;
-                            });
+                            setIsOpen(false);
+                            setSelectedDetailCategory(detailCategory);
                           }}
                         >
                           {detailCategory}
@@ -92,7 +87,13 @@ const DropDown = () => {
           );
         })}
       </ScDropDownContainer>
-      <FilteredMountain selectedDetailCategory={selectedDetailCategory} />
+      {selectedDetailCategory && (
+        <FilteredMountain
+          dropDownMenu={dropDownMenu}
+          selectedCategory={selectedCategory}
+          selectedDetailCategory={selectedDetailCategory}
+        />
+      )}
     </>
   );
 };
