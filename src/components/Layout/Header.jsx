@@ -1,11 +1,14 @@
 import React from 'react';
 import styled from 'styled-components';
+import logo from 'assets/imgs/logo.png';
+import logo2 from 'assets/imgs/logo2.webp';
 
 function Header() {
   return (
     <ScHeader>
       <ScTitle>
-        <h1>한사랑 산악회</h1>
+        {/* <img src={logo2} alt="로고이미지" /> */}
+        <img src={logo} alt="로고이미지" />
       </ScTitle>
     </ScHeader>
   );
@@ -25,4 +28,7 @@ const ScHeader = styled.div`
 const ScTitle = styled.div`
   display: block;
   font-size: 30px;
+  & img {
+    width: 200px;
+  }
 `;
