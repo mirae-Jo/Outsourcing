@@ -25,8 +25,10 @@ function HomePage() {
       user => {
         console.log('user', user);
         //유저가 있으면 dispatch를 통해 유저 정보 넣어줌.
-        const { uid, displayName, photoURL } = user;
-        dispatch(login({ uid, displayName, photoURL }))
+        if (user) {
+          const { uid, displayName, photoURL } = user;
+          dispatch(login({ uid, displayName, photoURL }))
+        }
         console.log('db', db);
         console.log('auth', auth);
       },
