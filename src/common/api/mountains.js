@@ -5,4 +5,4 @@ const getMountains = async () => {
   return response.data;
 };
 
-export {getMountains};
+export { getMountains };

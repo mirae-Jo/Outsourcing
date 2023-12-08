@@ -1,9 +1,11 @@
 import React from 'react';
+import {useNavigate} from 'react-router-dom';
 import styled from 'styled-components';
 
 const MountainCard = ({mountain}) => {
+  const navigate = useNavigate();
   return (
-    <ScMountainCard>
+    <ScMountainCard onClick={() => navigate(`/detail/${mountain.name}`)}>
       <div>
         <h3>{mountain?.name}</h3>
         <p>난이도: {mountain?.difficulty}</p>

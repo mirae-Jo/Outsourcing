@@ -22,19 +22,23 @@ const FilteredMountain = ({selectedDetailCategory}) => {
 
   console.log(data);
 
-  const mountainMatchCategory = (mountain, category) => {
-    switch (category) {
-      case 'filterlocation':
-        return mountain.filterlocation === category;
-      case 'difficulty':
-        return mountain.difficulty === category;
-      case 'time':
-        return mountain.time === category;
+  const filteredMountain = data.filter(mountain => {
+    return mountain.filterlocation === selectedDetailCategory ? mountain : <p>조건에 맞는 산이 없습니다.</p>;
+  });
 
-      default:
-        return false;
-    }
-  };
+  // const mountainMatchCategory = (mountain, category) => {
+  //   switch (category) {
+  //     case 'filterlocation':
+  //       return mountain.filterlocation === mountain[category];
+  //     case 'difficulty':
+  //       return mountain.difficulty === mountain[category];
+  //     case 'time':
+  //       return mountain.time === mountain[category];
+
+  //     default:
+  //       return false;
+  //   }
+  // };
 
   //   const filteredMountain = data.filter(mountain => {
 
@@ -43,17 +47,17 @@ const FilteredMountain = ({selectedDetailCategory}) => {
   // : <p>없습니다.</p>
   //   });
 
-  const filteredMountains = data.filter(mountain => {
-    return mountainMatchCategory(mountain, selectedDetailCategory);
-  });
+  // const filteredMountains = data.filter(mountain => {
+  //   return mountainMatchCategory(mountain, selectedDetailCategory);
+  // });
 
-  console.log(filteredMountains);
+  console.log(filteredMountain);
 
   return (
     <div>
-      {filteredMountains.map((mountain, index) => {
+      {/* {filteredMountain.map((mountain, index) => {
         return <MountainCard key={index} mountain={mountain} />;
-      })}
+      })} */}
     </div>
   );
 };

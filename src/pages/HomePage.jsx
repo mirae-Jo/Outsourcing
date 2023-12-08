@@ -6,8 +6,11 @@ import {onAuthStateChanged} from '@firebase/auth';
 import {auth} from 'shared/firebase';
 import RecommendList from 'components/Home/RecommendList';
 import db from 'shared/firebase';
+import {useDispatch} from 'react-redux';
+import {login} from 'shared/redux/modules/authSlice';
 function HomePage() {
   const [isLoginModal, setIsLoginModal] = useState(true);
+  const dispatch = useDispatch();
 
   const [state, setState] = useState({
     // 지도의 초기 위치
@@ -21,7 +24,13 @@ function HomePage() {
       auth,
       user => {
         console.log('user', user);
+        //유저가 있으면 dispatch를 통해 유저 정보 넣어줌.
+        if (user) {
+          const {uid, displayName, photoURL} = user;
+          dispatch(login({uid, displayName, photoURL}));
+        }
         console.log('db', db);
+        console.log('auth', auth);
       },
       [],
     );

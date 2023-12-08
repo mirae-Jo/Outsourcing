@@ -1,46 +1,33 @@
-import React, {useEffect, useState} from 'react';
+import React, {useEffect, useRef} from 'react';
 import styled from 'styled-components';
 import {PiMountainsFill} from 'react-icons/pi';
-import axios from 'axios';
+import {useQuery} from '@tanstack/react-query';
 import MountainCard from 'common/MountainCard';
+import {getMountains} from 'common/api/mountains';
 
 const RecommendList = () => {
-  const [mountain, setMountain] = useState();
-
-  const mountainData = async () => {
-    const {data} = await axios.get(`${process.env.REACT_APP_MOUNTAIN_API}`);
-    // console.log(data);
-    const randomNumber = Math.floor(Math.random() * 100);
-    return data[randomNumber];
-  };
-
+  // const [mountain, setMountain] = useState();
+  const {isLoading, isError, data} = useQuery({
+    queryKey: ['mountains'],
+    queryFn: getMountains,
+  });
+  const randomNumber = useRef(0);
   useEffect(() => {
-    (async () => {
-      const randomMountain = await mountainData();
-      setMountain(randomMountain);
-    })();
+    randomNumber.current = Math.floor(Math.random() * 100);
   }, []);
 
-  // // 데이터 가져오기 및 오류 핸들링
-  // const {isLoading, isError, data} = useQuery({
-  //   queryKey: ['mountains'],
-  //   queryFn: getMountains,
-  // });
+  if (isLoading) {
+    return <p>로딩중입니다...</p>;
+  }
+  if (isError) {
+    return <p>오류가 발생했습니다...</p>;
+  }
+  if (!data || data.length === 0) {
+    return <p>산 정보가 없습니다.</p>;
+  }
+  const randomMountain = data[randomNumber.current];
 
-  // console.log(data);
-
-  // if (isLoading) {
-  //   return <p>로딩중입니다...</p>;
-  // }
-  // if (isError) {
-  //   return <p>오류가 발생했습니다...</p>;
-  // }
-
-  // if (!data || data.length === 0) {
-  //   return <p>산 정보가 없습니다.</p>;
-  // }
-
-  // getMountains();
+  getMountains();
 
   return (
     <ScRecommendList>
@@ -49,10 +36,43 @@ const RecommendList = () => {
         <ScMountainIcon />
       </ScTitle>
       <ScMountainListWarapper>
-        <MountainCard mountain={mountain} />
-        <MountainCard mountain={mountain} />
-        <MountainCard mountain={mountain} />
-        <MountainCard mountain={mountain} />
+        <MountainCard mountain={randomMountain} />
+        <MountainCard mountain={randomMountain} />
+        <MountainCard mountain={randomMountain} />
+        <MountainCard mountain={randomMountain} />
+
+        {/* <ScMountainCard onClick={() => navigate(`/detail/${randomMountain.name}`)}>
+          <div>
+            <h3>{randomMountain.name}</h3>
+            <p>난이도:{randomMountain.difficulty}</p>
+            <p>소요시간:{randomMountain.time}</p>
+          </div>
+          <ScTag>{randomMountain.filterlocation}</ScTag>
+        </ScMountainCard> */}
+        {/* <ScMountainCard>
+          <div>
+            <h3>{randomMountain.name}</h3>
+            <p>난이도:{randomMountain.difficulty}</p>
+            <p>소요시간:{randomMountain.time}</p>
+          </div>
+          <ScTag>{randomMountain.filterlocation}</ScTag>
+        </ScMountainCard>
+        <ScMountainCard>
+          <div>
+            <h3>{randomMountain.name}</h3>
+            <p>난이도:{randomMountain.difficulty}</p>
+            <p>소요시간:{randomMountain.time}</p>
+          </div>
+          <ScTag>{randomMountain.filterlocation}</ScTag>
+        </ScMountainCard>
+        <ScMountainCard>
+          <div>
+            <h3>{randomMountain.name}</h3>
+            <p>난이도:{randomMountain.difficulty}</p>
+            <p>소요시간:{randomMountain.time}</p>
+          </div>
+          <ScTag>{randomMountain.filterlocation}</ScTag>
+        </ScMountainCard> */}
       </ScMountainListWarapper>
     </ScRecommendList>
   );

@@ -17,6 +17,8 @@ import googleicon from '../../assets/imgs/googleSignUpBtn.png';
 import {doc, getDoc, setDoc} from '@firebase/firestore';
 import db from 'shared/firebase';
 import profilenormal from '../../assets/imgs/profilenormal.jpg';
+import {useDispatch} from 'react-redux';
+import {login, logout} from 'shared/redux/modules/authSlice';
 
 const LoginModal = () => {
   const [emailValidationMessage, setEmailValidationMessage] = useState('');
@@ -27,10 +29,13 @@ const LoginModal = () => {
   const [password, setPassword] = useState('');
   const [user, setUser] = useState(null);
   const emailRef = useRef(null);
+  const navigate = useNavigate();
+  const dispatch = useDispatch();
 
   // 추가: 로그인 상태 변경 감지 및 유저 정보 업데이트
   useEffect(() => {
     const unsubscribe = onAuthStateChanged(auth, user => {
+      console.log(user);
       setUser(user);
     });
 
@@ -103,9 +108,14 @@ const LoginModal = () => {
     // 사용자가 '예'를 선택한 경우에만 로그아웃
     if (isConfirmed) {
       await signOut(auth);
+      window.alert('로그아웃 되었습니다.');
 
+      setTimeout(() => {
+        navigate('/');
+      }, 500);
+      dispatch(logout());
       // 로그아웃 후 페이지 새로고침
-      window.location.reload();
+      // window.location.reload();
     }
   };
   // Firestore에 사용자 정보 저장 함수
@@ -138,8 +148,9 @@ const LoginModal = () => {
         prompt: 'select_account',
       });
 
-      // 팝업을 통해 Google 로그인 창 열기
       const result = await signInWithPopup(auth, provider);
+
+      // 추가: 사용자 정보 Firestore에 저장
       await saveUserDataToFirestore(result.user);
 
       // 성공 시, 로그인 모달 닫기
@@ -147,6 +158,8 @@ const LoginModal = () => {
 
       // 추가: 로그인 후 유저 정보 갱신
       setUser(result.user);
+      const {uid, displayName, photoURL} = result.user;
+      dispatch(login({uid, displayName, photoURL}));
 
       // 추가: Firestore에 사용자 정보 저장
     } catch (error) {
