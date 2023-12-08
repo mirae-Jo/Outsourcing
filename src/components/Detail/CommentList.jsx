@@ -1,16 +1,20 @@
 import React from 'react';
 import { useSelector } from 'react-redux';
+import { useParams } from 'react-router-dom';
 import styled from 'styled-components';
 
 
 export default function CommentList() {
     const { comments } = useSelector((state) => state.comments);
+    const { user } = useSelector((state) => state.user_auth);
     console.log(comments);
+    const { mountainName } = useParams();
+    const filterComments = comments.filter(comment => comment.mountainName === mountainName)
     return (
         <ScCommentListLayout>
             <h1>Comment</h1>
-            {comments?.map(c => {
-                const { displayName, comment, photoURL, createdAt } = c;
+            {filterComments?.map(c => {
+                const { uid, displayName, comment, photoURL, createdAt } = c;
                 return (
                     <li>
                         <div>
@@ -21,6 +25,8 @@ export default function CommentList() {
                             </ScUserInfo>
                         </div>
                         <time>{new Date(createdAt).toLocaleString()}</time>
+                        {user.uid === uid && <button>수정하기</button>}
+                        {user.uid === uid && <button>삭제하기</button>}
                     </li>
                 );
             }
