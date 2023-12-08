@@ -6,7 +6,9 @@ import AddComment from 'components/Detail/AddComment';
 import CommentList from 'components/Detail/CommentList';
 import {useSelector} from 'react-redux';
 import {getMountains} from 'common/api/mountains';
+
 import MapDetail from 'components/Detail/MapDetail';
+
 
 function DetailPage() {
   const params = useParams();
@@ -30,6 +32,7 @@ function DetailPage() {
     <>
       {filterMountain.map(mountain => {
         const {name, imgUrl, summary, location, height, time, difficulty, xCoordinate, yCoordinate} = mountain;
+
         return (
           <>
             <ScMountainInfo key={name}>

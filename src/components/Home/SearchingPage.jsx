@@ -4,7 +4,8 @@ import styled from 'styled-components';
 import {useNavigate} from 'react-router-dom';
 import {getMountains} from 'common/api/mountains';
 
-function SearchingPage({searchAddress}) {
+
+function SearchingPage({searchAddress, setSearchAddress}) {
   const {isLoading, isError, data} = useQuery({
     queryKey: ['mountains'],
     queryFn: getMountains,

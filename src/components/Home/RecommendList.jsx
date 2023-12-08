@@ -40,6 +40,7 @@ const RecommendList = () => {
         <MountainCard mountain={randomMountain} />
         <MountainCard mountain={randomMountain} />
         <MountainCard mountain={randomMountain} />
+
       </ScMountainListWarapper>
     </ScRecommendList>
   );
