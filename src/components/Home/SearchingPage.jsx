@@ -1,14 +1,15 @@
 import {useQuery} from '@tanstack/react-query';
 import React from 'react';
 import styled from 'styled-components';
-import {getMountains} from 'api/mountains';
 import {useNavigate} from 'react-router-dom';
+import {getMountains} from 'common/api/mountains';
 
-function SearchingPage({searchAddress, setSearchAddress}) {
+function SearchingPage({searchAddress}) {
   const {isLoading, isError, data} = useQuery({
     queryKey: ['mountains'],
     queryFn: getMountains,
   });
+
   const navigate = useNavigate();
 
   if (isLoading) {
@@ -35,7 +36,7 @@ function SearchingPage({searchAddress, setSearchAddress}) {
       ) : (
         filteredData.map(mountain => {
           return (
-            <ScMountainCard onClick={() => navigate(`/detail/${mountain.name}`)}>
+            <ScMountainCard onClick={() => navigate(`/detail/${mountain.name}`)} key={mountain.xCoordinate}>
               <div>
                 <h3>{mountain.name}</h3>
                 <p>난이도:{mountain.difficulty}</p>

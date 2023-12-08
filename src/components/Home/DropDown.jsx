@@ -1,9 +1,11 @@
 import React, {useEffect, useRef, useState} from 'react';
 import styled from 'styled-components';
 import {TiArrowSortedDown} from 'react-icons/ti';
+import FilteredMountain from './FilteredMountain';
 
 const DropDown = () => {
-  const [selectedMenu, setSelectedMenu] = useState(null);
+  const [selectedCategory, setSelectedCategory] = useState(null);
+  const [selectedDetailCategory, setSelectedDetailCategory] = useState(null);
   const dropdownRef = useRef(null);
 
   const dropDownMenu = {
@@ -32,42 +34,66 @@ const DropDown = () => {
   useEffect(() => {
     const handleClickOutside = e => {
       if (dropdownRef.current && !dropdownRef.current.contains(e.target)) {
-        setSelectedMenu(null);
+        setSelectedCategory(null);
       }
     };
+
     document.addEventListener('mousedown', handleClickOutside);
+
+    // 클린업
     return () => {
       document.removeEventListener('mousedown', handleClickOutside);
     };
-  }, [dropdownRef]); //의존성 배열 사용
+  }, [dropdownRef]);
 
   return (
-    <ScDropDownContainer>
-      {Object.keys(dropDownMenu).map((menu, index) => {
-        return (
-          <ScDropDownWrapper key={index} ref={dropdownRef}>
-            {/**마우스 다운 이벤트 감지 외부or 내부 */}{' '}
-            <ScBtnWrapper>
-              <button>{menu}</button>
-              <ScArrowIcon
-                onClick={() => {
-                  setSelectedMenu(selectedMenu === menu ? null : menu);
-                }}
-              />
-            </ScBtnWrapper>
-            {selectedMenu === menu && (
-              <ScDropDown>
-                <ul>
-                  {dropDownMenu[menu].map((detailMenu, index) => {
-                    return <li key={index}>{detailMenu}</li>;
-                  })}
-                </ul>
-              </ScDropDown>
-            )}
-          </ScDropDownWrapper>
-        );
-      })}
-    </ScDropDownContainer>
+    <>
+      <ScDropDownContainer ref={dropdownRef}>
+        {Object.keys(dropDownMenu).map((category, index) => {
+          return (
+            <ScDropDownWrapper
+              key={index}
+              onClick={() => {
+                setSelectedCategory(prevCategory => {
+                  const newCategory = prevCategory === category ? null : category;
+                  console.log(newCategory);
+                  return newCategory;
+                });
+              }}
+            >
+              {/**마우스 다운 이벤트 감지 외부or 내부 */}
+              <ScBtnWrapper>
+                <button>{category}</button>
+                <ScArrowIcon />
+              </ScBtnWrapper>
+              {selectedCategory === category && (
+                <ScDropDown>
+                  <ul>
+                    {dropDownMenu[category].map((detailCategory, index) => {
+                      return (
+                        <li
+                          key={index}
+                          onClick={() => {
+                            setSelectedDetailCategory(prevDetailCategory => {
+                              const newDetailCategory = prevDetailCategory === detailCategory ? null : detailCategory;
+                              console.log(newDetailCategory);
+                              return newDetailCategory;
+                            });
+                          }}
+                        >
+                          {detailCategory}
+                        </li>
+                      );
+                    })}
+                  </ul>
+                </ScDropDown>
+              )}
+            </ScDropDownWrapper>
+          );
+        })}
+      </ScDropDownContainer>
+      <FilteredMountain selectedDetailCategory={selectedDetailCategory} />
+    </>
   );
 };
 
@@ -90,6 +116,7 @@ const ScDropDownWrapper = styled.div`
   justify-content: center;
   align-items: center;
   border: 1px solid #f0eeee;
+  user-select: none;
 `;
 
 const ScBtnWrapper = styled.div`
@@ -104,7 +131,7 @@ const ScBtnWrapper = styled.div`
     font-weight: 700;
     padding: 10px;
     position: relative;
-    cursor: default;
+    cursor: pointer;
   }
 `;
 
