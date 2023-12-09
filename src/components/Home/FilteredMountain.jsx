@@ -4,8 +4,9 @@ import styled from 'styled-components';
 import {getMountains} from 'common/api/mountains';
 import MountainCard from 'common/MountainCard';
 
-const FilteredMountain = ({DROPDOWN_MENU, selectedCategories, selectedDetailCategories}) => {
+const FilteredMountain = ({selectedCategories, selectedDetailCategories}) => {
   const [filteredMountains, setFilteredMountains] = useState([]);
+
   const {isLoading, isError, data} = useQuery({
     queryKey: ['mountains'],
     queryFn: getMountains,
@@ -26,23 +27,24 @@ const FilteredMountain = ({DROPDOWN_MENU, selectedCategories, selectedDetailCate
   };
 
   useEffect(() => {
-    if (data && data.length > 0) {
-      const filtered = data.filter(mountain => {
-        switch (selectedCategories) {
-          case '지역별':
-            return mountain.filterlocation === selectedDetailCategories;
-          case '난이도별':
-            return mountain.difficulty === selectedDetailCategories;
-          case '소요시간별':
-            return filterTime(mountain.filtertime) === selectedDetailCategories;
-          default:
-            return false;
-        }
+    if (data) {
+      const filteredData = data.filter(mountain => {
+        return selectedCategories.every(category => {
+          switch (category) {
+            case 'region':
+              return selectedDetailCategories[category] === mountain.filterlocation;
+            case 'difficulty':
+              return selectedDetailCategories[category] === mountain.difficulty;
+            case 'duration':
+              return selectedDetailCategories[category] === filterTime(mountain.filtertime);
+            default:
+              return false;
+          }
+        });
       });
-      console.log(filtered);
-      setFilteredMountains(filtered);
+      setFilteredMountains(filteredData);
     }
-  }, [selectedCategories, selectedDetailCategories, data]);
+  }, [selectedCategories, selectedDetailCategories]);
 
   if (isLoading) {
     return <p>로딩중입니다...</p>;
