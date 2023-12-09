@@ -61,7 +61,9 @@ const NavigationBar = () => {
       <ScHomeBT onClick={goHomeBT}>홈으로 </ScHomeBT>
 
       {(userDisplayName || userNickName) && <ScProfile onClick={clickOnProfile}>내 프로필 </ScProfile>}
-
+      {!(userDisplayName || userNickName) && (
+        <ScNotLoginComment>로그인이 아닙니다 로그인 하시겠습니까?</ScNotLoginComment>
+      )}
       {(userDisplayName || userNickName) && (
         <ScLoginContext>
           {avatarUrl && <ScProfileIMG src={avatarUrl} alt="Avatar" />}
@@ -129,5 +131,9 @@ const ScProfileIMG = styled.img`
   border: 3px solid white;
   object-fit: cover;
 `;
-
+const ScNotLoginComment = styled.p`
+  float: right;
+  margin-top: 20px;
+  margin-right: 10px;
+`;
 export default NavigationBar;
