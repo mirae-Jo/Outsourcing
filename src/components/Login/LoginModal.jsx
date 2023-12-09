@@ -97,7 +97,7 @@ const LoginModal = () => {
         setEmailValidationMessage('존재하지 않는 이메일입니다.');
       }
 
-      if (error.code === 'auth/invalid-credential') {
+      if (error.code === 'auth/invalid-credential' || 'auth/missing-password') {
         setPasswordValidationMessage('비밀번호가 잘못되었습니다.');
         setPassword('');
       }
@@ -172,9 +172,8 @@ const LoginModal = () => {
     } catch (error) {
       console.error(error);
     }
-    setTimeout(() => {
-      window.location.reload();
-    }, 300);
+    //셋타임 아웃 삭제
+    window.location.reload();
   };
 
   return (
