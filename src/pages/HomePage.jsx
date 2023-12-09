@@ -43,7 +43,6 @@ function HomePage() {
       <Header />
       <Search location={location} setLocation={setLocation} />
       <RecommendList />
-      <KakaoMap location={location} setLocation={setLocation} />
     </>
   );
 }

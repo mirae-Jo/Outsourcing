@@ -3,6 +3,7 @@ import styled from 'styled-components';
 import {FiSearch} from 'react-icons/fi';
 import DropDown from './DropDown';
 import SearchingPage from './SearchingPage';
+import KakaoMap from './KakaoMap';
 
 const Search = ({location, setLocation}) => {
   const [isSearch, setIsSearch] = useState(false);
@@ -43,7 +44,14 @@ const Search = ({location, setLocation}) => {
           <ScSearchIcon />
         </ScSearchForm>
       </div>
-      {isSearch ? <SearchingPage searchAddress={searchAddress} /> : <DropDown />}
+      {isSearch ? (
+        <>
+          <SearchingPage searchAddress={searchAddress} />
+          <KakaoMap location={location} setLocation={setLocation} />
+        </>
+      ) : (
+        <DropDown />
+      )}
     </>
   );
 };
