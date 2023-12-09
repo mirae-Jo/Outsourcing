@@ -38,7 +38,7 @@ const RecommendList = () => {
       if (isloggined) {
         const userInfo = await getUserInfo(user.uid);
         console.log('userInfo:', userInfo);
-        // dispatch(login(userInfo));
+        dispatch(login(user));
       }
     };
 

@@ -14,16 +14,17 @@ const authslice = createSlice({
     login: (state, action) => {
       console.log('로그인 중이니 로그인할게');
       state.isloggined = true;
-      let {uid, displayName, photoURL} = action.payload;
-      if (!displayName && !photoURL) {
-        displayName = localStorage.getItem('displayName');
-        photoURL = localStorage.getItem('photoURL');
-      }
+      const {uid, displayName, photoURL} = action.payload;
+
+      const newDisplayName = displayName || localStorage.getItem('displayName');
+      const newPhotoURL = photoURL || localStorage.getItem('photoURL');
+
       console.log(action.payload);
       localStorage.setItem('uid', uid);
-      localStorage.setItem('displayName', displayName);
-      localStorage.setItem('photoURL', photoURL);
-      state.user = {uid, displayName, photoURL};
+      localStorage.setItem('displayName', newDisplayName);
+      localStorage.setItem('photoURL', newPhotoURL);
+
+      state.user = {uid, displayName: newDisplayName, photoURL: newPhotoURL};
       console.log(state.user);
     },
     logout: (state, action) => {
