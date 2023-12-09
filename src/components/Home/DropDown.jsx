@@ -6,7 +6,7 @@ import {MdOutlineCancel} from 'react-icons/md';
 
 const DropDown = () => {
   const [isOpen, setIsOpen] = useState(false);
-  const [selectedCategories, setSelectedCategories] = useState(null);
+  const [selectedCategories, setSelectedCategories] = useState({});
   const [selectedDetailCategories, setSelectedDetailCategories] = useState({});
   const dropdownRef = useRef(null);
 
@@ -53,8 +53,7 @@ const DropDown = () => {
     };
   }, [dropdownRef]);
 
-  const handelFilterCancleClick = category => {
-    console.log(selectedDetailCategories);
+  const handleFilterCancleClick = category => {
     setSelectedDetailCategories(prev => {
       const updatedDetailCategories = {...prev};
       delete updatedDetailCategories[category];
@@ -71,9 +70,7 @@ const DropDown = () => {
               <ScBtnWrapper
                 onClick={() => {
                   setIsOpen(true);
-                  setSelectedCategories(prev => ({
-                    [category]: true,
-                  }));
+                  setSelectedCategories({[category]: true});
                 }}
               >
                 <button>{displayName[category]}</button>
@@ -105,12 +102,15 @@ const DropDown = () => {
           );
         })}
       </ScDropDownContainer>
+
+      {/* 필터 태그 구현 */}
       <ScCategoryWrapper>
+        {console.log(selectedDetailCategories)}
         {Object.keys(selectedDetailCategories).map(
           category =>
             selectedDetailCategories[category] && (
               <ScDetailCategoryTag key={category}>
-                {selectedDetailCategories[category]} <ScCancleIcon onClick={() => handelFilterCancleClick(category)} />
+                {selectedDetailCategories[category]} <ScCancleIcon onClick={() => handleFilterCancleClick(category)} />
               </ScDetailCategoryTag>
             ),
         )}

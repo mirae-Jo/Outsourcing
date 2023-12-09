@@ -6,6 +6,7 @@ import MountainCard from 'common/MountainCard';
 
 const FilteredMountain = ({selectedCategories, selectedDetailCategories}) => {
   const [filteredMountains, setFilteredMountains] = useState([]);
+
   const {isLoading, isError, data} = useQuery({
     queryKey: ['mountains'],
     queryFn: getMountains,
@@ -26,8 +27,8 @@ const FilteredMountain = ({selectedCategories, selectedDetailCategories}) => {
   };
 
   useEffect(() => {
-    if (data && data.length > 0) {
-      const filtered = data.filter(mountain => {
+    if (data) {
+      const filteredData = data.filter(mountain => {
         return selectedCategories.every(category => {
           switch (category) {
             case 'region':
@@ -41,10 +42,9 @@ const FilteredMountain = ({selectedCategories, selectedDetailCategories}) => {
           }
         });
       });
-
-      setFilteredMountains(filtered);
+      setFilteredMountains(filteredData);
     }
-  }, [selectedCategories, selectedDetailCategories, data]);
+  }, [selectedCategories, selectedDetailCategories]);
 
   if (isLoading) {
     return <p>로딩중입니다...</p>;
