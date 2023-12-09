@@ -172,8 +172,9 @@ const LoginModal = () => {
     } catch (error) {
       console.error(error);
     }
-
-    window.location.reload();
+    setTimeout(() => {
+      window.location.reload();
+    }, 300);
   };
 
   return (
