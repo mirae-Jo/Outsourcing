@@ -38,32 +38,23 @@ export const getComments = async () => {
 
 //구글 외에 로그인한 경우 user 파이어스토에서 닉네임 가져오기
 export const getUserInfo = async (uid) => {
-  // const querySnapshot = await getDoc(doc(db, "users", uid));
-  // let data = {};
-  // querySnapshot.forEach((doc) => {
-  //   data = { displayName: doc.data().nickname, photoURL: doc.data().avatar };
-  // });
-  // return data;
-  const docRef = collection(db, 'users', uid);
-  const docSnap = await getDoc(docRef);
+  const userRef = doc(db, 'users', uid);
+  const userSnap = await getDoc(userRef);
   let data;
-  if (docSnap.exists()) {
-    const { avatar, nickname } = docSnap.data();
+  if (userSnap.exists()) {
+    const { avatar, nickname } = userSnap.data();
     data = { displayName: nickname, photoURL: avatar };
     return data;
   }
-  //return false;
+  return null;
 }
 
-console.log(await getUserInfo('9Lyh2HkXaSgn4MD52poby0RF0fD3'))
 
 export const addCommentStore = async (comment) => {
   await addDoc(collection(db, 'comments'), comment);
 };
 
 export const deleteCommentStore = async (id) => {
-  //삭제할 다큐먼트 id말고 uuid로 부여한 id가 일치한 comment 삭제
-  //await deleteDoc(doc(db,'comments',id));
   const deleted = query(collection(db, "comments"), where("id", '==', id));
   const data = await getDocs(deleted);
   return await deleteDoc(data.docs[0].ref);

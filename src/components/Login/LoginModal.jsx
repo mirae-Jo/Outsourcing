@@ -36,14 +36,19 @@ const LoginModal = () => {
   useEffect(() => {
     const unsubscribe = onAuthStateChanged(auth, async user => {
       console.log(user);
-      const { uid, displayName, photoURL } = user;
-      if (!displayName && !photoURL) {
-        const userInfo = await getUserInfo(email);
-        console.log(userInfo)
-        setUser({ ...userInfo, uid });
-        return;
+      if (user) {
+        const { uid, displayName, photoURL } = user;
+        if (!displayName && !photoURL) {
+          const userInfo = await getUserInfo(uid);
+          console.log(userInfo)
+          setUser({ ...userInfo, uid });
+          //일반 로그인 한 경우에는 로컬스토리지에 따로 닉네임과 이미지 업데이트 후 저장해줌. 
+          localStorage.setItem('displayName', userInfo.displayName);
+          localStorage.setItem('photoURL', userInfo.photoURL);
+          return;
+        }
+        setUser({ uid, displayName, photoURL });
       }
-      setUser({ uid, displayName, photoURL });
     });
 
     // 컴포넌트가 언마운트될 때 cleanup
