@@ -103,7 +103,6 @@ const DropDown = () => {
             </ScDetailCategoryTag>
           </ScCategoryWrapper>
           <FilteredMountain
-            DROPDOWN_MENU={DROPDOWN_MENU}
             selectedCategories={selectedCategories}
             selectedDetailCategories={selectedDetailCategories}
           />
