@@ -24,17 +24,17 @@ const db = getFirestore(app);
 export const storage = getStorage(app);
 
 export const getComments = async () => {
-  const querySnapshot = await getDocs(collection(db, "comments"));
+  const querySnapshot = await getDocs(collection(db, 'comments'));
   const data = [];
-  querySnapshot.forEach((doc) => {
+  querySnapshot.forEach(doc => {
     data.push({
       ...doc.data(),
       //날짜 타임스탬프를 날짜형으로 재변경
       createdAt: doc.data()['createdAt'].toDate(),
     });
-  })
+  });
   return data;
-}
+};
 
 //일반 로그인한 경우 파이어스토어에서 유저 닉네임,이미지 가져오기
 export const getUserInfo = async (uid) => {
@@ -47,18 +47,17 @@ export const getUserInfo = async (uid) => {
     return data;
   }
   return null;
-}
+};
 
-
-export const addCommentStore = async (comment) => {
+export const addCommentStore = async comment => {
   await addDoc(collection(db, 'comments'), comment);
 };
 
-export const deleteCommentStore = async (id) => {
-  const deleted = query(collection(db, "comments"), where("id", '==', id));
+export const deleteCommentStore = async id => {
+  const deleted = query(collection(db, 'comments'), where('id', '==', id));
   const data = await getDocs(deleted);
   return await deleteDoc(data.docs[0].ref);
-}
+};
 
 export const updateCommentStore = async (id, text) => {
   //동일한 댓글 id만 업데이트 하도록 설정 
