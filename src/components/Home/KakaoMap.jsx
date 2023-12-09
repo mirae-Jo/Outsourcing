@@ -1,7 +1,7 @@
-import {Map, MapMarker, MapTypeId} from 'react-kakao-maps-sdk';
+import {Map, MapMarker} from 'react-kakao-maps-sdk';
 import styled from 'styled-components';
 
-function KakaoMap({location, setLocation}) {
+function KakaoMap({location}) {
   // 키워드 입력후 검색 클릭 시 원하는 키워드의 주소로 이동
 
   return (
@@ -11,8 +11,8 @@ function KakaoMap({location, setLocation}) {
         isPanto={location.isPanto}
         style={{
           // 지도의 크기
-          width: '800px',
-          height: '450px',
+          width: '700px',
+          height: '430px',
         }}
         level={3} // 지도의 확대 레벨
       >
@@ -28,8 +28,8 @@ function KakaoMap({location, setLocation}) {
 }
 
 const ScWrap = styled.div`
-  width: 800px;
-  margin: 30px auto;
+  width: 700px;
+  margin: 20px auto;
 `;
 
 export default KakaoMap;
