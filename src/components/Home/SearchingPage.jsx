@@ -3,12 +3,19 @@ import React from 'react';
 import styled from 'styled-components';
 import {getMountains} from 'common/api/mountains';
 import MountainCard from 'common/MountainCard';
+import KakaoMap from './KakaoMap';
+import {MdOutlineCancel} from 'react-icons/md';
 
-function SearchingPage({searchAddress, setSearchAddress}) {
+function SearchingPage({searchAddress, setSearchAddress, setIsSearch, location, setLocation}) {
   const {isLoading, isError, data} = useQuery({
     queryKey: ['mountains'],
     queryFn: getMountains,
   });
+
+  const handleFilterCancleClick = () => {
+    setIsSearch(false);
+    setSearchAddress('');
+  };
 
   if (isLoading) {
     return <p>로딩중입니다...</p>;
@@ -29,24 +36,62 @@ function SearchingPage({searchAddress, setSearchAddress}) {
 
   return (
     <ScSearchingWrap>
+      <section>
+        <ScCancleIcon onClick={handleFilterCancleClick} />
+      </section>
+      <ScTitle>
+        About <span>{searchAddress}</span>
+      </ScTitle>
       {filteredData.length === 0 ? (
-        <p>산 정보가 없습니다.</p>
+        <ScNoResultText>
+          <p>검색 결과와 일치하는 산이 없습니다.</p>
+        </ScNoResultText>
       ) : (
         filteredData.map(mountain => {
-          return <MountainCard mountain={mountain} />;
+          return (
+            <>
+              <MountainCard mountain={mountain} size="large" />
+              <KakaoMap location={location} setLocation={setLocation} />
+            </>
+          );
         })
       )}
     </ScSearchingWrap>
   );
 }
 
+export default SearchingPage;
+
 const ScSearchingWrap = styled.div`
   width: 100%;
   max-width: 920px;
   display: flex;
-  flex-direction: row;
+  flex-direction: column;
   justify-content: center;
-  margin: 30px auto;
+  align-items: center;
+  margin-top: 10px;
 `;
 
-export default SearchingPage;
+const ScCancleIcon = styled(MdOutlineCancel)`
+  margin-left: 4px;
+  font-size: 30px;
+  color: #ffe194;
+  cursor: pointer;
+`;
+
+const ScNoResultText = styled.div`
+  text-align: center;
+  margin: 30px auto;
+  width: fit-content;
+  background-color: #e8f6ef;
+  padding: 15px 30px;
+  border-radius: 20px;
+`;
+
+const ScTitle = styled.p`
+  margin: 25px;
+  font-size: 25px;
+  & span {
+    color: #1b9c85;
+  }
+`;
