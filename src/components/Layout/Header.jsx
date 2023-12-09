@@ -1,13 +1,13 @@
 import React from 'react';
 import styled from 'styled-components';
 import logo from 'assets/imgs/logo.png';
-import logo2 from 'assets/imgs/logo2.webp';
+import {useNavigate} from 'react-router-dom';
 
 function Header() {
+  const navigate = useNavigate();
   return (
     <ScHeader>
       <ScTitle>
-        {/* <img src={logo2} alt="로고이미지" /> */}
         <img src={logo} alt="로고이미지" />
       </ScTitle>
     </ScHeader>
@@ -30,5 +30,6 @@ const ScTitle = styled.div`
   font-size: 30px;
   & img {
     width: 200px;
+    cursor: pointer;
   }
 `;

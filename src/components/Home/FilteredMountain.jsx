@@ -4,7 +4,7 @@ import styled from 'styled-components';
 import {getMountains} from 'common/api/mountains';
 import MountainCard from 'common/MountainCard';
 
-const FilteredMountain = ({DROPDOWN_MENU, selectedCategories, selectedDetailCategories}) => {
+const FilteredMountain = ({selectedCategories, selectedDetailCategories}) => {
   const [filteredMountains, setFilteredMountains] = useState([]);
   const {isLoading, isError, data} = useQuery({
     queryKey: ['mountains'],

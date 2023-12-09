@@ -2,12 +2,42 @@ import React, {useEffect, useRef, useState} from 'react';
 import styled from 'styled-components';
 import {TiArrowSortedDown} from 'react-icons/ti';
 import FilteredMountain from './FilteredMountain';
+import {MdOutlineCancel} from 'react-icons/md';
 
 const DropDown = () => {
   const [isOpen, setIsOpen] = useState(false);
   const [selectedCategories, setSelectedCategories] = useState(null);
   const [selectedDetailCategories, setSelectedDetailCategories] = useState(null);
   const dropdownRef = useRef(null);
+
+  const DROPDOWN_MENU = {
+    지역별: [
+      '강원도',
+      '경기도',
+      '경상남도',
+      '경상북도',
+      '광주광역시',
+      '대구광역시',
+      '대전광역시',
+      '부산광역시',
+      '서울특별시',
+      '울산광역시',
+      '인천광역시',
+      '전라남도',
+      '전라북도',
+      '제주특별자치도',
+      '충청남도',
+      '충청북도',
+    ],
+    난이도별: ['초급', '중급', '고급'],
+    소요시간별: ['1시간 미만', '1~2시간', '2~3시간', '3~4시간', '4시간 이상'],
+  };
+
+  const displayName = {
+    region: '지역별',
+    difficulty: '난이도별',
+    duration: '소요시간별',
+  };
 
   useEffect(() => {
     const handleClickOutside = e => {
@@ -23,14 +53,16 @@ const DropDown = () => {
     };
   }, [dropdownRef]);
 
+  const handelFilterCancleClick = () => {
+    setSelectedDetailCategories(null);
+  };
+
   return (
     <>
       <ScDropDownContainer ref={dropdownRef}>
-        {/* <ScDropDownContainer> */}
         {Object.keys(DROPDOWN_MENU).map((category, index) => {
           return (
             <ScDropDownWrapper key={index}>
-              {/**마우스 다운 이벤트 감지 외부or 내부 */}
               <ScBtnWrapper
                 onClick={() => {
                   setIsOpen(true);
@@ -40,7 +72,6 @@ const DropDown = () => {
                 <button>{category}</button>
                 <ScArrowIcon />
               </ScBtnWrapper>
-
               {isOpen && selectedCategories === category && (
                 <ScDropDown>
                   <ul>
@@ -65,40 +96,25 @@ const DropDown = () => {
         })}
       </ScDropDownContainer>
       {selectedDetailCategories && (
-        <FilteredMountain
-          DROPDOWN_MENU={DROPDOWN_MENU}
-          selectedCategories={selectedCategories}
-          selectedDetailCategories={selectedDetailCategories}
-        />
+        <>
+          <ScCategoryWrapper>
+            <ScDetailCategoryTag>
+              {selectedDetailCategories} <ScCancleIcon onClick={handelFilterCancleClick} />
+            </ScDetailCategoryTag>
+          </ScCategoryWrapper>
+          <FilteredMountain
+            displayName={displayName}
+            DROPDOWN_MENU={DROPDOWN_MENU}
+            selectedCategories={selectedCategories}
+            selectedDetailCategories={selectedDetailCategories}
+          />
+        </>
       )}
     </>
   );
 };
 
 export default DropDown;
-
-const DROPDOWN_MENU = {
-  지역별: [
-    '강원도',
-    '경기도',
-    '경상남도',
-    '경상북도',
-    '광주광역시',
-    '대구광역시',
-    '대전광역시',
-    '부산광역시',
-    '서울특별시',
-    '울산광역시',
-    '인천광역시',
-    '전라남도',
-    '전라북도',
-    '제주특별자치도',
-    '충청남도',
-    '충청북도',
-  ],
-  난이도별: ['초급', '중급', '고급'],
-  소요시간별: ['1시간 미만', '1~2시간', '2~3시간', '3~4시간', '4시간 이상'],
-};
 
 const ScDropDownContainer = styled.div`
   display: flex;
@@ -168,5 +184,27 @@ const ScArrowIcon = styled(TiArrowSortedDown)`
   font-size: 25px;
   color: #1b9c85;
   z-index: 10;
+  cursor: pointer;
+`;
+
+const ScCategoryWrapper = styled.div`
+  display: flex;
+  flex-direction: row;
+  justify-content: center;
+  margin-top: 20px;
+`;
+
+const ScDetailCategoryTag = styled.p`
+  width: fit-content;
+  padding: 5px 15px;
+  border-radius: 20px;
+  color: white;
+  background-color: #1b9c85;
+  display: flex;
+  align-items: center;
+`;
+
+const ScCancleIcon = styled(MdOutlineCancel)`
+  margin-left: 4px;
   cursor: pointer;
 `;
