@@ -97,7 +97,7 @@ const LoginModal = () => {
         setEmailValidationMessage('존재하지 않는 이메일입니다.');
       }
 
-      if (error.code === 'auth/invalid-credential') {
+      if (error.code === 'auth/invalid-credential' || 'auth/missing-password') {
         setPasswordValidationMessage('비밀번호가 잘못되었습니다.');
         setPassword('');
       }
