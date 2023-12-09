@@ -1,7 +1,7 @@
-import React, {useState, useEffect, useRef} from 'react';
-import {useNavigate} from 'react-router-dom';
+import React, { useState, useEffect, useRef } from 'react';
+import { useNavigate } from 'react-router-dom';
 import styled from 'styled-components';
-import {app} from 'shared/firebase';
+import { app, getUserInfo } from 'shared/firebase';
 import {
   createUserWithEmailAndPassword,
   signInWithEmailAndPassword,
@@ -11,14 +11,14 @@ import {
   signInWithPopup,
   signInWithRedirect,
 } from 'firebase/auth';
-import {auth} from 'shared/firebase';
+import { auth } from 'shared/firebase';
 import SignUpModal from './SignUpModal';
 import googleicon from '../../assets/imgs/googleSignUpBtn.png';
-import {doc, getDoc, setDoc} from '@firebase/firestore';
+import { doc, getDoc, setDoc } from '@firebase/firestore';
 import db from 'shared/firebase';
 import profilenormal from '../../assets/imgs/profilenormal.jpg';
-import {useDispatch} from 'react-redux';
-import {login, logout} from 'shared/redux/modules/authSlice';
+import { useDispatch } from 'react-redux';
+import { login, logout } from 'shared/redux/modules/authSlice';
 
 const LoginModal = () => {
   const [emailValidationMessage, setEmailValidationMessage] = useState('');
@@ -34,9 +34,21 @@ const LoginModal = () => {
 
   // 추가: 로그인 상태 변경 감지 및 유저 정보 업데이트
   useEffect(() => {
-    const unsubscribe = onAuthStateChanged(auth, user => {
+    const unsubscribe = onAuthStateChanged(auth, async user => {
       console.log(user);
-      setUser(user);
+      if (user) {
+        const { uid, displayName, photoURL } = user;
+        if (!displayName && !photoURL) {
+          const userInfo = await getUserInfo(uid);
+          console.log(userInfo)
+          setUser({ ...userInfo, uid });
+          //일반 로그인 한 경우에는 로컬스토리지에 따로 닉네임과 이미지 업데이트 후 저장해줌. 
+          localStorage.setItem('displayName', userInfo.displayName);
+          localStorage.setItem('photoURL', userInfo.photoURL);
+          return;
+        }
+        setUser({ uid, displayName, photoURL });
+      }
     });
 
     // 컴포넌트가 언마운트될 때 cleanup
@@ -57,7 +69,7 @@ const LoginModal = () => {
   //로그인
   const inputChange = event => {
     const {
-      target: {name, value},
+      target: { name, value },
     } = event;
     if (name === 'email') {
       setEmail(value);
@@ -78,7 +90,7 @@ const LoginModal = () => {
       // 이메일 유효성 검사 초기화
       setEmailValidationMessage('');
       setPasswordValidationMessage('');
-
+      console.log(auth);
       await signInWithEmailAndPassword(auth, email, password);
       setIsLoginModal(false);
       setEmail('');
@@ -160,8 +172,8 @@ const LoginModal = () => {
 
       // 추가: 로그인 후 유저 정보 갱신
       setUser(result.user);
-      const {uid, displayName, photoURL} = result.user;
-      dispatch(login({uid, displayName, photoURL}));
+      const { uid, displayName, photoURL } = result.user;
+      dispatch(login({ uid, displayName, photoURL }));
 
       // 추가: Firestore에 사용자 정보 저장
     } catch (error) {
@@ -190,12 +202,12 @@ const LoginModal = () => {
             <ScSection>
               <p>이메일 </p>
               <input type="email" value={email} name="email" onChange={inputChange} />
-              {emailValidationMessage && <p style={{color: 'red'}}>{emailValidationMessage}</p>}
+              {emailValidationMessage && <p style={{ color: 'red' }}>{emailValidationMessage}</p>}
             </ScSection>
             <ScSection>
               <p>패스워드 </p>
               <input type="password" value={password} name="password" onChange={inputChange} />
-              {passwordValidationMessage && <p style={{color: 'red'}}>{passwordValidationMessage}</p>}
+              {passwordValidationMessage && <p style={{ color: 'red' }}>{passwordValidationMessage}</p>}
             </ScSection>
 
             <ScLoginButton onClick={signIn}>로그인</ScLoginButton>
