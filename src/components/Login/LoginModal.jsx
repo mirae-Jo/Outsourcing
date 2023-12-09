@@ -1,16 +1,8 @@
-import React, {useState, useEffect, useRef} from 'react';
+import React, {useState, useEffect} from 'react';
 import {useNavigate} from 'react-router-dom';
 import styled from 'styled-components';
-import {app} from 'shared/firebase';
-import {
-  createUserWithEmailAndPassword,
-  signInWithEmailAndPassword,
-  signOut,
-  onAuthStateChanged,
-  GoogleAuthProvider,
-  signInWithPopup,
-  signInWithRedirect,
-} from 'firebase/auth';
+import {getUserInfo} from 'shared/firebase';
+import {signOut, onAuthStateChanged, GoogleAuthProvider, signInWithPopup} from 'firebase/auth';
 import {auth} from 'shared/firebase';
 import SignUpModal from './SignUpModal';
 import googleicon from '../../assets/imgs/googleSignUpBtn.png';
@@ -19,6 +11,7 @@ import db from 'shared/firebase';
 import profilenormal from '../../assets/imgs/profilenormal.jpg';
 import {useDispatch} from 'react-redux';
 import {login, logout} from 'shared/redux/modules/authSlice';
+import {signInWithEmailAndPassword} from 'firebase/auth';
 
 const LoginModal = () => {
   const [emailValidationMessage, setEmailValidationMessage] = useState('');
@@ -28,15 +21,27 @@ const LoginModal = () => {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [user, setUser] = useState(null);
-  const emailRef = useRef(null);
+  // const emailRef = useRef(null);
   const navigate = useNavigate();
   const dispatch = useDispatch();
 
   // 추가: 로그인 상태 변경 감지 및 유저 정보 업데이트
   useEffect(() => {
-    const unsubscribe = onAuthStateChanged(auth, user => {
+    const unsubscribe = onAuthStateChanged(auth, async user => {
       console.log(user);
-      setUser(user);
+      if (user) {
+        const {uid, displayName, photoURL} = user;
+        if (!displayName && !photoURL) {
+          const userInfo = await getUserInfo(uid);
+          console.log(userInfo);
+          setUser({...userInfo, uid});
+          //일반 로그인 한 경우에는 로컬스토리지에 따로 닉네임과 이미지 업데이트 후 저장해줌.
+          localStorage.setItem('displayName', userInfo.displayName);
+          localStorage.setItem('photoURL', userInfo.photoURL);
+          return;
+        }
+        setUser({uid, displayName, photoURL});
+      }
     });
 
     // 컴포넌트가 언마운트될 때 cleanup
@@ -78,7 +83,7 @@ const LoginModal = () => {
       // 이메일 유효성 검사 초기화
       setEmailValidationMessage('');
       setPasswordValidationMessage('');
-
+      console.log(auth);
       await signInWithEmailAndPassword(auth, email, password);
       setIsLoginModal(false);
       setEmail('');

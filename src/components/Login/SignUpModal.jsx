@@ -1,8 +1,7 @@
 import React, {useState} from 'react';
-import {useNavigate} from 'react-router-dom';
 import styled from 'styled-components';
 import {app} from 'shared/firebase';
-import {createUserWithEmailAndPassword, getAuth, signInWithEmailAndPassword} from 'firebase/auth';
+import {createUserWithEmailAndPassword, getAuth} from 'firebase/auth';
 import db from 'shared/firebase';
 import {doc, setDoc} from '@firebase/firestore';
 import profilenormal from '../../assets/imgs/profilenormal.jpg';
@@ -14,7 +13,6 @@ function SignUpModal({isSignUpModal, setIsSignUpModal}) {
   const [emailError, setEmailError] = useState('');
   const [passwordError, setPasswordError] = useState('');
 
-  const navigate = useNavigate();
   const auth = getAuth(app);
 
   const inputChange = event => {

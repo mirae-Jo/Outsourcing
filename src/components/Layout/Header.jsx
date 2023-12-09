@@ -1,14 +1,16 @@
 import React from 'react';
 import styled from 'styled-components';
 import logo from 'assets/imgs/logo.png';
-import {useNavigate} from 'react-router-dom';
 
 function Header() {
-  const navigate = useNavigate();
+  const handleLogoClick = () => {
+    window.location.reload();
+  };
+
   return (
     <ScHeader>
       <ScTitle>
-        <img src={logo} alt="로고이미지" />
+        <img src={logo} alt="로고이미지" onClick={handleLogoClick} />
       </ScTitle>
     </ScHeader>
   );
@@ -18,11 +20,12 @@ export default Header;
 
 const ScHeader = styled.div`
   width: 100%;
-  height: 100px;
-  background-color: #ffe194;
+  height: 150px;
+  /* background-color: #ffe194; */
   display: flex;
   align-items: center;
   justify-content: center;
+  padding-top: 20px;
 `;
 
 const ScTitle = styled.div`
