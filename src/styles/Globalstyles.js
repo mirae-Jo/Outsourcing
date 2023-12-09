@@ -52,6 +52,10 @@ export const GlobalStyles = createGlobalStyle`
     input{
         outline:none;
     }
+    textarea{
+        resize:none;
+        outline:none;
+    }
 
     
 `;

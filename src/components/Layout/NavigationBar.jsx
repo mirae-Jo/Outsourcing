@@ -28,11 +28,8 @@ const NavigationBar = () => {
           const avatarURL = userData.avatar;
           const userNickname = userData.nickname;
           const userPhotopURL = userData.photoURL;
-          console.log(avatarURL);
-          console.log(userPhotopURL);
 
           const googleProviderData = user.providerData.find(provider => provider.providerId === 'google.com');
-          console.log(googleProviderData);
 
           if (googleProviderData) {
             setAvatarUrl(userData.photoURL);
@@ -55,7 +52,9 @@ const NavigationBar = () => {
   const clickOnProfile = () => {
     navigate(`/ProFilePage:id`);
   };
-
+  const clickLoginModal = () => {
+    setIsLoginModal(true);
+  };
   return (
     <ScNavigationContainer>
       {isLoginModal ? <LoginModal /> : null}
@@ -63,7 +62,7 @@ const NavigationBar = () => {
 
       {(userDisplayName || userNickName) && <ScProfile onClick={clickOnProfile}>내 프로필 </ScProfile>}
       {!(userDisplayName || userNickName) && (
-        <ScNotLoginComment>로그인이 아닙니다 로그인 하시겠습니까?</ScNotLoginComment>
+        <ScNotLoginComment onClick={clickLoginModal}>로그인이 아닙니다 로그인 하시겠습니까?</ScNotLoginComment>
       )}
       {(userDisplayName || userNickName) && (
         <ScLoginContext>
@@ -81,14 +80,14 @@ const ScHomeBT = styled.button`
   margin-top: 10px;
   margin-left: 15px;
   font-weight: bold;
-  width: 100px;
+  width: 50px;
   height: 30px;
-
+  object-fit: cover;
   border-width: medium;
   background-image: url(${loopy});
   background-size: cover;
   background-position: center;
-  color: transparent; /* 글자를 투명하게 설정하여 숨깁니다. */
+  color: transparent;
   cursor: pointer;
 
   &:hover {
@@ -147,11 +146,7 @@ const ScProfileIMG = styled.img`
 const ScNotLoginComment = styled.p`
   margin-top: 20px;
   margin-right: 10px;
-  cursor: pointer;
   float: right;
   color: black;
-  &:hover {
-    text-decoration: underline;
-  }
 `;
 export default NavigationBar;
