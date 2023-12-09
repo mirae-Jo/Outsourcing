@@ -1,7 +1,7 @@
-import {initializeApp} from 'firebase/app';
-import {getAuth} from 'firebase/auth';
-import {getFirestore, collection, doc, query, where, getDocs, getDoc, addDoc, deleteDoc} from 'firebase/firestore';
-import {getStorage} from 'firebase/storage';
+import { initializeApp } from 'firebase/app';
+import { getAuth } from 'firebase/auth';
+import { getFirestore, collection, doc, query, where, getDocs, getDoc, addDoc, deleteDoc, updateDoc } from 'firebase/firestore';
+import { getStorage } from 'firebase/storage';
 
 //파이어베이스 키 .env.local에  저장
 const firebaseConfig = {
@@ -36,14 +36,14 @@ export const getComments = async () => {
   return data;
 };
 
-//구글 외에 로그인한 경우 user 파이어스토에서 닉네임 가져오기
-export const getUserInfo = async uid => {
+//일반 로그인한 경우 파이어스토어에서 유저 닉네임,이미지 가져오기
+export const getUserInfo = async (uid) => {
   const userRef = doc(db, 'users', uid);
   const userSnap = await getDoc(userRef);
   let data;
   if (userSnap.exists()) {
-    const {avatar, nickname} = userSnap.data();
-    data = {displayName: nickname, photoURL: avatar};
+    const { avatar, nickname } = userSnap.data();
+    data = { displayName: nickname, photoURL: avatar };
     return data;
   }
   return null;
@@ -58,5 +58,15 @@ export const deleteCommentStore = async id => {
   const data = await getDocs(deleted);
   return await deleteDoc(data.docs[0].ref);
 };
+
+export const updateCommentStore = async (id, text) => {
+  //동일한 댓글 id만 업데이트 하도록 설정 
+  const updated = query(collection(db, "comments"), where("id", "==", id));
+  const data = await getDocs(updated);
+  return await updateDoc(data.docs[0].ref, {
+    comment: text
+  });
+
+}
 
 export default db;
