@@ -54,7 +54,9 @@ const RecommendList = () => {
   return (
     <ScRecommendList>
       <ScTitle>
-        <h1>추천 산</h1>
+        <h1>
+          <span>한사랑 산악회 </span>추천 산
+        </h1>
         <ScMountainIcon />
       </ScTitle>
       <ScMountainListWarapper>
@@ -89,6 +91,9 @@ const ScTitle = styled.div`
   gap: 8px;
   & h1 {
     font-size: large;
+  }
+  & span {
+    color: #1b9c85;
   }
 `;
 
