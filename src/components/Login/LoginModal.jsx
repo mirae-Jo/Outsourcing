@@ -117,10 +117,10 @@ const LoginModal = () => {
 
       setTimeout(() => {
         navigate('/');
+        window.location.reload();
       }, 500);
       dispatch(logout());
       // 로그아웃 후 페이지 새로고침
-      // window.location.reload();
     }
   };
   // Firestore에 사용자 정보 저장 함수
