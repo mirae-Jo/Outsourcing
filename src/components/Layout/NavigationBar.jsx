@@ -21,18 +21,22 @@ const NavigationBar = () => {
       if (user) {
         const userDocRef = doc(db, 'users', user.uid);
         const userDocSnapshot = await getDoc(userDocRef);
-
+        console.log(user);
         if (userDocSnapshot.exists()) {
           const userData = userDocSnapshot.data();
           const avatarURL = userData.avatar;
           const userNickname = userData.nickname;
           const userPhotopURL = userData.photoURL;
+          console.log(avatarURL);
           console.log(userPhotopURL);
-          console.log(userData);
-          if (userData.provider === 'google.com') {
-            setAvatarUrl(userData.photoURL || user.photoURL);
-          } else {
+
+          const googleProviderData = user.providerData.find(provider => provider.providerId === 'google.com');
+          console.log(googleProviderData);
+
+          if (googleProviderData) {
             setAvatarUrl(userData.photoURL);
+          } else {
+            setAvatarUrl(avatarURL);
           }
 
           setUserNickName(userNickname);
@@ -61,7 +65,7 @@ const NavigationBar = () => {
       {(userDisplayName || userNickName) && (
         <ScLoginContext>
           {avatarUrl && <ScProfileIMG src={avatarUrl} alt="Avatar" />}
-          <p>{`${userDisplayName || userNickName} 님 반갑습니다.`}</p>
+          <p>{`${userNickName || userDisplayName} 님 반갑습니다.`}</p>
         </ScLoginContext>
       )}
     </ScNavigationContainer>
