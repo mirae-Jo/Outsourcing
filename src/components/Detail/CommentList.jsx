@@ -3,6 +3,7 @@ import { useSelector, useDispatch } from 'react-redux';
 import { useParams } from 'react-router-dom';
 import { deleteCommentStore } from 'shared/firebase';
 import { deleteComment } from 'shared/redux/modules/commentSlice';
+import defaultUserImg from 'assets/imgs/profilenormal.jpg';
 import styled from 'styled-components';
 
 
@@ -28,6 +29,8 @@ export default function CommentList() {
         console.log('comments가 추가되거나 삭제 되고 있음', comments);
     }, [comments])
 
+
+
     return (
         <ScCommentListLayout>
             <h1>Comment</h1>
@@ -39,12 +42,12 @@ export default function CommentList() {
                             <p>{comment}</p>
                             <ScUserInfo>
                                 <p>{displayName}</p>
-                                <img src={photoURL} alt='avatar' />
+                                <img src={photoURL ? photoURL : defaultUserImg} alt='avatar' />
                             </ScUserInfo>
                         </div>
                         <time>{new Date(createdAt).toLocaleString()}</time>
-                        {uid && user.uid === uid && <button>수정하기</button>}
-                        {uid && user.uid === uid && <button onClick={() => handleDelete(id)}>삭제하기</button>}
+                        {(user.uid && uid) && user?.uid === uid && <button>수정하기</button>}
+                        {(user.uid && uid) && user?.uid === uid && <button onClick={() => handleDelete(id)}>삭제하기</button>}
                     </li>
                 );
             }

@@ -1,6 +1,6 @@
 import { initializeApp } from 'firebase/app';
 import { getAuth } from 'firebase/auth';
-import { getFirestore, collection, query, where, getDocs, addDoc, deleteDoc } from 'firebase/firestore';
+import { getFirestore, collection, doc, query, where, getDocs, getDoc, addDoc, deleteDoc } from 'firebase/firestore';
 import { getStorage } from 'firebase/storage';
 
 //파이어베이스 키 .env.local에  저장
@@ -11,7 +11,7 @@ const firebaseConfig = {
   storageBucket: process.env.REACT_APP_FIREBASE_STORAGE_BUCKET,
   messagingSenderId: process.env.REACT_APP_FIREBASE_MESSAGING_SENDER_ID,
   appId: process.env.REACT_APP_FIREBASE_APP_ID,
-  // measurementId: process.env.REACT_APP_FIREBASE_MEASUREMENT_ID,
+  measurementId: process.env.REACT_APP_FIREBASE_MEASUREMENT_ID,
 };
 
 //파이어베이스 초기화
@@ -35,6 +35,27 @@ export const getComments = async () => {
   })
   return data;
 }
+
+//구글 외에 로그인한 경우 user 파이어스토에서 닉네임 가져오기
+export const getUserInfo = async (uid) => {
+  // const querySnapshot = await getDoc(doc(db, "users", uid));
+  // let data = {};
+  // querySnapshot.forEach((doc) => {
+  //   data = { displayName: doc.data().nickname, photoURL: doc.data().avatar };
+  // });
+  // return data;
+  const docRef = collection(db, 'users', uid);
+  const docSnap = await getDoc(docRef);
+  let data;
+  if (docSnap.exists()) {
+    const { avatar, nickname } = docSnap.data();
+    data = { displayName: nickname, photoURL: avatar };
+    return data;
+  }
+  //return false;
+}
+
+console.log(await getUserInfo('9Lyh2HkXaSgn4MD52poby0RF0fD3'))
 
 export const addCommentStore = async (comment) => {
   await addDoc(collection(db, 'comments'), comment);

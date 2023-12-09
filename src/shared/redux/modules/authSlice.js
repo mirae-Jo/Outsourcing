@@ -1,5 +1,6 @@
 import { createSlice } from '@reduxjs/toolkit';
-import { auth } from 'shared/firebase';
+import defaultUserImg from 'assets/imgs/profilenormal.jpg';
+import { auth, getUserInfo } from 'shared/firebase';
 
 
 
@@ -17,16 +18,19 @@ const authslice = createSlice({
     login: (state, action) => {
       console.log('로그인 중이니 로그인할게');
       state.isloggined = true;
-      const { uid, displayName, photoURL } = action.payload;
+      let { uid, displayName, photoURL } = action.payload;
+      console.log(action.payload)
       localStorage.setItem('uid', uid);
       localStorage.setItem('displayName', displayName);
       localStorage.setItem('photoURL', photoURL);
-      state.user = action.payload;
+      state.user = { uid, displayName, photoURL };
       console.log(state.user);
     },
     logout: (state, action) => {
       state.isloggined = false;
-      state.user = null;
+      state.user.uid = null;
+      state.user.displayName = null;
+      state.user.photoURL = null;
       localStorage.removeItem('uid');
       localStorage.removeItem('displayName');
       localStorage.removeItem('photoURL');

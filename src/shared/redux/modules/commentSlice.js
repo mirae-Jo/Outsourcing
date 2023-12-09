@@ -16,7 +16,7 @@ const commentSlice = createSlice({
         addComment: (state, action) => {
             const { uid, id, comment, mountainName, displayName, photoURL, createdAt } = action.payload;
             console.log({ uid, id, comment, mountainName, displayName, photoURL, createdAt });
-            state.comments.push(action.payload);
+            state.comments.push({ uid, id, comment, mountainName, displayName, photoURL, createdAt });
         },
         deleteComment: (state, action) => {
             state.comments = state.comments.filter(comment => comment.id !== action.payload);
