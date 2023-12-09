@@ -6,6 +6,7 @@ import {auth} from 'shared/firebase';
 import {onAuthStateChanged} from '@firebase/auth';
 import {doc, getDoc} from '@firebase/firestore';
 import db from 'shared/firebase';
+import loopy from '../../assets/imgs/loopy.jpeg';
 
 const NavigationBar = () => {
   const navigate = useNavigate();
@@ -82,6 +83,14 @@ const ScHomeBT = styled.button`
   font-weight: bold;
   width: 100px;
   height: 30px;
+
+  border-width: medium;
+  background-image: url(${loopy});
+  background-size: cover;
+  background-position: center;
+  color: transparent; /* 글자를 투명하게 설정하여 숨깁니다. */
+  cursor: pointer;
+
   &:hover {
     background-color: #ddd;
   }
@@ -90,7 +99,8 @@ const ScHomeBT = styled.button`
 const ScNavigationContainer = styled.div`
   height: 50px;
   color: white;
-  background-color: #1b9c85;
+  background-color: white;
+  border-bottom: 3px solid black;
   p {
     font-weight: bold;
   }
@@ -105,7 +115,9 @@ const ScProfile = styled.button`
   font-weight: bold;
   width: 100px;
   height: 30px;
-  padding: 5px;
+
+  border: 1px solid black;
+  border-width: medium;
   &:hover {
     background-color: #ddd;
   }
@@ -117,6 +129,7 @@ const ScLoginContext = styled.div`
   height: 40px;
   display: flex;
   align-items: center;
+  color: black;
   p {
     margin-top: 10px;
   }
@@ -128,12 +141,17 @@ const ScProfileIMG = styled.img`
   margin-right: 10px;
   margin-top: 10px;
   border-radius: 50%;
-  border: 3px solid white;
+  border: 3px solid black;
   object-fit: cover;
 `;
 const ScNotLoginComment = styled.p`
-  float: right;
   margin-top: 20px;
   margin-right: 10px;
+  cursor: pointer;
+  float: right;
+  color: black;
+  &:hover {
+    text-decoration: underline;
+  }
 `;
 export default NavigationBar;

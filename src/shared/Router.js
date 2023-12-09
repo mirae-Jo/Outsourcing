@@ -4,7 +4,6 @@ import HomePage from '../pages/HomePage';
 import DetailPage from '../pages/DetailPage';
 import {ProFilePage} from 'pages/ProFilePage';
 import Footer from 'components/Layout/Footer';
-
 const Router = () => {
   return (
     <BrowserRouter>
