@@ -1,8 +1,4 @@
-import { createSlice } from '@reduxjs/toolkit';
-import defaultUserImg from 'assets/imgs/profilenormal.jpg';
-import { auth, getUserInfo } from 'shared/firebase';
-
-
+import {createSlice} from '@reduxjs/toolkit';
 
 const authslice = createSlice({
   name: 'user_auth',
@@ -11,23 +7,23 @@ const authslice = createSlice({
     user: {
       uid: localStorage.getItem('uid'),
       displayName: localStorage.getItem('displayName'),
-      photoURL: localStorage.getItem('photoURL')
+      photoURL: localStorage.getItem('photoURL'),
     },
   },
   reducers: {
     login: (state, action) => {
       console.log('로그인 중이니 로그인할게');
       state.isloggined = true;
-      let { uid, displayName, photoURL } = action.payload;
+      let {uid, displayName, photoURL} = action.payload;
       if (!displayName && !photoURL) {
         displayName = localStorage.getItem('displayName');
         photoURL = localStorage.getItem('photoURL');
       }
-      console.log(action.payload)
+      console.log(action.payload);
       localStorage.setItem('uid', uid);
       localStorage.setItem('displayName', displayName);
       localStorage.setItem('photoURL', photoURL);
-      state.user = { uid, displayName, photoURL };
+      state.user = {uid, displayName, photoURL};
       console.log(state.user);
     },
     logout: (state, action) => {
@@ -42,7 +38,6 @@ const authslice = createSlice({
   },
 });
 
-
-export const { login, logout } = authslice.actions;
+export const {login, logout} = authslice.actions;
 
 export default authslice.reducer;

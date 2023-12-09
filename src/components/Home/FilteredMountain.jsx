@@ -44,7 +44,7 @@ const FilteredMountain = ({selectedCategories, selectedDetailCategories}) => {
       });
       setFilteredMountains(filteredData);
     }
-  }, [selectedCategories, selectedDetailCategories]);
+  }, [selectedCategories, selectedDetailCategories, data]);
 
   if (isLoading) {
     return <p>로딩중입니다...</p>;
@@ -58,11 +58,19 @@ const FilteredMountain = ({selectedCategories, selectedDetailCategories}) => {
   }
 
   return (
-    <ScMountainListWarapper>
-      {filteredMountains.map((mountain, index) => {
-        return <MountainCard key={index} mountain={mountain} />;
-      })}
-    </ScMountainListWarapper>
+    <>
+      {filteredMountains.length > 0 ? (
+        <ScMountainListWarapper>
+          {filteredMountains.map((mountain, index) => {
+            return <MountainCard key={index} mountain={mountain} />;
+          })}
+        </ScMountainListWarapper>
+      ) : (
+        <ScNoResultText>
+          <p>결과와 일치하는 산이 없습니다.</p>
+        </ScNoResultText>
+      )}
+    </>
   );
 };
 
@@ -76,4 +84,13 @@ const ScMountainListWarapper = styled.div`
   flex-wrap: wrap;
   gap: 20px;
   margin: 30px auto;
+`;
+
+const ScNoResultText = styled.div`
+  text-align: center;
+  margin: 50px auto;
+  width: fit-content;
+  background-color: #e8f6ef;
+  padding: 15px 30px;
+  border-radius: 20px;
 `;

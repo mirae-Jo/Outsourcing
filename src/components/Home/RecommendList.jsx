@@ -4,6 +4,7 @@ import {PiMountainsFill} from 'react-icons/pi';
 import {useQuery} from '@tanstack/react-query';
 import MountainCard from 'common/MountainCard';
 import {getMountains} from 'common/api/mountains';
+import {useSelector} from 'react-redux';
 
 const ITEM_COUNT = 4;
 
@@ -20,6 +21,9 @@ const RecommendList = () => {
     queryKey: ['mountains'],
     queryFn: getMountains,
   });
+
+  const {user, isloggined} = useSelector(state => state.user_auth);
+  console.log(user);
 
   useEffect(() => {
     getMountains();
@@ -52,26 +56,47 @@ const RecommendList = () => {
   }
 
   return (
-    <ScRecommendList>
-      <ScTitle>
-        <h1>
-          <span>한사랑 산악회 </span>추천 산
-        </h1>
-        <ScMountainIcon />
-      </ScTitle>
-      <ScMountainListWarapper>
-        {mountains.map((item, index) => (
-          <MountainCard mountain={item} />
-        ))}
-      </ScMountainListWarapper>
-    </ScRecommendList>
+    <ScMountainList>
+      {isloggined && (
+        <ScRecommendList>
+          <ScTitle>
+            <h1>
+              <span>{user.displayName}</span>님께 추천드립니다.
+            </h1>
+            <ScMountainIcon />
+          </ScTitle>
+          <ScMountainListWarapper>
+            {mountains.map((item, index) => (
+              <MountainCard mountain={item} />
+            ))}
+          </ScMountainListWarapper>
+        </ScRecommendList>
+      )}
+      <ScRecommendList>
+        <ScTitle>
+          <h1>
+            <span>한사랑 산악회 </span>추천 산
+          </h1>
+          <ScMountainIcon />
+        </ScTitle>
+        <ScMountainListWarapper>
+          {mountains.map((item, index) => (
+            <MountainCard mountain={item} key={index} />
+          ))}
+        </ScMountainListWarapper>
+      </ScRecommendList>
+    </ScMountainList>
   );
 };
 
 export default RecommendList;
 
+const ScMountainList = styled.div`
+  padding-bottom: 50px;
+`;
+
 const ScRecommendList = styled.div`
-  max-width: 100%;
+  max-width: 120%;
   width: 920px;
   margin: 20px auto;
   height: fit-content;

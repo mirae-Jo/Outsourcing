@@ -1,25 +1,23 @@
-import React, { useState } from 'react';
-import { useNavigate } from 'react-router-dom';
+import React, {useState} from 'react';
 import styled from 'styled-components';
-import { app } from 'shared/firebase';
-import { createUserWithEmailAndPassword, getAuth, signInWithEmailAndPassword } from 'firebase/auth';
+import {app} from 'shared/firebase';
+import {createUserWithEmailAndPassword, getAuth} from 'firebase/auth';
 import db from 'shared/firebase';
-import { doc, setDoc } from '@firebase/firestore';
+import {doc, setDoc} from '@firebase/firestore';
 import profilenormal from '../../assets/imgs/profilenormal.jpg';
 
-function SignUpModal({ isSignUpModal, setIsSignUpModal }) {
+function SignUpModal({isSignUpModal, setIsSignUpModal}) {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [nickname, setNickname] = useState('');
   const [emailError, setEmailError] = useState('');
   const [passwordError, setPasswordError] = useState('');
 
-  const navigate = useNavigate();
   const auth = getAuth(app);
 
   const inputChange = event => {
     const {
-      target: { name, value },
+      target: {name, value},
     } = event;
     if (name === 'email') {
       setEmail(value);
@@ -92,13 +90,13 @@ function SignUpModal({ isSignUpModal, setIsSignUpModal }) {
             <ScSection>
               <p>이메일 </p>
               <input type="email" value={email} name="email" onChange={inputChange} />
-              {emailError && <p style={{ color: 'red' }}>{emailError}</p>}
+              {emailError && <p style={{color: 'red'}}>{emailError}</p>}
             </ScSection>
 
             <ScSection>
               <p>패스워드 </p>
               <input type="password" value={password} name="password" onChange={inputChange} />
-              {passwordError && <p style={{ color: 'red' }}>{passwordError}</p>}
+              {passwordError && <p style={{color: 'red'}}>{passwordError}</p>}
             </ScSection>
             <ScSection>
               <p>닉네임 </p>

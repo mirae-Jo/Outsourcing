@@ -1,11 +1,11 @@
 import React from 'react';
 import {useNavigate} from 'react-router-dom';
-import styled from 'styled-components';
+import styled, {css} from 'styled-components';
 
-const MountainCard = ({mountain}) => {
+const MountainCard = ({mountain, size}) => {
   const navigate = useNavigate();
   return (
-    <ScMountainCard onClick={() => navigate(`/detail/${mountain.name}`)}>
+    <ScMountainCard onClick={() => navigate(`/detail/${mountain.name}`)} size={size}>
       <div>
         <ScTagContainer>
           <h3>{mountain?.name}</h3>
@@ -30,9 +30,23 @@ const MountainCard = ({mountain}) => {
 export default MountainCard;
 
 const ScMountainCard = styled.div`
-  width: 100%;
-  max-width: 450px;
-  height: 120px;
+  ${props => {
+    switch (props.size) {
+      case 'large':
+        return css`
+          width: 100%;
+          max-width: 700px;
+          height: 130px;
+        `;
+      default:
+        return css`
+          width: 100%;
+          max-width: 450px;
+          height: 120px;
+        `;
+    }
+  }}
+
   background-color: #e0dede;
   padding: 20px;
   line-height: 1.5;
