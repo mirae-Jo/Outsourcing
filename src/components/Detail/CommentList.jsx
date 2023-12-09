@@ -3,7 +3,6 @@ import { useSelector, useDispatch } from 'react-redux';
 import { useParams } from 'react-router-dom';
 import { deleteCommentStore } from 'shared/firebase';
 import { deleteComment } from 'shared/redux/modules/commentSlice';
-import defaultUserImg from 'assets/imgs/profilenormal.jpg';
 import styled from 'styled-components';
 
 
@@ -19,14 +18,12 @@ export default function CommentList() {
         if (window.confirm('삭제하시겠습니까?')) {
             deleteCommentStore(id);
             dispatch(deleteComment(id));
-            //setGetComments(comments);
         }
     }
 
     useEffect(() => {
-        //댓글이 추가될 때 바로 추가
+        //댓글이 추가 또는 삭제될 때 마다 업데이트
         setGetComments(comments);
-        console.log('comments가 추가되거나 삭제 되고 있음', comments);
     }, [comments])
 
 
@@ -42,7 +39,7 @@ export default function CommentList() {
                             <p>{comment}</p>
                             <ScUserInfo>
                                 <p>{displayName}</p>
-                                <img src={photoURL ? photoURL : defaultUserImg} alt='avatar' />
+                                <img src={photoURL} alt='avatar' />
                             </ScUserInfo>
                         </div>
                         <time>{new Date(createdAt).toLocaleString()}</time>
