@@ -21,18 +21,22 @@ const NavigationBar = () => {
       if (user) {
         const userDocRef = doc(db, 'users', user.uid);
         const userDocSnapshot = await getDoc(userDocRef);
-
+        console.log(user);
         if (userDocSnapshot.exists()) {
           const userData = userDocSnapshot.data();
           const avatarURL = userData.avatar;
           const userNickname = userData.nickname;
           const userPhotopURL = userData.photoURL;
+          console.log(avatarURL);
           console.log(userPhotopURL);
-          console.log(userData);
-          if (userData.provider === 'google.com') {
-            setAvatarUrl(userData.photoURL || user.photoURL);
-          } else {
+
+          const googleProviderData = user.providerData.find(provider => provider.providerId === 'google.com');
+          console.log(googleProviderData);
+
+          if (googleProviderData) {
             setAvatarUrl(userData.photoURL);
+          } else {
+            setAvatarUrl(avatarURL);
           }
 
           setUserNickName(userNickname);
@@ -57,11 +61,13 @@ const NavigationBar = () => {
       <ScHomeBT onClick={goHomeBT}>홈으로 </ScHomeBT>
 
       {(userDisplayName || userNickName) && <ScProfile onClick={clickOnProfile}>내 프로필 </ScProfile>}
-
+      {!(userDisplayName || userNickName) && (
+        <ScNotLoginComment>로그인이 아닙니다 로그인 하시겠습니까?</ScNotLoginComment>
+      )}
       {(userDisplayName || userNickName) && (
         <ScLoginContext>
           {avatarUrl && <ScProfileIMG src={avatarUrl} alt="Avatar" />}
-          <p>{`${userDisplayName || userNickName} 님 반갑습니다.`}</p>
+          <p>{`${userNickName || userDisplayName} 님 반갑습니다.`}</p>
         </ScLoginContext>
       )}
     </ScNavigationContainer>
@@ -125,5 +131,9 @@ const ScProfileIMG = styled.img`
   border: 3px solid white;
   object-fit: cover;
 `;
-
+const ScNotLoginComment = styled.p`
+  float: right;
+  margin-top: 20px;
+  margin-right: 10px;
+`;
 export default NavigationBar;

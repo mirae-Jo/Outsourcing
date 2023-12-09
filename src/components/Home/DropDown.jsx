@@ -2,12 +2,42 @@ import React, {useEffect, useRef, useState} from 'react';
 import styled from 'styled-components';
 import {TiArrowSortedDown} from 'react-icons/ti';
 import FilteredMountain from './FilteredMountain';
+import {MdOutlineCancel} from 'react-icons/md';
 
 const DropDown = () => {
   const [isOpen, setIsOpen] = useState(false);
-  const [selectedCategories, setSelectedCategories] = useState(null);
-  const [selectedDetailCategories, setSelectedDetailCategories] = useState(null);
+  const [selectedCategories, setSelectedCategories] = useState({});
+  const [selectedDetailCategories, setSelectedDetailCategories] = useState({});
   const dropdownRef = useRef(null);
+
+  const DROPDOWN_MENU = {
+    region: [
+      '강원도',
+      '경기도',
+      '경상남도',
+      '경상북도',
+      '광주광역시',
+      '대구광역시',
+      '대전광역시',
+      '부산광역시',
+      '서울특별시',
+      '울산광역시',
+      '인천광역시',
+      '전라남도',
+      '전라북도',
+      '제주특별자치도',
+      '충청남도',
+      '충청북도',
+    ],
+    difficulty: ['초급', '중급', '고급'],
+    duration: ['1시간 미만', '1~2시간', '2~3시간', '3~4시간', '4시간 이상'],
+  };
+
+  const displayName = {
+    region: '지역별',
+    difficulty: '난이도별',
+    duration: '소요시간별',
+  };
 
   useEffect(() => {
     const handleClickOutside = e => {
@@ -23,25 +53,30 @@ const DropDown = () => {
     };
   }, [dropdownRef]);
 
+  const handleFilterCancleClick = category => {
+    setSelectedDetailCategories(prev => {
+      const updatedDetailCategories = {...prev};
+      delete updatedDetailCategories[category];
+      return updatedDetailCategories;
+    });
+  };
+
   return (
     <>
       <ScDropDownContainer ref={dropdownRef}>
-        {/* <ScDropDownContainer> */}
         {Object.keys(DROPDOWN_MENU).map((category, index) => {
           return (
             <ScDropDownWrapper key={index}>
-              {/**마우스 다운 이벤트 감지 외부or 내부 */}
               <ScBtnWrapper
                 onClick={() => {
                   setIsOpen(true);
-                  setSelectedCategories(category);
+                  setSelectedCategories({[category]: true});
                 }}
               >
-                <button>{category}</button>
+                <button>{displayName[category]}</button>
                 <ScArrowIcon />
               </ScBtnWrapper>
-
-              {isOpen && selectedCategories === category && (
+              {isOpen && selectedCategories[category] && (
                 <ScDropDown>
                   <ul>
                     {DROPDOWN_MENU[category].map((detailCategory, index) => {
@@ -50,7 +85,10 @@ const DropDown = () => {
                           key={index}
                           onClick={() => {
                             setIsOpen(false);
-                            setSelectedDetailCategories(detailCategory);
+                            setSelectedDetailCategories(prev => ({
+                              ...prev,
+                              [category]: detailCategory,
+                            }));
                           }}
                         >
                           {detailCategory}
@@ -64,10 +102,23 @@ const DropDown = () => {
           );
         })}
       </ScDropDownContainer>
-      {selectedDetailCategories && (
+
+      {/* 필터 태그 구현 */}
+      <ScCategoryWrapper>
+        {console.log(selectedDetailCategories)}
+        {Object.keys(selectedDetailCategories).map(
+          category =>
+            selectedDetailCategories[category] && (
+              <ScDetailCategoryTag key={category}>
+                {selectedDetailCategories[category]} <ScCancleIcon onClick={() => handleFilterCancleClick(category)} />
+              </ScDetailCategoryTag>
+            ),
+        )}
+      </ScCategoryWrapper>
+
+      {Object.keys(selectedDetailCategories).length > 0 && (
         <FilteredMountain
-          DROPDOWN_MENU={DROPDOWN_MENU}
-          selectedCategories={selectedCategories}
+          selectedCategories={Object.keys(selectedDetailCategories)}
           selectedDetailCategories={selectedDetailCategories}
         />
       )}
@@ -76,29 +127,6 @@ const DropDown = () => {
 };
 
 export default DropDown;
-
-const DROPDOWN_MENU = {
-  지역별: [
-    '강원도',
-    '경기도',
-    '경상남도',
-    '경상북도',
-    '광주광역시',
-    '대구광역시',
-    '대전광역시',
-    '부산광역시',
-    '서울특별시',
-    '울산광역시',
-    '인천광역시',
-    '전라남도',
-    '전라북도',
-    '제주특별자치도',
-    '충청남도',
-    '충청북도',
-  ],
-  난이도별: ['초급', '중급', '고급'],
-  소요시간별: ['1시간 미만', '1~2시간', '2~3시간', '3~4시간', '4시간 이상'],
-};
 
 const ScDropDownContainer = styled.div`
   display: flex;
@@ -168,5 +196,28 @@ const ScArrowIcon = styled(TiArrowSortedDown)`
   font-size: 25px;
   color: #1b9c85;
   z-index: 10;
+  cursor: pointer;
+`;
+
+const ScCategoryWrapper = styled.div`
+  display: flex;
+  flex-direction: row;
+  justify-content: center;
+  gap: 10px;
+  margin-top: 20px;
+`;
+
+const ScDetailCategoryTag = styled.p`
+  width: fit-content;
+  padding: 5px 15px;
+  border-radius: 20px;
+  color: white;
+  background-color: #1b9c85;
+  display: flex;
+  align-items: center;
+`;
+
+const ScCancleIcon = styled(MdOutlineCancel)`
+  margin-left: 4px;
   cursor: pointer;
 `;
