@@ -80,9 +80,9 @@ const ScHomeBT = styled.button`
   margin-top: 10px;
   margin-left: 15px;
   font-weight: bold;
-  width: 100px;
+  width: 50px;
   height: 30px;
-
+  object-fit: cover;
   border-width: medium;
   background-image: url(${loopy});
   background-size: cover;
