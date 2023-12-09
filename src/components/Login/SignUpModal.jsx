@@ -30,8 +30,14 @@ function SignUpModal({isSignUpModal, setIsSignUpModal}) {
     }
   };
 
-  const changeSignUp = event => {
+  const changeSignUp = async event => {
     event.preventDefault();
+
+    // 이메일 형식 유효성 검사
+    if (!isEmailValid(email)) {
+      setEmailError('유효한 이메일 형식이 아닙니다.');
+      return;
+    }
 
     // 비밀번호 유효성 검사
     if (!isPasswordValid(password)) {
@@ -40,25 +46,8 @@ function SignUpModal({isSignUpModal, setIsSignUpModal}) {
     }
 
     // 중복된 이메일 체크
-    checkDuplicateEmail(email);
-  };
-
-  const checkDuplicateEmail = async email => {
     try {
-      const userCredential = await createUserWithEmailAndPassword(auth, email, password);
-      // 사용자 정보를 Firestore에 저장
-      await setDoc(doc(db, 'users', userCredential.user.uid), {
-        email: email,
-        nickname: nickname,
-        avatar: profilenormal,
-      });
-      // 회원가입 성공시
-      // 여기에서 추가적인 로직 수행 가능
-      setIsSignUpModal(false);
-      setPassword('');
-      setEmail('');
-      setNickname('');
-      console.log('회원가입 성공');
+      await checkDuplicateEmail(email);
     } catch (error) {
       // 중복된 이메일일 경우 에러 발생
       console.error(error);
@@ -66,6 +55,30 @@ function SignUpModal({isSignUpModal, setIsSignUpModal}) {
     }
   };
 
+  const checkDuplicateEmail = async email => {
+    // 중복된 이메일 체크
+    const userCredential = await createUserWithEmailAndPassword(auth, email, password);
+
+    // 사용자 정보를 Firestore에 저장
+    await setDoc(doc(db, 'users', userCredential.user.uid), {
+      email: email,
+      nickname: nickname,
+      avatar: profilenormal,
+    });
+
+    // 회원가입 성공시
+    // 여기에서 추가적인 로직 수행 가능
+    setIsSignUpModal(false);
+    setPassword('');
+    setEmail('');
+    setNickname('');
+    console.log('회원가입 성공');
+  };
+  const isEmailValid = email => {
+    // 간단한 이메일 형식 유효성 검사
+    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    return emailRegex.test(email);
+  };
   const isPasswordValid = password => {
     // 비밀번호에 대문자, 소문자, 숫자가 모두 포함되어 있는지 여부를 확인
     const hasUpperCase = /[A-Z]/.test(password);
