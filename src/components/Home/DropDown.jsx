@@ -11,7 +11,7 @@ const DropDown = () => {
   const dropdownRef = useRef(null);
 
   const DROPDOWN_MENU = {
-    지역별: [
+    region: [
       '강원도',
       '경기도',
       '경상남도',
@@ -29,8 +29,8 @@ const DropDown = () => {
       '충청남도',
       '충청북도',
     ],
-    난이도별: ['초급', '중급', '고급'],
-    소요시간별: ['1시간 미만', '1~2시간', '2~3시간', '3~4시간', '4시간 이상'],
+    difficulty: ['초급', '중급', '고급'],
+    duration: ['1시간 미만', '1~2시간', '2~3시간', '3~4시간', '4시간 이상'],
   };
 
   const displayName = {
@@ -69,7 +69,7 @@ const DropDown = () => {
                   setSelectedCategories(category);
                 }}
               >
-                <button>{category}</button>
+                <button>{displayName[category]}</button>
                 <ScArrowIcon />
               </ScBtnWrapper>
               {isOpen && selectedCategories === category && (

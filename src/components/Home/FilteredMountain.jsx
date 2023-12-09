@@ -29,11 +29,11 @@ const FilteredMountain = ({selectedCategories, selectedDetailCategories}) => {
     if (data && data.length > 0) {
       const filtered = data.filter(mountain => {
         switch (selectedCategories) {
-          case '지역별':
+          case 'region':
             return mountain.filterlocation === selectedDetailCategories;
-          case '난이도별':
+          case 'difficulty':
             return mountain.difficulty === selectedDetailCategories;
-          case '소요시간별':
+          case 'duration':
             return filterTime(mountain.filtertime) === selectedDetailCategories;
           default:
             return false;
