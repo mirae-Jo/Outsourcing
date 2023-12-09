@@ -172,7 +172,7 @@ const LoginModal = () => {
     } catch (error) {
       console.error(error);
     }
-
+    //셋타임 아웃 삭제
     window.location.reload();
   };
 
