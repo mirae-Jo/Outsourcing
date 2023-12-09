@@ -138,10 +138,12 @@ const LoginModal = () => {
         email: user.email,
         nickName: user.displayName,
         avatar: profilenormal,
+        photoURL: user.photoURL,
         // 기타 필요한 사용자 정보 추가
       });
 
       console.log('사용자 정보 Firestore에 저장 완료');
+      console.log(setDoc);
     } else {
       console.log('이미 사용자 정보가 Firestore에 존재합니다.');
     }
