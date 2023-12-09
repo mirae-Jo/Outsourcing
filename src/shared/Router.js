@@ -4,7 +4,7 @@ import Header from 'components/Layout/Header';
 import HomePage from '../pages/HomePage';
 import DetailPage from '../pages/DetailPage';
 import {ProFilePage} from 'pages/ProFilePage';
-
+import Footer from 'components/Layout/Footer';
 const Router = () => {
   return (
     <BrowserRouter>
@@ -15,6 +15,7 @@ const Router = () => {
         <Route path="detail/:mountainName" element={<DetailPage />} />
         <Route path="ProFilePage:id" element={<ProFilePage />} />
       </Routes>
+      <Footer />
     </BrowserRouter>
   );
 };

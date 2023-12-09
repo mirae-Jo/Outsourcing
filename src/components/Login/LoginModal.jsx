@@ -250,6 +250,7 @@ const ScModalCloseBT = styled.button`
   height: 30px;
   font-weight: bold;
   border-radius: 3px;
+
   &:hover {
     background-color: #ddd;
   }
@@ -299,6 +300,7 @@ const ScLoginButton = styled.button`
   border: 1px solid black;
   border-radius: 5px;
   background-color: #ffffff;
+
   &:hover {
     background-color: #ddd;
   }
@@ -320,6 +322,8 @@ const ScSection = styled.section`
 `;
 const ScModalClickBt = styled.button`
   border-radius: 5px;
+  border: 1px solid black;
+  border-width: medium;
   background-color: #ffffff;
   float: right;
   margin-top: 10px;
