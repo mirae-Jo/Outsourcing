@@ -27,15 +27,18 @@ export const ProFilePage = () => {
     // useEffect 정리 함수에서 구독 해제
     return () => unsubscribe();
   }, []); // 빈 배열을 전달하여 최초 한 번만 실행되도록 설정
-
   const fetchUserData = async user => {
     const userDocRef = doc(db, 'users', user.uid);
     const userDocSnapshot = await getDoc(userDocRef);
 
     if (userDocSnapshot.exists()) {
       const userData = userDocSnapshot.data();
-      setNickname(userData.nickName);
-      setProfileImage(userData.avatar);
+      setNickname(userData.nickname);
+
+      // 사용자가 구글 로그인 사용자인 경우 photoURL을 가져옴
+      setProfileImage(
+        auth.currentUser.providerData[0]?.providerId === 'google.com' ? userData.photoURL : userData.avatar,
+      );
     }
   };
 
@@ -54,37 +57,30 @@ export const ProFilePage = () => {
       return;
     }
     const userDocRef = doc(db, 'users', user.uid);
-
+    console.log(userDocRef.photoURL);
     // Firestore에 사용자 데이터가 있는지 확인
     const userDocSnapshot = await getDoc(userDocRef);
 
     if (userDocSnapshot.exists()) {
-      // 이미 데이터가 있는 경우 업데이트
       await updateDoc(userDocRef, {
-        // 닉네임은 모든 사용자에게 공통으로 업데이트
-        nickName: newNickname !== '' ? newNickname : nickname,
-        // Google 로그인 사용자는 photoURL로, 일반 사용자는 avatar로 업데이트
-        photoURL:
-          auth.currentUser.providerData[0]?.providerId === 'google.com' ? newProfileImage || profileImage : null,
-        avatar: auth.currentUser.providerData[0]?.providerId === 'google.com' ? newProfileImage || profileImage : null,
+        nickname: newNickname !== '' ? newNickname : nickname,
+        // Google 로그인 사용자와 일반 사용자 모두 프로필 이미지 업데이트
+        photoURL: newProfileImage || profileImage,
+        avatar: newProfileImage || profileImage,
       });
     } else {
-      // 데이터가 없는 경우 새로운 문서를 만들어 저장
       const userData = {
         uid: auth.currentUser.uid,
-        // 닉네임은 모든 사용자에게 공통으로 저장
-        nickName: newNickname || nickname,
-        // Google 로그인 사용자는 photoURL로, 일반 사용자는 avatar로 설정
-        photoURL:
-          auth.currentUser.providerData[0]?.providerId === 'google.com' ? newProfileImage || profileImage : null,
-        avatar: auth.currentUser.providerData[0]?.providerId === 'google.com' ? null : newProfileImage || profileImage,
-        // provider 정보 추가
+        nickname: newNickname || nickname,
+        // Google 로그인 사용자와 일반 사용자 모두 프로필 이미지 설정
+        photoURL: newProfileImage || profileImage,
+        avatar: newProfileImage || profileImage,
         provider: auth.currentUser.providerData[0]?.providerId,
       };
       await setDoc(userDocRef, userData);
     }
 
-    setNickname(newNickname || nickname);
+    setNickname(nickname);
     setProfileImage(newProfileImage || profileImage);
     setIsEditMode(false);
     setTimeout(() => {
@@ -98,46 +94,32 @@ export const ProFilePage = () => {
       const storageRef = ref(storage, `images/${auth.currentUser.uid}/${file.name}`);
       await uploadBytes(storageRef, file);
 
-      // 업로드된 이미지의 다운로드 URL을 얻어온다.
       const downloadURL = await getDownloadURL(storageRef);
 
-      // Firestore에 사용자 데이터가 있는지 확인
       const userDocRef = doc(db, 'users', auth.currentUser.uid);
       const userDocSnapshot = await getDoc(userDocRef);
 
       if (userDocSnapshot.exists()) {
         // 이미 데이터가 있는 경우 업데이트
-        const userData = userDocSnapshot.data();
-
-        if (userData.provider === 'google') {
-          // Google 로그인 사용자는 photoURL로 업데이트
-          await updateDoc(userDocRef, {
-            nickName: newNickname,
-            photoURL: downloadURL,
-            avatar: downloadURL,
-          });
-        } else {
-          // 일반 사용자는 avatar로 업데이트
-          await updateDoc(userDocRef, {
-            nickName: newNickname,
-            avatar: downloadURL,
-          });
-        }
+        await updateDoc(userDocRef, {
+          nickname: newNickname,
+          // Google 로그인 사용자와 일반 사용자 모두 프로필 이미지 URL 업데이트
+          photoURL: downloadURL,
+          avatar: downloadURL,
+        });
       } else {
         // 데이터가 없는 경우 새로운 문서를 만들어 저장
         const userData = {
           uid: auth.currentUser.uid,
-          nickName: newNickname || nickname,
-          // Google 로그인인 경우 photoURL로, 일반 사용자인 경우 avatar로 설정
-          photoURL: auth.currentUser.providerData[0]?.providerId === 'google.com' ? downloadURL : null,
-          avatar: auth.currentUser.providerData[0]?.providerId === 'google.com' ? downloadURL : null,
-          // provider 정보 추가
+          nickname: newNickname || nickname,
+          // Google 로그인 사용자와 일반 사용자 모두 프로필 이미지 URL 설정
+          photoURL: downloadURL,
+          avatar: downloadURL,
           provider: auth.currentUser.providerData[0]?.providerId,
         };
         await setDoc(userDocRef, userData);
       }
 
-      // 다운로드 URL을 state에 저장
       setProfileImage(downloadURL);
     } catch (error) {
       console.error('Error uploading image:', error);
