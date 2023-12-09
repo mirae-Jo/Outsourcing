@@ -1,6 +1,6 @@
 import { initializeApp } from 'firebase/app';
 import { getAuth } from 'firebase/auth';
-import { getFirestore, collection, query, where, getDocs, addDoc, deleteDoc } from 'firebase/firestore';
+import { getFirestore, collection, doc, query, where, getDocs, getDoc, addDoc, deleteDoc } from 'firebase/firestore';
 import { getStorage } from 'firebase/storage';
 
 //파이어베이스 키 .env.local에  저장
@@ -11,7 +11,7 @@ const firebaseConfig = {
   storageBucket: process.env.REACT_APP_FIREBASE_STORAGE_BUCKET,
   messagingSenderId: process.env.REACT_APP_FIREBASE_MESSAGING_SENDER_ID,
   appId: process.env.REACT_APP_FIREBASE_APP_ID,
-  // measurementId: process.env.REACT_APP_FIREBASE_MEASUREMENT_ID,
+  measurementId: process.env.REACT_APP_FIREBASE_MEASUREMENT_ID,
 };
 
 //파이어베이스 초기화
@@ -36,13 +36,25 @@ export const getComments = async () => {
   return data;
 }
 
+//구글 외에 로그인한 경우 user 파이어스토에서 닉네임 가져오기
+export const getUserInfo = async (uid) => {
+  const userRef = doc(db, 'users', uid);
+  const userSnap = await getDoc(userRef);
+  let data;
+  if (userSnap.exists()) {
+    const { avatar, nickname } = userSnap.data();
+    data = { displayName: nickname, photoURL: avatar };
+    return data;
+  }
+  return null;
+}
+
+
 export const addCommentStore = async (comment) => {
   await addDoc(collection(db, 'comments'), comment);
 };
 
 export const deleteCommentStore = async (id) => {
-  //삭제할 다큐먼트 id말고 uuid로 부여한 id가 일치한 comment 삭제
-  //await deleteDoc(doc(db,'comments',id));
   const deleted = query(collection(db, "comments"), where("id", '==', id));
   const data = await getDocs(deleted);
   return await deleteDoc(data.docs[0].ref);
