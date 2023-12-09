@@ -25,15 +25,17 @@ const NavigationBar = () => {
         if (userDocSnapshot.exists()) {
           const userData = userDocSnapshot.data();
           const avatarURL = userData.avatar;
-          const userNickname = userData.nickName;
-
+          const userNickname = userData.nickname;
+          const userPhotopURL = userData.photoURL;
+          console.log(userPhotopURL);
+          console.log(userData);
           if (userData.provider === 'google.com') {
             setAvatarUrl(userData.photoURL || user.photoURL);
           } else {
-            setAvatarUrl(avatarURL || user.photoURL);
+            setAvatarUrl(userData.photoURL);
           }
 
-          setUserNickName(userNickname || null);
+          setUserNickName(userNickname);
         }
       }
     });
@@ -54,16 +56,12 @@ const NavigationBar = () => {
       {isLoginModal ? <LoginModal /> : null}
       <ScHomeBT onClick={goHomeBT}>홈으로 </ScHomeBT>
 
-      {userDisplayName && <ScProfile onClick={clickOnProfile}>내 프로필 </ScProfile>}
+      {(userDisplayName || userNickName) && <ScProfile onClick={clickOnProfile}>내 프로필 </ScProfile>}
 
-      {userDisplayName ? (
+      {(userDisplayName || userNickName) && (
         <ScLoginContext>
           {avatarUrl && <ScProfileIMG src={avatarUrl} alt="Avatar" />}
-          <p>{userNickName ? <>{userNickName} 님 반갑습니다.</> : `${userDisplayName} 님 반갑습니다.`}</p>
-        </ScLoginContext>
-      ) : (
-        <ScLoginContext>
-          <p>로그인 상태가 아닙니다. 로그인 하시겠습니까?</p>
+          <p>{`${userDisplayName || userNickName} 님 반갑습니다.`}</p>
         </ScLoginContext>
       )}
     </ScNavigationContainer>
