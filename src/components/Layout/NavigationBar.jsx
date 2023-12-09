@@ -132,8 +132,12 @@ const ScProfileIMG = styled.img`
   object-fit: cover;
 `;
 const ScNotLoginComment = styled.p`
-  float: right;
   margin-top: 20px;
   margin-right: 10px;
+  cursor: pointer;
+  float: right;
+  &:hover {
+    text-decoration: underline;
+  }
 `;
 export default NavigationBar;
