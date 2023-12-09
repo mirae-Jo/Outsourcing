@@ -1,7 +1,7 @@
-import { initializeApp } from 'firebase/app';
-import { getAuth } from 'firebase/auth';
-import { getFirestore, collection, doc, query, where, getDocs, getDoc, addDoc, deleteDoc } from 'firebase/firestore';
-import { getStorage } from 'firebase/storage';
+import {initializeApp} from 'firebase/app';
+import {getAuth} from 'firebase/auth';
+import {getFirestore, collection, doc, query, where, getDocs, getDoc, addDoc, deleteDoc} from 'firebase/firestore';
+import {getStorage} from 'firebase/storage';
 
 //파이어베이스 키 .env.local에  저장
 const firebaseConfig = {
@@ -24,40 +24,39 @@ const db = getFirestore(app);
 export const storage = getStorage(app);
 
 export const getComments = async () => {
-  const querySnapshot = await getDocs(collection(db, "comments"));
+  const querySnapshot = await getDocs(collection(db, 'comments'));
   const data = [];
-  querySnapshot.forEach((doc) => {
+  querySnapshot.forEach(doc => {
     data.push({
       ...doc.data(),
       //날짜 타임스탬프를 날짜형으로 재변경
       createdAt: doc.data()['createdAt'].toDate(),
     });
-  })
+  });
   return data;
-}
+};
 
 //구글 외에 로그인한 경우 user 파이어스토에서 닉네임 가져오기
-export const getUserInfo = async (uid) => {
+export const getUserInfo = async uid => {
   const userRef = doc(db, 'users', uid);
   const userSnap = await getDoc(userRef);
   let data;
   if (userSnap.exists()) {
-    const { avatar, nickname } = userSnap.data();
-    data = { displayName: nickname, photoURL: avatar };
+    const {avatar, nickname} = userSnap.data();
+    data = {displayName: nickname, photoURL: avatar};
     return data;
   }
   return null;
-}
+};
 
-
-export const addCommentStore = async (comment) => {
+export const addCommentStore = async comment => {
   await addDoc(collection(db, 'comments'), comment);
 };
 
-export const deleteCommentStore = async (id) => {
-  const deleted = query(collection(db, "comments"), where("id", '==', id));
+export const deleteCommentStore = async id => {
+  const deleted = query(collection(db, 'comments'), where('id', '==', id));
   const data = await getDocs(deleted);
   return await deleteDoc(data.docs[0].ref);
-}
+};
 
 export default db;
