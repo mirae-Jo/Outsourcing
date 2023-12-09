@@ -28,21 +28,42 @@ const FilteredMountain = ({selectedCategories, selectedDetailCategories}) => {
   useEffect(() => {
     if (data && data.length > 0) {
       const filtered = data.filter(mountain => {
-        switch (selectedCategories) {
-          case 'region':
-            return mountain.filterlocation === selectedDetailCategories;
-          case 'difficulty':
-            return mountain.difficulty === selectedDetailCategories;
-          case 'duration':
-            return filterTime(mountain.filtertime) === selectedDetailCategories;
-          default:
-            return false;
-        }
+        return selectedCategories.every(category => {
+          switch (category) {
+            case 'region':
+              return selectedDetailCategories[category] === mountain.filterlocation;
+            case 'difficulty':
+              return selectedDetailCategories[category] === mountain.difficulty;
+            case 'duration':
+              return selectedDetailCategories[category] === filterTime(mountain.filtertime);
+            default:
+              return false;
+          }
+        });
       });
-      console.log(filtered);
+
       setFilteredMountains(filtered);
     }
   }, [selectedCategories, selectedDetailCategories, data]);
+
+  // useEffect(() => {
+  //   if (data && data.length > 0) {
+  //     const filtered = data.filter(mountain => {
+  //       switch (selectedCategories) {
+  //         case 'region':
+  //           return mountain.filterlocation === selectedDetailCategories;
+  //         case 'difficulty':
+  //           return mountain.difficulty === selectedDetailCategories;
+  //         case 'duration':
+  //           return filterTime(mountain.filtertime) === selectedDetailCategories;
+  //         default:
+  //           return false;
+  //       }
+  //     });
+  //     console.log(filtered);
+  //     setFilteredMountains(filtered);
+  //   }
+  // }, [selectedCategories, selectedDetailCategories, data]);
 
   if (isLoading) {
     return <p>로딩중입니다...</p>;

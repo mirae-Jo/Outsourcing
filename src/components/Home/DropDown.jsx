@@ -7,7 +7,9 @@ import {MdOutlineCancel} from 'react-icons/md';
 const DropDown = () => {
   const [isOpen, setIsOpen] = useState(false);
   const [selectedCategories, setSelectedCategories] = useState(null);
-  const [selectedDetailCategories, setSelectedDetailCategories] = useState(null);
+  // const [selectedCategories, setSelectedCategories] = useState(null);
+  const [selectedDetailCategories, setSelectedDetailCategories] = useState({});
+  // const [selectedDetailCategories, setSelectedDetailCategories] = useState(null);
   const dropdownRef = useRef(null);
 
   const DROPDOWN_MENU = {
@@ -53,9 +55,16 @@ const DropDown = () => {
     };
   }, [dropdownRef]);
 
-  const handelFilterCancleClick = () => {
-    setSelectedDetailCategories(null);
+  const handelFilterCancleClick = category => {
+    setSelectedDetailCategories(prev => ({
+      ...prev,
+      [category]: null,
+    }));
   };
+
+  // const handelFilterCancleClick = () => {
+  //   setSelectedDetailCategories(null);
+  // };
 
   return (
     <>
@@ -66,13 +75,16 @@ const DropDown = () => {
               <ScBtnWrapper
                 onClick={() => {
                   setIsOpen(true);
-                  setSelectedCategories(category);
+                  setSelectedCategories(prev => ({
+                    [category]: true,
+                  }));
                 }}
               >
                 <button>{displayName[category]}</button>
                 <ScArrowIcon />
               </ScBtnWrapper>
-              {isOpen && selectedCategories === category && (
+              {isOpen && selectedCategories[category] && (
+                // {isOpen && selectedCategories === category && (
                 <ScDropDown>
                   <ul>
                     {DROPDOWN_MENU[category].map((detailCategory, index) => {
@@ -81,8 +93,12 @@ const DropDown = () => {
                           key={index}
                           onClick={() => {
                             setIsOpen(false);
-                            setSelectedDetailCategories(detailCategory);
+                            setSelectedDetailCategories(prev => ({
+                              ...prev,
+                              [category]: detailCategory,
+                            }));
                           }}
+                          // setSelectedDetailCategories(detailCategory);
                         >
                           {detailCategory}
                         </li>
@@ -95,18 +111,22 @@ const DropDown = () => {
           );
         })}
       </ScDropDownContainer>
-      {selectedDetailCategories && (
-        <>
-          <ScCategoryWrapper>
-            <ScDetailCategoryTag>
-              {selectedDetailCategories} <ScCancleIcon onClick={handelFilterCancleClick} />
-            </ScDetailCategoryTag>
-          </ScCategoryWrapper>
-          <FilteredMountain
-            selectedCategories={selectedCategories}
-            selectedDetailCategories={selectedDetailCategories}
-          />
-        </>
+      <ScCategoryWrapper>
+        {Object.keys(selectedDetailCategories).map(
+          category =>
+            selectedDetailCategories[category] && (
+              <ScDetailCategoryTag key={category}>
+                {selectedDetailCategories[category]} <ScCancleIcon onClick={() => handelFilterCancleClick(category)} />
+              </ScDetailCategoryTag>
+            ),
+        )}
+      </ScCategoryWrapper>
+
+      {Object.keys(selectedDetailCategories).length > 0 && (
+        <FilteredMountain
+          selectedCategories={Object.keys(selectedDetailCategories)}
+          selectedDetailCategories={selectedDetailCategories}
+        />
       )}
     </>
   );
@@ -189,6 +209,7 @@ const ScCategoryWrapper = styled.div`
   display: flex;
   flex-direction: row;
   justify-content: center;
+  gap: 10px;
   margin-top: 20px;
 `;
 
