@@ -7,9 +7,7 @@ import {MdOutlineCancel} from 'react-icons/md';
 const DropDown = () => {
   const [isOpen, setIsOpen] = useState(false);
   const [selectedCategories, setSelectedCategories] = useState(null);
-  // const [selectedCategories, setSelectedCategories] = useState(null);
   const [selectedDetailCategories, setSelectedDetailCategories] = useState({});
-  // const [selectedDetailCategories, setSelectedDetailCategories] = useState(null);
   const dropdownRef = useRef(null);
 
   const DROPDOWN_MENU = {
@@ -56,15 +54,13 @@ const DropDown = () => {
   }, [dropdownRef]);
 
   const handelFilterCancleClick = category => {
-    setSelectedDetailCategories(prev => ({
-      ...prev,
-      [category]: null,
-    }));
+    console.log(selectedDetailCategories);
+    setSelectedDetailCategories(prev => {
+      const updatedDetailCategories = {...prev};
+      delete updatedDetailCategories[category];
+      return updatedDetailCategories;
+    });
   };
-
-  // const handelFilterCancleClick = () => {
-  //   setSelectedDetailCategories(null);
-  // };
 
   return (
     <>
@@ -84,7 +80,6 @@ const DropDown = () => {
                 <ScArrowIcon />
               </ScBtnWrapper>
               {isOpen && selectedCategories[category] && (
-                // {isOpen && selectedCategories === category && (
                 <ScDropDown>
                   <ul>
                     {DROPDOWN_MENU[category].map((detailCategory, index) => {
@@ -98,7 +93,6 @@ const DropDown = () => {
                               [category]: detailCategory,
                             }));
                           }}
-                          // setSelectedDetailCategories(detailCategory);
                         >
                           {detailCategory}
                         </li>

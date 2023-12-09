@@ -46,25 +46,6 @@ const FilteredMountain = ({selectedCategories, selectedDetailCategories}) => {
     }
   }, [selectedCategories, selectedDetailCategories, data]);
 
-  // useEffect(() => {
-  //   if (data && data.length > 0) {
-  //     const filtered = data.filter(mountain => {
-  //       switch (selectedCategories) {
-  //         case 'region':
-  //           return mountain.filterlocation === selectedDetailCategories;
-  //         case 'difficulty':
-  //           return mountain.difficulty === selectedDetailCategories;
-  //         case 'duration':
-  //           return filterTime(mountain.filtertime) === selectedDetailCategories;
-  //         default:
-  //           return false;
-  //       }
-  //     });
-  //     console.log(filtered);
-  //     setFilteredMountains(filtered);
-  //   }
-  // }, [selectedCategories, selectedDetailCategories, data]);
-
   if (isLoading) {
     return <p>로딩중입니다...</p>;
   }
