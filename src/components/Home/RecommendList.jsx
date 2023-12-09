@@ -4,7 +4,9 @@ import {PiMountainsFill} from 'react-icons/pi';
 import {useQuery} from '@tanstack/react-query';
 import MountainCard from 'common/MountainCard';
 import {getMountains} from 'common/api/mountains';
-import {useSelector} from 'react-redux';
+import {useDispatch, useSelector} from 'react-redux';
+import {getUserInfo} from 'shared/firebase';
+import {login} from 'shared/redux/modules/authSlice';
 
 const ITEM_COUNT = 4;
 
@@ -22,12 +24,26 @@ const RecommendList = () => {
     queryFn: getMountains,
   });
 
+  const dispatch = useDispatch();
+
   const {user, isloggined} = useSelector(state => state.user_auth);
   console.log(user);
 
   useEffect(() => {
     getMountains();
   }, []);
+
+  useEffect(() => {
+    const fetchData = async () => {
+      if (isloggined) {
+        const userInfo = await getUserInfo(user.uid);
+        console.log('userInfo:', userInfo);
+        // dispatch(login(userInfo));
+      }
+    };
+
+    fetchData();
+  }, [dispatch, isloggined, user.uid]);
 
   useEffect(() => {
     if (!data) return;
