@@ -8,6 +8,8 @@ import RecommendList from 'components/Home/RecommendList';
 import db from 'shared/firebase';
 import {useDispatch} from 'react-redux';
 import {login} from 'shared/redux/modules/authSlice';
+import Header from 'components/Layout/Header';
+
 function HomePage() {
   const [isLoginModal, setIsLoginModal] = useState(true);
   const dispatch = useDispatch();
@@ -38,6 +40,7 @@ function HomePage() {
 
   return (
     <>
+      <Header />
       <Search location={location} setLocation={setLocation} />
       <RecommendList />
       <KakaoMap location={location} setLocation={setLocation} />
