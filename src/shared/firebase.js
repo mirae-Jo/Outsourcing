@@ -33,7 +33,6 @@ export const auth = getAuth(app);
 const db = getFirestore(app);
 //스토리지 생성
 export const storage = getStorage(app);
-console.log(storage);
 export const getComments = async () => {
   const querySnapshot = await getDocs(collection(db, 'comments'));
   const data = [];
