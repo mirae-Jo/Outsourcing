@@ -1,4 +1,4 @@
-import { createSlice } from '@reduxjs/toolkit';
+import {createSlice} from '@reduxjs/toolkit';
 
 const authslice = createSlice({
   name: 'user_auth',
@@ -8,12 +8,13 @@ const authslice = createSlice({
       uid: localStorage.getItem('uid'),
       displayName: localStorage.getItem('displayName'),
       photoURL: localStorage.getItem('photoURL'),
+      nickname: localStorage.getItem('nickname'),
     },
   },
   reducers: {
     login: (state, action) => {
       state.isloggined = true;
-      let { uid, displayName, photoURL } = action.payload;
+      let {uid, displayName, photoURL} = action.payload;
       if (!displayName && !photoURL) {
         displayName = localStorage.getItem('displayName', displayName);
         photoURL = localStorage.getItem('photoURL', photoURL);
@@ -21,7 +22,7 @@ const authslice = createSlice({
       localStorage.setItem('uid', uid);
       localStorage.setItem('displayName', displayName);
       localStorage.setItem('photoURL', photoURL);
-      state.user = { uid, displayName, photoURL };
+      state.user = {uid, displayName, photoURL};
       console.log('displayName', displayName, 'photoURL', photoURL);
     },
     logout: (state, action) => {
@@ -34,14 +35,14 @@ const authslice = createSlice({
       localStorage.removeItem('photoURL');
     },
     userUpdate: (state, action) => {
-      const { displayName, photoURL } = action.payload;
+      const {displayName, photoURL} = action.payload;
       state.user.displayName = displayName;
       state.user.photoURL = photoURL;
       localStorage.setItem('displayName', displayName);
       localStorage.setItem('photoURL', photoURL);
     },
     userProfileUpdate: (state, action) => {
-      let { displayName, photoURL } = action.payload;
+      let {displayName, photoURL} = action.payload;
       if (displayName) {
         state.user.displayName = displayName;
         localStorage.setItem('displayName', displayName);
@@ -50,10 +51,10 @@ const authslice = createSlice({
         state.user.photoURL = photoURL;
         localStorage.setItem('photoURL', photoURL);
       }
-    }
+    },
   },
 });
 
-export const { login, logout, userUpdate, userProfileUpdate } = authslice.actions;
+export const {login, logout, userUpdate, userProfileUpdate} = authslice.actions;
 
 export default authslice.reducer;
