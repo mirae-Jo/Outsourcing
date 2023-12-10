@@ -5,13 +5,14 @@ import DropDown from './DropDown';
 import SearchingPage from './SearchingPage';
 
 const Search = () => {
-  const [searchAddress, setSearchAddress] = useState('');
+  const [searchAddress, setSearchAddress] = useState();
   const [location, setLocation] = useState({
     // 지도의 초기 위치
     center: {lat: 33.3766655632143, lng: 126.54222094512},
     // 지도 위치 변경시 panto를 이용할지(부드럽게 이동)
     isPanto: true,
   });
+
   const [isSearchCompleted, setIsSearchCompleted] = useState(false); // 검색 완료 상태를 나타내는 상태값 추가
 
   const searchMap = e => {
@@ -23,23 +24,24 @@ const Search = () => {
         setLocation({
           center: {lat: newSearch.y, lng: newSearch.x},
         });
-        setIsSearchCompleted(true); // 검색이 완료되면 true로 설정
+        console.log({lat: newSearch.y, lng: newSearch.x});
       }
     };
     ps.keywordSearch(`${searchAddress}`, placesSearchCB);
+    setIsSearchCompleted(true);
   };
 
   const handleSearchAddress = e => {
     setSearchAddress(e.target.value);
-    setIsSearchCompleted(false); // 검색어가 변경될 때마다 검색 완료 상태를 false로 설정
   };
+  console.log('searchAddress', searchAddress);
 
   return (
     <>
       <div>
         <ScSearchForm onSubmit={searchMap}>
           <ScInput
-            value={searchAddress}
+            value={searchAddress || ''}
             type="text"
             placeholder="검색할 산을 입력하세요"
             onChange={handleSearchAddress}
@@ -54,10 +56,11 @@ const Search = () => {
             setSearchAddress={setSearchAddress}
             location={location}
             setLocation={setLocation}
+            setIsSearchCompleted={setIsSearchCompleted}
           />
         </ScSearchingResultContainer>
       )}
-      {!isSearchCompleted && <DropDown />} {/* 검색이 완료되지 않았을 때는 DropDown을 보여줌 */}
+      {!isSearchCompleted && <DropDown />}
     </>
   );
 };
