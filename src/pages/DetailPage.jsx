@@ -139,9 +139,9 @@ const ScMountainInfo = styled.div`
 
 const ScMapWrapper = styled.div`
   position: relative;
-  width: 350px;
+  width: 450px;
   height: 320px;
-  min-width: 350px;
+  min-width: 450px;
   min-height: 320px;
   border-radius: 10px;
   display: flex;
