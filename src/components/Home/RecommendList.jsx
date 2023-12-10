@@ -106,7 +106,7 @@ const RecommendList = () => {
 
   return (
     <ScMountainList>
-      {isloggined && (
+      {isloggined ? (
         <ScRecommendList>
           <ScTitle>
             <h1>
@@ -120,11 +120,12 @@ const RecommendList = () => {
             ))}
           </ScMountainListWarapper>
         </ScRecommendList>
-      )}
-      <ScRecommendList>
+      ) : (
         <ScNoResultText>
           <p>로그인 하시면 맞춤 산을 추천드립니다.</p>
         </ScNoResultText>
+      )}
+      <ScRecommendList>
         <ScTitle>
           <h1>
             <span>한사랑 산악회 </span>추천 산
