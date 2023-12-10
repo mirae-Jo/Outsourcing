@@ -9,7 +9,7 @@ import {getUserInfo} from 'shared/firebase';
 import {userUpdate} from 'shared/redux/modules/authSlice';
 const ITEM_COUNT = 4;
 
-// https://developer.mozilla.org/ko/docs/Web/JavaScript/Reference/Global_Objects/Math/random
+//// https://developer.mozilla.org/ko/docs/Web/JavaScript/Reference/Global_Objects/Math/random
 function getRandomInt(min, max) {
   min = Math.ceil(min);
   max = Math.floor(max);
