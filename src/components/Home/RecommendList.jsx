@@ -121,7 +121,7 @@ const RecommendList = () => {
   return (
     <ScMountainList>
       {isloggined ? (
-        userFilteredMountain ? (
+        userFilteredMountain.length > 0 ? (
           <ScRecommendList>
             <ScTitle>
               <h1>
