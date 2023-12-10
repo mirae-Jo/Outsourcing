@@ -1,24 +1,24 @@
-import React, {useEffect, useState} from 'react';
+import React, { useEffect, useState } from 'react';
 import styled from 'styled-components';
 import LoginModal from 'components/Login/LoginModal';
-import {useLocation, useNavigate} from 'react-router';
-import {auth} from 'shared/firebase';
-import {onAuthStateChanged} from '@firebase/auth';
-import {doc, getDoc} from '@firebase/firestore';
+import { useLocation, useNavigate } from 'react-router';
+import { auth } from 'shared/firebase';
+import { onAuthStateChanged } from '@firebase/auth';
+import { doc, getDoc } from '@firebase/firestore';
 import db from 'shared/firebase';
 import loopy from '../../assets/imgs/loopy.jpeg';
+import { useSelector } from 'react-redux';
 
 const NavigationBar = () => {
   const navigate = useNavigate();
+  const { displayName, photoURL } = useSelector((state) => state.user_auth).user;
+  console.log(displayName, photoURL);
   const [isLoginModal, setIsLoginModal] = useState(true);
-  const [userDisplayName, setUserDisplayName] = useState(null);
-  const [userNickName, setUserNickName] = useState(null);
-  const [avatarUrl, setAvatarUrl] = useState(null);
+  // const [userDisplayName, setUserDisplayName] = useState(null);
+  const [userNickName, setUserNickName] = useState(displayName);
+  const [avatarUrl, setAvatarUrl] = useState(photoURL);
   useEffect(() => {
     const unsubscribe = onAuthStateChanged(auth, async user => {
-      setUserDisplayName(user?.displayName || null);
-      setUserNickName(user?.nickname || null);
-
       if (user) {
         const userDocRef = doc(db, 'users', user.uid);
         const userDocSnapshot = await getDoc(userDocRef);
@@ -37,13 +37,19 @@ const NavigationBar = () => {
             setAvatarUrl(avatarURL);
           }
 
-          setUserNickName(userNickname);
+          setUserNickName(userNickName);
         }
       }
     });
 
     return () => unsubscribe();
   }, []);
+
+  useEffect(() => {
+    //닉네임만 변경하면 사진이 undefined로 변경됨. 
+    if (displayName !== userNickName) setUserNickName(displayName);
+    if (photoURL !== avatarUrl) setAvatarUrl(photoURL);
+  }, [displayName, photoURL])
 
   const goHomeBT = () => {
     navigate(`/`);
@@ -60,14 +66,14 @@ const NavigationBar = () => {
       {isLoginModal ? <LoginModal /> : null}
       <ScHomeBT onClick={goHomeBT}>홈으로 </ScHomeBT>
 
-      {(userDisplayName || userNickName) && <ScProfile onClick={clickOnProfile}>내 프로필 </ScProfile>}
-      {!(userDisplayName || userNickName) && (
+      {userNickName && <ScProfile onClick={clickOnProfile}>내 프로필 </ScProfile>}
+      {!userNickName && (
         <ScNotLoginComment onClick={clickLoginModal}>로그인이 아닙니다 로그인 하시겠습니까?</ScNotLoginComment>
       )}
-      {(userDisplayName || userNickName) && (
+      {userNickName && (
         <ScLoginContext>
           {avatarUrl && <ScProfileIMG src={avatarUrl} alt="Avatar" />}
-          <p>{`${userNickName || userDisplayName} 님 반갑습니다.`}</p>
+          <p>{`${userNickName} 님 반갑습니다.`}</p>
         </ScLoginContext>
       )}
     </ScNavigationContainer>

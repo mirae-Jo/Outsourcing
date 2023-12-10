@@ -14,6 +14,10 @@ const authslice = createSlice({
     login: (state, action) => {
       state.isloggined = true;
       let { uid, displayName, photoURL } = action.payload;
+      if (!displayName && !photoURL) {
+        displayName = localStorage.getItem('displayName', displayName);
+        photoURL = localStorage.getItem('photoURL', photoURL);
+      }
       localStorage.setItem('uid', uid);
       localStorage.setItem('displayName', displayName);
       localStorage.setItem('photoURL', photoURL);
@@ -35,10 +39,21 @@ const authslice = createSlice({
       state.user.photoURL = photoURL;
       localStorage.setItem('displayName', displayName);
       localStorage.setItem('photoURL', photoURL);
+    },
+    userProfileUpdate: (state, action) => {
+      let { displayName, photoURL } = action.payload;
+      if (displayName) {
+        state.user.displayName = displayName;
+        localStorage.setItem('displayName', displayName);
+      }
+      if (photoURL) {
+        state.user.photoURL = photoURL;
+        localStorage.setItem('photoURL', photoURL);
+      }
     }
   },
 });
 
-export const { login, logout, userUpdate } = authslice.actions;
+export const { login, logout, userUpdate, userProfileUpdate } = authslice.actions;
 
 export default authslice.reducer;
