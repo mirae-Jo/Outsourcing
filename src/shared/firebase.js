@@ -53,8 +53,8 @@ export const getUserInfo = async uid => {
   const userSnap = await getDoc(userRef);
   let data;
   if (userSnap.exists()) {
-    const {avatar, nickname} = userSnap.data();
-    data = {displayName: nickname, photoURL: avatar};
+    const {avatar, nickname, region, difficulty} = userSnap.data();
+    data = {displayName: nickname, photoURL: avatar, region, difficulty};
     return data;
   }
   return null;

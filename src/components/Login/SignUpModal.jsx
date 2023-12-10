@@ -5,6 +5,7 @@ import {createUserWithEmailAndPassword, getAuth} from 'firebase/auth';
 import db from 'shared/firebase';
 import {doc, setDoc} from '@firebase/firestore';
 import profilenormal from '../../assets/imgs/profilenormal.jpg';
+import {DROPDOWN_MENU} from 'utils/dropdownMenu';
 
 function SignUpModal({isSignUpModal, setIsSignUpModal}) {
   const [email, setEmail] = useState('');
@@ -12,6 +13,8 @@ function SignUpModal({isSignUpModal, setIsSignUpModal}) {
   const [nickname, setNickname] = useState('');
   const [emailError, setEmailError] = useState('');
   const [passwordError, setPasswordError] = useState('');
+  const [selectedRegion, setSelectedRegion] = useState('');
+  const [selectedDifficulty, setSelectedDifficulty] = useState('');
 
   const auth = getAuth(app);
 
@@ -27,6 +30,12 @@ function SignUpModal({isSignUpModal, setIsSignUpModal}) {
     }
     if (name === 'nickname') {
       setNickname(value);
+    }
+    if (name === 'region') {
+      setSelectedRegion(value);
+    }
+    if (name === 'difficulty') {
+      setSelectedDifficulty(value);
     }
   };
 
@@ -63,6 +72,8 @@ function SignUpModal({isSignUpModal, setIsSignUpModal}) {
       email: email,
       nickname: nickname,
       avatar: profilenormal,
+      region: selectedRegion,
+      difficulty: selectedDifficulty,
     });
 
     // 회원가입 성공시
@@ -113,7 +124,33 @@ function SignUpModal({isSignUpModal, setIsSignUpModal}) {
               <p>닉네임 </p>
               <input type="nickname" value={nickname} name="nickname" onChange={inputChange}></input>
             </ScSection>
+            <ScSelect>
+              <p>지역 </p>
+              <>
+                <select name="region" value={selectedRegion} onChange={inputChange}>
+                  <option value="">지역을 선택하세요</option>
+                  {DROPDOWN_MENU.region.map((region, index) => (
+                    <option key={index} value={region}>
+                      {region}
+                    </option>
+                  ))}
+                </select>
+              </>
+            </ScSelect>
 
+            <ScSelect>
+              <p>난이도 </p>
+              <>
+                <select name="difficulty" value={selectedDifficulty} onChange={inputChange}>
+                  <option value="">난이도를 선택하세요</option>
+                  {DROPDOWN_MENU.difficulty.map((difficulty, index) => (
+                    <option key={index} value={difficulty}>
+                      {difficulty}
+                    </option>
+                  ))}
+                </select>
+              </>
+            </ScSelect>
             <ScSignUpButton onClick={changeSignUp}>회원가입 하기</ScSignUpButton>
           </ScLoginMoDal>
         </ScModalOverlay>
@@ -136,7 +173,8 @@ const ScModalOverlay = styled.div`
 
 const ScLoginMoDal = styled.div`
   width: 400px;
-  height: 450px;
+  height: fit-content;
+  padding: 30px;
   background-color: #fff;
   border-radius: 8px;
 
@@ -191,6 +229,25 @@ const ScSection = styled.section`
     width: 300px;
     padding: 8px;
     box-sizing: border-box;
+  }
+`;
+
+const ScSelect = styled.section`
+  width: 300px;
+  display: flex;
+  flex-direction: row;
+  gap: 20px;
+  align-items: center;
+  justify-content: space-between;
+  margin: 10px 0;
+  color: black;
+  p {
+    margin-bottom: 5px;
+    margin-top: 5px;
+  }
+  & select {
+    width: 200px;
+    height: 30px;
   }
 `;
 

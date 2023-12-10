@@ -9,12 +9,14 @@ const authslice = createSlice({
       displayName: localStorage.getItem('displayName'),
       photoURL: localStorage.getItem('photoURL'),
       nickname: localStorage.getItem('nickname'),
+      region: localStorage.getItem('region'),
+      difficulty: localStorage.getItem('difficulty'),
     },
   },
   reducers: {
     login: (state, action) => {
       state.isloggined = true;
-      let {uid, displayName, photoURL} = action.payload;
+      let {uid, displayName, photoURL, difficulty, region} = action.payload;
       if (!displayName && !photoURL) {
         displayName = localStorage.getItem('displayName', displayName);
         photoURL = localStorage.getItem('photoURL', photoURL);
@@ -22,7 +24,10 @@ const authslice = createSlice({
       localStorage.setItem('uid', uid);
       localStorage.setItem('displayName', displayName);
       localStorage.setItem('photoURL', photoURL);
-      state.user = {uid, displayName, photoURL};
+      localStorage.setItem('difficulty', difficulty);
+      localStorage.setItem('region', region);
+
+      state.user = {uid, displayName, photoURL, difficulty, region};
       console.log('displayName', displayName, 'photoURL', photoURL);
     },
     logout: (state, action) => {
@@ -35,11 +40,16 @@ const authslice = createSlice({
       localStorage.removeItem('photoURL');
     },
     userUpdate: (state, action) => {
-      const {displayName, photoURL} = action.payload;
+      const {displayName, photoURL, difficulty, region} = action.payload;
       state.user.displayName = displayName;
       state.user.photoURL = photoURL;
+      state.user.difficulty = difficulty;
+      state.user.region = region;
+
       localStorage.setItem('displayName', displayName);
       localStorage.setItem('photoURL', photoURL);
+      localStorage.setItem('difficulty', difficulty);
+      localStorage.setItem('region', region);
     },
     userProfileUpdate: (state, action) => {
       let {displayName, photoURL} = action.payload;
