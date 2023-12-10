@@ -12,9 +12,7 @@ import {useSelector} from 'react-redux';
 const NavigationBar = () => {
   const navigate = useNavigate();
   const {displayName, photoURL} = useSelector(state => state.user_auth).user;
-  console.log(displayName, photoURL);
   const [isLoginModal, setIsLoginModal] = useState(true);
-  // const [userDisplayName, setUserDisplayName] = useState(null);
   const [userNickName, setUserNickName] = useState(displayName);
   const [avatarUrl, setAvatarUrl] = useState(photoURL);
   useEffect(() => {
@@ -22,19 +20,17 @@ const NavigationBar = () => {
       if (user) {
         const userDocRef = doc(db, 'users', user.uid);
         const userDocSnapshot = await getDoc(userDocRef);
-        console.log(user);
         if (userDocSnapshot.exists()) {
           const userData = userDocSnapshot.data();
           const avatarURL = userData.avatar;
           const userNickname = userData.nickname;
           const userPhotopURL = userData.photoURL;
-          console.log(userData.photoURL);
+
           const googleProviderData = user.providerData.find(provider => provider.providerId === 'google.com');
-          console.log(googleProviderData);
+
           if (googleProviderData) {
             setAvatarUrl(userData.photoURL);
             setUserNickName(userNickname || displayName); //구글 로그인 일때
-            console.log(userNickName);
           } else {
             setAvatarUrl(avatarURL || userData.photoURL);
             setUserNickName(userNickname);

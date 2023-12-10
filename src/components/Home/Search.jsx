@@ -33,7 +33,6 @@ const Search = () => {
   const handleSearchAddress = e => {
     setSearchAddress(e.target.value);
   };
-  console.log('searchAddress', searchAddress);
 
   return (
     <>

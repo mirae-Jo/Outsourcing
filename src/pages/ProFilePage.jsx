@@ -1,17 +1,17 @@
-import React, { useState, useEffect } from 'react';
+import React, {useState, useEffect} from 'react';
 import styled from 'styled-components';
-import { doc, getDoc, updateDoc, setDoc } from '@firebase/firestore';
-import { getDownloadURL, getStorage, ref, uploadBytes } from 'firebase/storage';
-import { auth } from 'shared/firebase';
+import {doc, getDoc, updateDoc, setDoc} from '@firebase/firestore';
+import {getDownloadURL, getStorage, ref, uploadBytes} from 'firebase/storage';
+import {auth} from 'shared/firebase';
 import db from 'shared/firebase';
-import { onAuthStateChanged } from 'firebase/auth';
-import { storage } from 'shared/firebase';
-import { useNavigate } from 'react-router';
-import { useDispatch, useSelector } from 'react-redux';
-import { userProfileUpdate } from 'shared/redux/modules/authSlice';
+import {onAuthStateChanged} from 'firebase/auth';
+import {storage} from 'shared/firebase';
+import {useNavigate} from 'react-router';
+import {useDispatch, useSelector} from 'react-redux';
+import {userProfileUpdate} from 'shared/redux/modules/authSlice';
 export const ProFilePage = () => {
-  const { user } = useSelector((state) => state.user_auth);
-  console.log(user);
+  const {user} = useSelector(state => state.user_auth);
+
   const [nickname, setNickname] = useState(user.displayName);
   const [profileImage, setProfileImage] = useState('');
   const [newNickname, setNewNickname] = useState('');
@@ -21,8 +21,6 @@ export const ProFilePage = () => {
   const dispatch = useDispatch();
   useEffect(() => {
     const unsubscribe = onAuthStateChanged(auth, user => {
-      console.log('user', user);
-
       // user 객체가 정의된 경우에만 fetchUserData 호출
       if (user) {
         fetchUserData(user);
@@ -34,8 +32,8 @@ export const ProFilePage = () => {
   }, []); // 빈 배열을 전달하여 최초 한 번만 실행되도록 설정
 
   useEffect(() => {
-    setNickname(user.displayName)
-  }, [user.displayName])
+    setNickname(user.displayName);
+  }, [user.displayName]);
   const fetchUserData = async user => {
     const userDocRef = doc(db, 'users', user.uid);
     const userDocSnapshot = await getDoc(userDocRef);
@@ -66,7 +64,6 @@ export const ProFilePage = () => {
       return;
     }
     const userDocRef = doc(db, 'users', user.uid);
-    console.log(userDocRef.photoURL);
     // Firestore에 사용자 데이터가 있는지 확인
     const userDocSnapshot = await getDoc(userDocRef);
 
@@ -77,8 +74,7 @@ export const ProFilePage = () => {
         photoURL: newProfileImage || profileImage,
         avatar: newProfileImage || profileImage,
       });
-      dispatch(userProfileUpdate({ displayName: newNickname, photoURL: newProfileImage }))
-
+      dispatch(userProfileUpdate({displayName: newNickname, photoURL: newProfileImage}));
     } else {
       const userData = {
         uid: auth.currentUser.uid,

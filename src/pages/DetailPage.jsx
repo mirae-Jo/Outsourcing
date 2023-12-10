@@ -1,18 +1,17 @@
 import React from 'react';
-import { useQuery } from '@tanstack/react-query';
-import { useParams } from 'react-router';
-import { styled } from 'styled-components';
+import {useQuery} from '@tanstack/react-query';
+import {useParams} from 'react-router';
+import {styled} from 'styled-components';
 import AddComment from 'components/Detail/AddComment';
-import { useSelector } from 'react-redux';
-import { getMountains } from 'common/api/mountains';
+import {useSelector} from 'react-redux';
+import {getMountains} from 'common/api/mountains';
 
 import MapDetail from 'components/Detail/MapDetail';
-
 
 function DetailPage() {
   const params = useParams();
   const auth = useSelector(state => state.user_auth);
-  console.log(auth);
+
   const {
     isLoading,
     error,
@@ -30,7 +29,7 @@ function DetailPage() {
   return (
     <>
       {filterMountain.map(mountain => {
-        const { name, imgUrl, summary, location, height, time, difficulty, xCoordinate, yCoordinate } = mountain;
+        const {name, imgUrl, summary, location, height, time, difficulty, xCoordinate, yCoordinate} = mountain;
 
         return (
           <>
@@ -87,7 +86,7 @@ const ScMountainImg = styled.div`
     font-size: 1.2rem;
     color: white;
     padding: 1rem 5rem;
-    line-height:1.4rem;
+    line-height: 1.4rem;
     word-break: keep-all;
   }
 `;
