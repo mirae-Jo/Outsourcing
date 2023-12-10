@@ -12,20 +12,17 @@ const authslice = createSlice({
   },
   reducers: {
     login: (state, action) => {
-      console.log('로그인 중이니 로그인할게');
       state.isloggined = true;
-      const {uid, displayName, photoURL} = action.payload;
-
-      // const newDisplayName = displayName || localStorage.getItem('displayName');
-      // const newPhotoURL = photoURL || localStorage.getItem('photoURL');
-
-      // console.log(action.payload);
+      let {uid, displayName, photoURL} = action.payload;
+      if (!displayName && !photoURL) {
+        displayName = localStorage.getItem('displayName', displayName);
+        photoURL = localStorage.getItem('photoURL', photoURL);
+      }
       localStorage.setItem('uid', uid);
       localStorage.setItem('displayName', displayName);
       localStorage.setItem('photoURL', photoURL);
-
-      // state.user = {uid, displayName: newDisplayName, photoURL: newPhotoURL};
-      // console.log(state.user);
+      state.user = {uid, displayName, photoURL};
+      console.log('displayName', displayName, 'photoURL', photoURL);
     },
     logout: (state, action) => {
       state.isloggined = false;

@@ -36,10 +36,12 @@ const RecommendList = () => {
   useEffect(() => {
     const fetchData = async () => {
       if (isloggined) {
-        console.log(user.uid);
+        //추천리스트에 닉네임이 나와야하는데 못나오는중. 이때 authSlice를 통해 값을 업데이트..?
+        //이미지 또는 닉네임이 변경되면 유저 정보를 가져옴.
         const userInfo = await getUserInfo(user.uid);
+        dispatch(userUpdate(userInfo));
         console.log('userInfo:', userInfo);
-        dispatch(login(userInfo));
+        // dispatch(login(userInfo));
       }
     };
 
@@ -135,13 +137,13 @@ const ScTitle = styled.div`
     font-size: large;
   }
   & span {
-    color: #1b9c85;
+    color: var(--color-main);
   }
 `;
 
 const ScMountainIcon = styled(PiMountainsFill)`
   font-size: 25px;
-  color: #1b9c85;
+  color: var(--color-main);
 `;
 
 const ScMountainListWarapper = styled.div`

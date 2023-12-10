@@ -17,7 +17,7 @@ function MapDetail({xCoordinate, yCoordinate, name}) {
         style={{
           // 지도의 크기
           width: '600px',
-          height: '450px',
+          height: '600px',
         }}
         level={3} // 지도의 확대 레벨
       >
@@ -34,7 +34,9 @@ function MapDetail({xCoordinate, yCoordinate, name}) {
 
 const ScMapWrap = styled.div`
   width: 600px;
-  margin: 20px auto;
+  display: flex;
+  justify-content: center;
+  align-items: center;
 `;
 
 const ScMakerOverlay = styled.p`
@@ -42,6 +44,7 @@ const ScMakerOverlay = styled.p`
   height: 30px;
   text-align: center;
   line-height: 30px;
+  user-select: none;
 `;
 
 export default MapDetail;

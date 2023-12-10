@@ -32,7 +32,8 @@ export default Footer;
 
 const ScFooterContainer = styled.div`
   height: 100px;
-  background-color: #e8f6ef;
+  background-color: var(--color-main);
+  color: white;
   display: flex;
   flex-direction: row;
   align-items: center;
