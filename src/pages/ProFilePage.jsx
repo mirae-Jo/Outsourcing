@@ -11,7 +11,6 @@ import {useDispatch, useSelector} from 'react-redux';
 import {userProfileUpdate} from 'shared/redux/modules/authSlice';
 export const ProFilePage = () => {
   const {user} = useSelector(state => state.user_auth);
-
   const [nickname, setNickname] = useState(user.displayName);
   const [profileImage, setProfileImage] = useState('');
   const [newNickname, setNewNickname] = useState('');
