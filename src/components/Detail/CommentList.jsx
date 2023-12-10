@@ -4,6 +4,7 @@ import { useParams } from 'react-router-dom';
 import { deleteCommentStore, updateCommentStore } from 'shared/firebase';
 import { deleteComment, updateComment } from 'shared/redux/modules/commentSlice';
 import styled from 'styled-components';
+import { FaPencilAlt, FaCheck, FaUndoAlt, FaTrashAlt } from 'react-icons/fa';
 
 
 export default function CommentList() {
@@ -50,18 +51,21 @@ export default function CommentList() {
                 const { id, uid, displayName, comment, photoURL, createdAt } = c;
                 return (
                     <li key={id}>
-                        <div>
-                            {editComment === id ? (<ScEditComment defaultValue={comment} onChange={(e) => setText(e.target.value)} />) : (<p>{comment}</p>)}
+                        <ScCommentBox>
+                            {editComment === id ? (<ScEditComment defaultValue={comment} onChange={(e) => setText(e.target.value)} />) : (<ScComment>{comment}</ScComment>)}
                             <ScUserInfo>
-                                <p>{displayName}</p>
                                 <img src={photoURL} alt='avatar' />
+                                <p>{displayName}</p>
                             </ScUserInfo>
-                        </div>
+                        </ScCommentBox>
+                        <ScButtonBox>
+                            {(user.uid && uid) && user?.uid === uid && editComment !== id && <button onClick={() => handleEdit(id)}><FaPencilAlt /></button>}
+                            {editComment === id && <button disabled={text === comment || !text} onClick={() => handleUpdate(id)}><FaCheck /></button>}
+                            {editComment === id && <button onClick={() => setEditComment(null)}><FaUndoAlt /></button>}
+                            {(user.uid && uid) && user?.uid === uid && <button onClick={() => handleDelete(id)}><FaTrashAlt /></button>}
+                        </ScButtonBox>
                         <time>{new Date(createdAt).toLocaleString()}</time>
-                        {(user.uid && uid) && user?.uid === uid && editComment !== id && <button onClick={() => handleEdit(id)}>수정하기</button>}
-                        {editComment === id && <button disabled={text === comment || !text} onClick={() => handleUpdate(id)}>수정 완료</button>}
-                        {editComment === id && <button onClick={() => setEditComment(null)}>취소하기</button>}
-                        {(user.uid && uid) && user?.uid === uid && <button onClick={() => handleDelete(id)}>삭제하기</button>}
+
                     </li>
                 );
             }
@@ -76,7 +80,7 @@ const ScCommentListLayout = styled.ul`
     flex-direction: column;
     justify-content: center;
     align-items: center;
-    gap:0.5rem;
+    gap:1rem;
 
     h1{
         padding:1rem;
@@ -93,24 +97,48 @@ const ScCommentListLayout = styled.ul`
             transform: scale(1.1);
         }
     }
-    div{
-        display:flex;
-        justify-content:space-between;
-    }
+
     img{
         width:2rem;
         height: 2rem;
         border-radius: 50%;
     }
+    button{
+        background-color: transparent;
+        &:hover{
+            transform:scale(1.1) rotate(15deg);
+        }
+    }
+    time{
+        display:block;
+        font-size:0.8rem;
+        color:#6c757d;
+        text-align: end;
+    }
   
 `
+
+const ScCommentBox = styled.div`
+    display:flex;
+    justify-content:space-between;
+`
 const ScEditComment = styled.textarea`
-    padding:0.3rem 0.5rem;
+    width:70%;
+    padding:0.5rem;
 `;
+
+const ScComment = styled.p`
+    padding:0.5rem;
+`
 
 const ScUserInfo = styled.div`
     display:flex;
+    flex-direction: column;
     align-items: center;
     gap:0.5rem;
+`
+
+const ScButtonBox = styled.div`
+    display:flex;
 `
 
