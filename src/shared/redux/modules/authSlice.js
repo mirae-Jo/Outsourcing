@@ -8,6 +8,7 @@ const authslice = createSlice({
       uid: localStorage.getItem('uid'),
       displayName: localStorage.getItem('displayName'),
       photoURL: localStorage.getItem('photoURL'),
+      nickname: localStorage.getItem('nickname'),
     },
   },
   reducers: {

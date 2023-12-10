@@ -133,6 +133,7 @@ const ScDropDownContainer = styled.div`
   flex-direction: row;
   justify-content: center;
   gap: 50px;
+  border-radius: 2px;
 `;
 
 const ScDropDownWrapper = styled.div`
@@ -153,6 +154,7 @@ const ScBtnWrapper = styled.div`
   display: flex;
   justify-content: center;
   position: relative;
+
   & button {
     width: 100%;
     background-color: #f0eeee;
@@ -160,6 +162,7 @@ const ScBtnWrapper = styled.div`
     font-weight: 700;
     padding: 10px;
     position: relative;
+
     cursor: pointer;
   }
 `;

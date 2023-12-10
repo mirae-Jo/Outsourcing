@@ -28,26 +28,32 @@ const NavigationBar = () => {
           const avatarURL = userData.avatar;
           const userNickname = userData.nickname;
           const userPhotopURL = userData.photoURL;
-
+          console.log(userData.photoURL);
           const googleProviderData = user.providerData.find(provider => provider.providerId === 'google.com');
-
+          console.log(googleProviderData);
           if (googleProviderData) {
             setAvatarUrl(userData.photoURL);
+            setUserNickName(userNickname || displayName); //구글 로그인 일때
+            console.log(userNickName);
           } else {
-            setAvatarUrl(avatarURL);
+            setAvatarUrl(avatarURL || userData.photoURL);
+            setUserNickName(userNickname);
           }
-
-          setUserNickName(userNickName);
         }
       }
     });
 
     return () => unsubscribe();
-  }, []);
+  }, [displayName]);
 
   useEffect(() => {
-    //닉네임만 변경하면 사진이 undefined로 변경됨.
-    if (displayName !== userNickName) setUserNickName(displayName);
+    if (displayName !== userNickName) {
+      const timer = setTimeout(() => {
+        setUserNickName(displayName);
+      }, 0);
+
+      return () => clearTimeout(timer);
+    }
     if (photoURL !== avatarUrl) setAvatarUrl(photoURL);
   }, [displayName, photoURL]);
 
