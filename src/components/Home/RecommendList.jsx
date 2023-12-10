@@ -1,12 +1,12 @@
-import React, { useEffect, useRef, useState } from 'react';
+import React, {useEffect, useRef, useState} from 'react';
 import styled from 'styled-components';
-import { PiMountainsFill } from 'react-icons/pi';
-import { useQuery } from '@tanstack/react-query';
+import {PiMountainsFill} from 'react-icons/pi';
+import {useQuery} from '@tanstack/react-query';
 import MountainCard from 'common/MountainCard';
-import { getMountains } from 'common/api/mountains';
-import { useDispatch, useSelector } from 'react-redux';
-import { getUserInfo } from 'shared/firebase';
-import { login, userUpdate } from 'shared/redux/modules/authSlice';
+import {getMountains} from 'common/api/mountains';
+import {useDispatch, useSelector} from 'react-redux';
+import {getUserInfo} from 'shared/firebase';
+import {login, userUpdate} from 'shared/redux/modules/authSlice';
 
 const ITEM_COUNT = 4;
 
@@ -19,14 +19,15 @@ function getRandomInt(min, max) {
 
 const RecommendList = () => {
   const [mountains, setMountains] = useState([]);
-  const { isLoading, isError, data } = useQuery({
+  const [personalMountain, setPersonalMountain] = useState([]);
+  const {isLoading, isError, data} = useQuery({
     queryKey: ['mountains'],
     queryFn: getMountains,
   });
 
   const dispatch = useDispatch();
 
-  const { user, isloggined } = useSelector(state => state.user_auth);
+  const {user, isloggined} = useSelector(state => state.user_auth);
   console.log(user);
 
   useEffect(() => {
@@ -37,7 +38,7 @@ const RecommendList = () => {
     const fetchData = async () => {
       if (isloggined) {
         //추천리스트에 닉네임이 나와야하는데 못나오는중. 이때 authSlice를 통해 값을 업데이트..?
-        //이미지 또는 닉네임이 변경되면 유저 정보를 가져옴. 
+        //이미지 또는 닉네임이 변경되면 유저 정보를 가져옴.
         const userInfo = await getUserInfo(user.uid);
         dispatch(userUpdate(userInfo));
         console.log('userInfo:', userInfo);
@@ -48,6 +49,7 @@ const RecommendList = () => {
     fetchData();
   }, [dispatch, isloggined, user.uid]);
 
+  // personalMointain
   useEffect(() => {
     if (!data) return;
     const newMountains = [];
@@ -61,18 +63,34 @@ const RecommendList = () => {
       numbers.push(randomNumber);
       newMountains.push(data[randomNumber]);
     }
-    setMountains(newMountains);
+
+    setPersonalMountain(newMountains);
   }, [data]);
 
-  if (isLoading) {
-    return <p>로딩중입니다...</p>;
-  }
-  if (isError) {
-    return <p>오류가 발생했습니다...</p>;
-  }
-  if (!data || data.length === 0) {
-    return <p>산 정보가 없습니다.</p>;
-  }
+  // mountain
+  useEffect(() => {
+    if (!data) return;
+
+    const updateMountains = () => {
+      const newMountains = [];
+      const numbers = []; // 10, 20, 30
+
+      for (let i = 0; i < ITEM_COUNT; i++) {
+        let randomNumber = getRandomInt(0, data.length);
+        while (numbers.includes(randomNumber)) {
+          randomNumber = getRandomInt(0, data.length);
+        }
+        numbers.push(randomNumber);
+        newMountains.push(data[randomNumber]);
+      }
+
+      setMountains(newMountains);
+    };
+    updateMountains();
+    const interval = setInterval(updateMountains, 10000);
+
+    return () => clearInterval(interval);
+  }, [data]);
 
   return (
     <ScMountainList>
@@ -85,7 +103,7 @@ const RecommendList = () => {
             <ScMountainIcon />
           </ScTitle>
           <ScMountainListWarapper>
-            {mountains.map((item, index) => (
+            {personalMountain.map((item, index) => (
               <MountainCard mountain={item} />
             ))}
           </ScMountainListWarapper>
