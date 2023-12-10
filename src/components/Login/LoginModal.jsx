@@ -29,7 +29,7 @@ const LoginModal = () => {
   useEffect(() => {
     const unsubscribe = onAuthStateChanged(auth, async user => {
       if (user) {
-        const {uid, displayName, photoURL, region, difficulty} = user;
+        const {uid, displayName, photoURL} = user;
         if (!displayName && !photoURL) {
           const userInfo = await getUserInfo(uid);
 
@@ -38,7 +38,7 @@ const LoginModal = () => {
           dispatch(userUpdate(userInfo));
           return;
         }
-        setUser({uid, displayName, photoURL, region, difficulty});
+        setUser({uid, displayName, photoURL});
       }
     });
 
@@ -81,13 +81,6 @@ const LoginModal = () => {
       // 이메일 유효성 검사 초기화
       setEmailValidationMessage('');
       setPasswordValidationMessage('');
-      console.log(auth.currentUser.uid);
-
-      // await getUserInfo()
-
-      // setUser(result.user);
-      // const {uid, displayName, photoURL, region, difficulty} = result.user;
-      // dispatch(login({uid, displayName, photoURL, region, difficulty}));
 
       await signInWithEmailAndPassword(auth, email, password);
       setIsLoginModal(false);
@@ -140,8 +133,6 @@ const LoginModal = () => {
         nickname: user.displayName,
         avatar: profilenormal,
         photoURL: user.photoURL,
-        region: user.region,
-        difficulty: user.difficulty,
         // 기타 필요한 사용자 정보 추가
       });
       console.log('사용자 정보 Firestore에 저장 완료');
@@ -168,8 +159,8 @@ const LoginModal = () => {
 
       // 추가: 로그인 후 유저 정보 갱신
       setUser(result.user);
-      const {uid, displayName, photoURL, region, difficulty} = result.user;
-      dispatch(login({uid, displayName, photoURL, region, difficulty}));
+      const {uid, displayName, photoURL} = result.user;
+      dispatch(login({uid, displayName, photoURL}));
 
       // 추가: Firestore에 사용자 정보 저장
     } catch (error) {
