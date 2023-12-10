@@ -165,8 +165,6 @@ const LoginModal = () => {
     } catch (error) {
       console.error(error);
     }
-
-    window.location.reload();
   };
 
   return (
