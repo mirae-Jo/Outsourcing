@@ -93,6 +93,7 @@ const ScCommentListLayout = styled.ul`
   justify-content: center;
   align-items: center;
   gap: 1rem;
+  margin-bottom: 50px;
 
   h1 {
     padding: 1rem;
@@ -103,6 +104,7 @@ const ScCommentListLayout = styled.ul`
     padding: 1rem 1.5rem;
     background-color: white;
     border-radius: 1rem;
+    background-color: var(--color-yellow);
 
     &:hover {
       cursor: pointer;
