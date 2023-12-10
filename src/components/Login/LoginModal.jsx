@@ -10,7 +10,7 @@ import {doc, getDoc, setDoc} from '@firebase/firestore';
 import db from 'shared/firebase';
 import profilenormal from '../../assets/imgs/profilenormal.jpg';
 import {useDispatch} from 'react-redux';
-import {login, logout} from 'shared/redux/modules/authSlice';
+import {login, logout, userUpdate} from 'shared/redux/modules/authSlice';
 import {signInWithEmailAndPassword} from 'firebase/auth';
 
 const LoginModal = () => {
@@ -35,9 +35,8 @@ const LoginModal = () => {
           const userInfo = await getUserInfo(uid);
           console.log(userInfo);
           setUser({...userInfo, uid});
-          //일반 로그인 한 경우에는 로컬스토리지에 따로 닉네임과 이미지 업데이트 후 저장해줌.
-          localStorage.setItem('displayName', userInfo.displayName);
-          localStorage.setItem('photoURL', userInfo.photoURL);
+          //일반 로그인한 경우 유저 정보 업데이트해줌.
+          dispatch(userUpdate(userInfo));
           return;
         }
         setUser({uid, displayName, photoURL});
@@ -114,13 +113,12 @@ const LoginModal = () => {
     if (isConfirmed) {
       await signOut(auth);
       window.alert('로그아웃 되었습니다.');
-
-      setTimeout(() => {
-        navigate('/');
-        window.location.reload();
-      }, 500);
+      setUser(null);
+      // setTimeout(() => {
+      navigate('/');
+      //   window.location.reload();
+      // }, 500);
       dispatch(logout());
-      // 로그아웃 후 페이지 새로고침
     }
   };
   // Firestore에 사용자 정보 저장 함수
