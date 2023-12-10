@@ -8,15 +8,16 @@ import {onAuthStateChanged} from 'firebase/auth';
 import {storage} from 'shared/firebase';
 import {useDispatch, useSelector} from 'react-redux';
 import {userProfileUpdate} from 'shared/redux/modules/authSlice';
+import {useNavigate} from 'react-router';
 export const ProFilePage = () => {
   const {user} = useSelector(state => state.user_auth);
-
   const [nickname, setNickname] = useState(user.displayName);
   const [profileImage, setProfileImage] = useState('');
   const [newNickname, setNewNickname] = useState('');
   const [newProfileImage, setNewProfileImage] = useState('');
   const [isEditMode, setIsEditMode] = useState(false);
   const dispatch = useDispatch();
+  const navigater = useNavigate();
   useEffect(() => {
     const unsubscribe = onAuthStateChanged(auth, user => {
       // user 객체가 정의된 경우에만 fetchUserData 호출
@@ -32,6 +33,7 @@ export const ProFilePage = () => {
   useEffect(() => {
     setNickname(user.displayName);
   }, [user.displayName]);
+
   const fetchUserData = async user => {
     const userDocRef = doc(db, 'users', user.uid);
     const userDocSnapshot = await getDoc(userDocRef);
@@ -56,7 +58,7 @@ export const ProFilePage = () => {
     try {
       const storageRef = ref(storage, `images/${auth.currentUser.uid}/${file.name}`);
       await uploadBytes(storageRef, file);
-
+      console.log('Upload successful:', file.name);
       const downloadURL = await getDownloadURL(storageRef);
 
       const userDocRef = doc(db, 'users', auth.currentUser.uid);
@@ -92,11 +94,11 @@ export const ProFilePage = () => {
 
   // 저장 버튼 클릭 핸들러
   const handleSaveClick = async (event, user) => {
-    event.preventDefault(); // 기본 동작(새로고침) 막기
-
+    // 기본 동작(새로고침) 막기
+    event.preventDefault();
     // 변경된 내용이 있는지 확인
     const hasChanges = newNickname !== nickname || (newProfileImage && newProfileImage !== profileImage);
-
+    navigater('/');
     // 변경된 내용이 없는 경우에는 확인 메시지 없이 종료
     if (!hasChanges || !window.confirm('수정하시겠습니까?')) {
       setIsEditMode(false);
@@ -255,4 +257,4 @@ const ScNicnameUpdate = styled.input`
   padding: 8px;
   margin-bottom: 25px;
   margin-top: 10px;
-`;
+`; //프로필 페이지
