@@ -1,4 +1,4 @@
-import {createSlice} from '@reduxjs/toolkit';
+import { createSlice } from '@reduxjs/toolkit';
 
 const authslice = createSlice({
   name: 'user_auth',
@@ -12,19 +12,13 @@ const authslice = createSlice({
   },
   reducers: {
     login: (state, action) => {
-      console.log('로그인 중이니 로그인할게');
       state.isloggined = true;
-      let {uid, displayName, photoURL} = action.payload;
-      if (!displayName && !photoURL) {
-        displayName = localStorage.getItem('displayName');
-        photoURL = localStorage.getItem('photoURL');
-      }
-      console.log(action.payload);
+      let { uid, displayName, photoURL } = action.payload;
       localStorage.setItem('uid', uid);
       localStorage.setItem('displayName', displayName);
       localStorage.setItem('photoURL', photoURL);
-      state.user = {uid, displayName, photoURL};
-      console.log(state.user);
+      state.user = { uid, displayName, photoURL };
+      console.log('displayName', displayName, 'photoURL', photoURL);
     },
     logout: (state, action) => {
       state.isloggined = false;
@@ -35,9 +29,16 @@ const authslice = createSlice({
       localStorage.removeItem('displayName');
       localStorage.removeItem('photoURL');
     },
+    userUpdate: (state, action) => {
+      const { displayName, photoURL } = action.payload;
+      state.user.displayName = displayName;
+      state.user.photoURL = photoURL;
+      localStorage.setItem('displayName', displayName);
+      localStorage.setItem('photoURL', photoURL);
+    }
   },
 });
 
-export const {login, logout} = authslice.actions;
+export const { login, logout, userUpdate } = authslice.actions;
 
 export default authslice.reducer;
