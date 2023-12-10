@@ -19,7 +19,9 @@ function DetailPage() {
   } = useQuery({
     queryKey: ['mountain'],
     queryFn: getMountains,
+    enabled: !mountains,
   });
+  console.log(!mountains);
 
   const filterMountain = mountains?.filter(mountain => mountain.name === params.mountainName);
 

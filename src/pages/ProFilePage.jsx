@@ -18,6 +18,7 @@ export const ProFilePage = () => {
   const [isEditMode, setIsEditMode] = useState(false);
   const navigate = useNavigate();
   const dispatch = useDispatch();
+
   useEffect(() => {
     const unsubscribe = onAuthStateChanged(auth, user => {
       // user 객체가 정의된 경우에만 fetchUserData 호출
@@ -33,6 +34,7 @@ export const ProFilePage = () => {
   useEffect(() => {
     setNickname(user.displayName);
   }, [user.displayName]);
+
   const fetchUserData = async user => {
     const userDocRef = doc(db, 'users', user.uid);
     const userDocSnapshot = await getDoc(userDocRef);
@@ -57,7 +59,7 @@ export const ProFilePage = () => {
     try {
       const storageRef = ref(storage, `images/${auth.currentUser.uid}/${file.name}`);
       await uploadBytes(storageRef, file);
-
+      console.log('Upload successful:', file.name);
       const downloadURL = await getDownloadURL(storageRef);
 
       const userDocRef = doc(db, 'users', auth.currentUser.uid);

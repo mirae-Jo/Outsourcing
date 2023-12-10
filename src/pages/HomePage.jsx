@@ -26,7 +26,7 @@ function HomePage() {
       },
       [],
     );
-  });
+  }, []); // 의존성 배열
 
   return (
     <>
