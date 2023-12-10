@@ -59,7 +59,6 @@ function SignUpModal({isSignUpModal, setIsSignUpModal}) {
       await checkDuplicateEmail(email);
     } catch (error) {
       // 중복된 이메일일 경우 에러 발생
-      console.error(error);
       setEmailError('중복된 이메일입니다.');
     }
   };
@@ -83,7 +82,6 @@ function SignUpModal({isSignUpModal, setIsSignUpModal}) {
     setPassword('');
     setEmail('');
     setNickname('');
-    console.log('회원가입 성공');
   };
   const isEmailValid = email => {
     // 간단한 이메일 형식 유효성 검사

@@ -9,7 +9,7 @@ function MapDetail({xCoordinate, yCoordinate, name}) {
     // 지도 위치 변경시 panto를 이용할지(부드럽게 이동)
     isPanto: true,
   });
-  console.log(name);
+
   return (
     <ScMapWrap>
       <Map // 지도를 표시할 Container

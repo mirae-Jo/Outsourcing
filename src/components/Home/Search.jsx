@@ -5,7 +5,6 @@ import DropDown from './DropDown';
 import SearchingPage from './SearchingPage';
 
 const Search = () => {
-  const [isSearch, setIsSearch] = useState(false);
   const [searchAddress, setSearchAddress] = useState();
   const [location, setLocation] = useState({
     // 지도의 초기 위치
@@ -13,6 +12,8 @@ const Search = () => {
     // 지도 위치 변경시 panto를 이용할지(부드럽게 이동)
     isPanto: true,
   });
+
+  const [isSearchCompleted, setIsSearchCompleted] = useState(false); // 검색 완료 상태를 나타내는 상태값 추가
 
   const searchMap = e => {
     e.preventDefault();
@@ -27,13 +28,13 @@ const Search = () => {
       }
     };
     ps.keywordSearch(`${searchAddress}`, placesSearchCB);
-    setIsSearch(true);
+    setIsSearchCompleted(true);
   };
 
   const handleSearchAddress = e => {
     setSearchAddress(e.target.value);
+    setIsSearchCompleted(false); // 검색어가 변경될 때마다 검색 완료 상태를 false로 설정
   };
-  console.log('searchAddress', searchAddress);
 
   return (
     <>
@@ -48,19 +49,18 @@ const Search = () => {
           <ScSearchIcon />
         </ScSearchForm>
       </div>
-      {isSearch ? (
+      {isSearchCompleted && ( // 검색 완료 상태일 때만 결과를 표시
         <ScSearchingResultContainer>
           <SearchingPage
             searchAddress={searchAddress}
             setSearchAddress={setSearchAddress}
-            setIsSearch={setIsSearch}
             location={location}
             setLocation={setLocation}
+            setIsSearchCompleted={setIsSearchCompleted}
           />
         </ScSearchingResultContainer>
-      ) : (
-        <DropDown />
       )}
+      {!isSearchCompleted && <DropDown />}
     </>
   );
 };

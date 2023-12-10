@@ -41,8 +41,6 @@ const RecommendList = () => {
         const userInfo = await getUserInfo(user.uid);
         dispatch(userUpdate(userInfo));
         // dispatch(login(userInfo));
-        console.log('userInfo:', userInfo);
-        console.log('user in state:', user);
       }
     };
 
@@ -106,10 +104,6 @@ const RecommendList = () => {
 
     return () => clearInterval(interval);
   }, [data]);
-
-  // const userFilteredMountain = data.filter(mountain => {
-  //   return mountain.filterlocation === user.region && mountain.difficulty === user.difficulty;
-  // });
 
   useEffect(() => {
     try {

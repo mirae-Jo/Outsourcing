@@ -11,7 +11,7 @@ import MapDetail from 'components/Detail/MapDetail';
 function DetailPage() {
   const params = useParams();
   const auth = useSelector(state => state.user_auth);
-  console.log(auth);
+
   const {
     isLoading,
     error,
