@@ -37,10 +37,12 @@ export const getComments = async () => {
   const querySnapshot = await getDocs(collection(db, 'comments'));
   const data = [];
   querySnapshot.forEach(doc => {
+    const createdAt = doc.data()['createdAt'];
+    const formattedCreatedAt = createdAt ? createdAt.toDate().toLocaleString('ko-KR', {timeZone: 'Asia/Seoul'}) : null;
+
     data.push({
       ...doc.data(),
-      //날짜 타임스탬프를 날짜형으로 재변경
-      createdAt: doc.data()['createdAt'].toDate(),
+      createdAt: formattedCreatedAt,
     });
   });
   return data;

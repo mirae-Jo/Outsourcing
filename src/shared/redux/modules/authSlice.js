@@ -28,7 +28,6 @@ const authslice = createSlice({
       localStorage.setItem('region', region);
 
       state.user = {uid, displayName, photoURL, difficulty, region};
-      console.log('displayName', displayName, 'photoURL', photoURL);
     },
     logout: (state, action) => {
       state.isloggined = false;
@@ -41,15 +40,23 @@ const authslice = createSlice({
     },
     userUpdate: (state, action) => {
       const {displayName, photoURL, difficulty, region} = action.payload;
-      state.user.displayName = displayName;
-      state.user.photoURL = photoURL;
-      state.user.difficulty = difficulty;
-      state.user.region = region;
 
-      localStorage.setItem('displayName', displayName);
-      localStorage.setItem('photoURL', photoURL);
-      localStorage.setItem('difficulty', difficulty);
-      localStorage.setItem('region', region);
+      if (displayName !== undefined && displayName !== null) {
+        state.user.displayName = displayName;
+        localStorage.setItem('displayName', displayName);
+      }
+      if (photoURL !== undefined && photoURL !== null) {
+        state.user.photoURL = photoURL;
+        localStorage.setItem('photoURL', photoURL);
+      }
+      if (difficulty !== undefined && difficulty !== null) {
+        state.user.difficulty = difficulty;
+        localStorage.setItem('difficulty', difficulty);
+      }
+      if (region !== undefined && region !== null) {
+        state.user.region = region;
+        localStorage.setItem('region', region);
+      }
     },
     userProfileUpdate: (state, action) => {
       let {displayName, photoURL} = action.payload;
