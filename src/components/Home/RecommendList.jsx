@@ -122,6 +122,9 @@ const RecommendList = () => {
         </ScRecommendList>
       )}
       <ScRecommendList>
+        <ScNoResultText>
+          <p>로그인 하시면 맞춤 산을 추천드립니다.</p>
+        </ScNoResultText>
         <ScTitle>
           <h1>
             <span>한사랑 산악회 </span>추천 산
@@ -185,4 +188,13 @@ const ScMountainListWarapper = styled.div`
   flex-wrap: wrap;
   gap: 20px;
   margin: 0 auto;
+`;
+
+const ScNoResultText = styled.div`
+  text-align: center;
+  margin: 50px auto;
+  width: fit-content;
+  background-color: #e8f6ef;
+  padding: 15px 30px;
+  border-radius: 20px;
 `;

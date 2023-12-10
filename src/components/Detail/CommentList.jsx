@@ -42,7 +42,6 @@ export default function CommentList() {
 
   return (
     <ScCommentListLayout>
-      <h1>Comment</h1>
       {filterComments?.map(c => {
         const {id, uid, displayName, comment, photoURL, createdAt} = c;
         return (
@@ -100,9 +99,9 @@ const ScCommentListLayout = styled.ul`
   }
 
   li {
-    width: 450px;
+    width: 520px;
     padding: 1rem 1.5rem;
-    background-color: var(--color-background);
+    background-color: white;
     border-radius: 1rem;
 
     &:hover {

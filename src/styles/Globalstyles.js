@@ -1,4 +1,4 @@
-import { createGlobalStyle } from 'styled-components';
+import {createGlobalStyle} from 'styled-components';
 import reset from 'styled-reset';
 import kbodiabold from '../assets/fonts/KBO-Dia-Gothic_bold.woff';
 import kbodia from '../assets/fonts/KBO-Dia-Gothic_medium.woff';
@@ -10,7 +10,7 @@ export const GlobalStyles = createGlobalStyle`
 
     :root{
         --color-background:#E8F6EF;
-        --color-main:#08C466;
+        --color-main:#1b9c85;
         --color-yellow:#ffe194;
     }
    

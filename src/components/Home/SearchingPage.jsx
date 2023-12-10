@@ -74,7 +74,7 @@ const ScSearchingWrap = styled.div`
 const ScCancleIcon = styled(MdOutlineCancel)`
   margin-left: 4px;
   font-size: 30px;
-  color: #ffe194;
+  color: var(--color-yellow);
   cursor: pointer;
 `;
 
@@ -91,6 +91,6 @@ const ScTitle = styled.p`
   margin: 25px;
   font-size: 25px;
   & span {
-    color: #1b9c85;
+    color: var(--color-main);
   }
 `;
