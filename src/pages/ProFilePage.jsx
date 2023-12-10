@@ -1,19 +1,24 @@
-import React, {useState, useEffect} from 'react';
+import React, { useState, useEffect } from 'react';
 import styled from 'styled-components';
-import {doc, getDoc, updateDoc, setDoc} from '@firebase/firestore';
-import {getDownloadURL, getStorage, ref, uploadBytes} from 'firebase/storage';
-import {auth} from 'shared/firebase';
+import { doc, getDoc, updateDoc, setDoc } from '@firebase/firestore';
+import { getDownloadURL, getStorage, ref, uploadBytes } from 'firebase/storage';
+import { auth } from 'shared/firebase';
 import db from 'shared/firebase';
-import {onAuthStateChanged} from 'firebase/auth';
-import {storage} from 'shared/firebase';
-import {useNavigate} from 'react-router';
+import { onAuthStateChanged } from 'firebase/auth';
+import { storage } from 'shared/firebase';
+import { useNavigate } from 'react-router';
+import { useDispatch, useSelector } from 'react-redux';
+import { userProfileUpdate } from 'shared/redux/modules/authSlice';
 export const ProFilePage = () => {
-  const [nickname, setNickname] = useState('');
+  const { user } = useSelector((state) => state.user_auth);
+  console.log(user);
+  const [nickname, setNickname] = useState(user.displayName);
   const [profileImage, setProfileImage] = useState('');
   const [newNickname, setNewNickname] = useState('');
   const [newProfileImage, setNewProfileImage] = useState('');
   const [isEditMode, setIsEditMode] = useState(false);
   const navigate = useNavigate();
+  const dispatch = useDispatch();
   useEffect(() => {
     const unsubscribe = onAuthStateChanged(auth, user => {
       console.log('user', user);
@@ -27,6 +32,10 @@ export const ProFilePage = () => {
     // useEffect 정리 함수에서 구독 해제
     return () => unsubscribe();
   }, []); // 빈 배열을 전달하여 최초 한 번만 실행되도록 설정
+
+  useEffect(() => {
+    setNickname(user.displayName)
+  }, [user.displayName])
   const fetchUserData = async user => {
     const userDocRef = doc(db, 'users', user.uid);
     const userDocSnapshot = await getDoc(userDocRef);
@@ -68,6 +77,8 @@ export const ProFilePage = () => {
         photoURL: newProfileImage || profileImage,
         avatar: newProfileImage || profileImage,
       });
+      dispatch(userProfileUpdate({ displayName: newNickname, photoURL: newProfileImage }))
+
     } else {
       const userData = {
         uid: auth.currentUser.uid,
@@ -83,9 +94,9 @@ export const ProFilePage = () => {
     setNickname(nickname);
     setProfileImage(newProfileImage || profileImage);
     setIsEditMode(false);
-    setTimeout(() => {
-      window.location.reload();
-    }, 500);
+    // setTimeout(() => {
+    //   window.location.reload();
+    // }, 500);
   };
 
   //이미지 업로드
@@ -128,6 +139,9 @@ export const ProFilePage = () => {
   // 파일 input에서 이미지를 선택하면 호출되는 함수
   const handleImageSelect = event => {
     const file = event.target.files[0];
+    const fileImg = URL.createObjectURL(file);
+    //선택한 사진으로 파일 미리보기
+    setNewProfileImage(fileImg);
 
     if (file) {
       handleImageUpload(file);
@@ -139,6 +153,7 @@ export const ProFilePage = () => {
       <ScProfileContainer>
         <ProfileImage src={isEditMode ? newProfileImage || profileImage : profileImage} alt="프로필" />
         <ScNickname>닉네임 : {isEditMode ? newNickname || nickname : nickname}</ScNickname>
+        {/* {isEditMode ? newNickname || nickname : nickname} */}
       </ScProfileContainer>
 
       {isEditMode ? (
