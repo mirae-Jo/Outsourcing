@@ -13,17 +13,18 @@ const authslice = createSlice({
   reducers: {
     login: (state, action) => {
       state.isloggined = true;
-      const {uid, displayName, photoURL} = action.payload;
+      let { uid, displayName, photoURL } = action.payload;
+      if (!displayName && !photoURL) {
+        displayName = localStorage.getItem('displayName', displayName);
+        photoURL = localStorage.getItem('photoURL', photoURL);
+      }
+      // const newDisplayName = displayName || localStorage.getItem('displayName');
+      // const newPhotoURL = photoURL || localStorage.getItem('photoURL');
 
-      const newDisplayName = displayName || localStorage.getItem('displayName');
-      const newPhotoURL = photoURL || localStorage.getItem('photoURL');
-
-      console.log(action.payload);
       localStorage.setItem('uid', uid);
-      localStorage.setItem('displayName', newDisplayName);
-      localStorage.setItem('photoURL', newPhotoURL);
-
-      state.user = {uid, displayName: newDisplayName, photoURL: newPhotoURL};
+      localStorage.setItem('displayName', displayName);
+      localStorage.setItem('photoURL', photoURL);
+      state.user = { uid, displayName, photoURL };
       console.log('displayName', displayName, 'photoURL', photoURL);
     },
     logout: (state, action) => {
@@ -42,6 +43,18 @@ const authslice = createSlice({
       localStorage.setItem('displayName', displayName);
       localStorage.setItem('photoURL', photoURL);
     },
+    },
+    userProfileUpdate: (state, action) => {
+      let { displayName, photoURL } = action.payload;
+      if (displayName) {
+        state.user.displayName = displayName;
+        localStorage.setItem('displayName', displayName);
+      }
+      if (photoURL) {
+        state.user.photoURL = photoURL;
+        localStorage.setItem('photoURL', photoURL);
+      }
+    }
   },
 });
 

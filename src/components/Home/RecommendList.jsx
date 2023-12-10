@@ -6,7 +6,7 @@ import MountainCard from 'common/MountainCard';
 import { getMountains } from 'common/api/mountains';
 import { useDispatch, useSelector } from 'react-redux';
 import { getUserInfo } from 'shared/firebase';
-import { login } from 'shared/redux/modules/authSlice';
+import { login, userUpdate } from 'shared/redux/modules/authSlice';
 
 const ITEM_COUNT = 4;
 
@@ -37,7 +37,9 @@ const RecommendList = () => {
     const fetchData = async () => {
       if (isloggined) {
         //추천리스트에 닉네임이 나와야하는데 못나오는중. 이때 authSlice를 통해 값을 업데이트..?
+        //이미지 또는 닉네임이 변경되면 유저 정보를 가져옴. 
         const userInfo = await getUserInfo(user.uid);
+        dispatch(userUpdate(userInfo));
         console.log('userInfo:', userInfo);
         dispatch(login(user));
       }
