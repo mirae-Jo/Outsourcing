@@ -6,14 +6,14 @@ import MountainCard from 'common/MountainCard';
 import KakaoMap from './KakaoMap';
 import {MdOutlineCancel} from 'react-icons/md';
 
-function SearchingPage({searchAddress, setSearchAddress, setIsSearch, location, setLocation}) {
+function SearchingPage({searchAddress, setSearchAddress, setIsSearchCompleted, location, setLocation}) {
   const {isLoading, isError, data} = useQuery({
     queryKey: ['mountains'],
     queryFn: getMountains,
   });
 
   const handleFilterCancleClick = () => {
-    setIsSearch(false);
+    setIsSearchCompleted(false);
     setSearchAddress('');
   };
 
