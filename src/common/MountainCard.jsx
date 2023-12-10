@@ -43,6 +43,10 @@ const ScMountainCard = styled.div`
           width: 100%;
           max-width: 450px;
           height: 120px;
+          border-radius: 5px;
+          &:hover {
+            transform: scale(1.05);
+          } //커서 시각적 보이기
         `;
     }
   }}
