@@ -37,8 +37,8 @@ export const getComments = async () => {
   const querySnapshot = await getDocs(collection(db, 'comments'));
   const data = [];
   querySnapshot.forEach(doc => {
-    const createdAt = doc.data()['createdAt'];
-    const formattedCreatedAt = createdAt ? createdAt.toDate().toLocaleString('ko-KR', {timeZone: 'Asia/Seoul'}) : null;
+    const createdAt = doc.data().createdAt;
+    const formattedCreatedAt = createdAt && createdAt.toDate ? createdAt.toDate() : null;
 
     data.push({
       ...doc.data(),
