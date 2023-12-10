@@ -1,154 +1,221 @@
-import React, {useState, useEffect} from 'react';
-import {useSelector, useDispatch} from 'react-redux';
-import {useParams} from 'react-router-dom';
-import {deleteCommentStore, updateCommentStore} from 'shared/firebase';
-import {deleteComment, updateComment} from 'shared/redux/modules/commentSlice';
+import React, {useEffect, useRef, useState} from 'react';
 import styled from 'styled-components';
-import {FaPencilAlt, FaCheck, FaUndoAlt, FaTrashAlt} from 'react-icons/fa';
+import {PiMountainsFill} from 'react-icons/pi';
+import {useQuery} from '@tanstack/react-query';
+import MountainCard from 'common/MountainCard';
+import {getMountains} from 'common/api/mountains';
+import {useDispatch, useSelector} from 'react-redux';
+import {getUserInfo} from 'shared/firebase';
+import {login, userUpdate} from 'shared/redux/modules/authSlice';
+const ITEM_COUNT = 4;
 
-export default function CommentList() {
-  const [editComment, setEditComment] = useState();
-  const [text, setText] = useState('');
-  const {comments} = useSelector(state => state.comments);
-  const {user} = useSelector(state => state.user_auth);
-  const [getComments, setGetComments] = useState(comments);
-  const {mountainName} = useParams();
-  const dispatch = useDispatch();
-  const filterComments = getComments.filter(comment => comment.mountainName === mountainName);
-  const handleDelete = id => {
-    if (window.confirm('삭제하시겠습니까?')) {
-      deleteCommentStore(id);
-      dispatch(deleteComment(id));
-    }
-  };
-
-  const handleEdit = id => {
-    setEditComment(id);
-  };
-
-  const handleUpdate = id => {
-    if (window.confirm('수정하시겠습니까?')) {
-      updateCommentStore(id, text);
-      dispatch(updateComment({id, comment: text}));
-      //이제 더이상 수정 상태가 아님
-      setEditComment(null);
-    }
-  };
-
-  useEffect(() => {
-    //댓글이 추가 또는 삭제될 때 마다 업데이트
-    setGetComments(comments);
-  }, [comments]);
-
-  return (
-    <ScCommentListLayout>
-      {filterComments?.map(c => {
-        const {id, uid, displayName, comment, photoURL, createdAt} = c;
-        return (
-          <li key={id}>
-            <ScCommentBox>
-              {editComment === id ? (
-                <ScEditComment defaultValue={comment} onChange={e => setText(e.target.value)} />
-              ) : (
-                <ScComment>{comment}</ScComment>
-              )}
-              <ScUserInfo>
-                <img src={photoURL} alt="avatar" />
-                <p>{displayName}</p>
-              </ScUserInfo>
-            </ScCommentBox>
-            <ScButtonBox>
-              {user.uid && uid && user?.uid === uid && editComment !== id && (
-                <button onClick={() => handleEdit(id)}>
-                  <FaPencilAlt />
-                </button>
-              )}
-              {editComment === id && (
-                <button disabled={text === comment || !text} onClick={() => handleUpdate(id)}>
-                  <FaCheck />
-                </button>
-              )}
-              {editComment === id && (
-                <button onClick={() => setEditComment(null)}>
-                  <FaUndoAlt />
-                </button>
-              )}
-              {user.uid && uid && user?.uid === uid && (
-                <button onClick={() => handleDelete(id)}>
-                  <FaTrashAlt />
-                </button>
-              )}
-            </ScButtonBox>
-            <time>{new Date(createdAt).toLocaleString()}</time>
-          </li>
-        );
-      })}
-    </ScCommentListLayout>
-  );
+// https://developer.mozilla.org/ko/docs/Web/JavaScript/Reference/Global_Objects/Math/random
+function getRandomInt(min, max) {
+  min = Math.ceil(min);
+  max = Math.floor(max);
+  return Math.floor(Math.random() * (max - min)) + min; //최댓값은 제외, 최솟값은 포함
 }
 
-const ScCommentListLayout = styled.ul`
+const RecommendList = () => {
+  const [mountains, setMountains] = useState([]);
+  const [personalMountain, setPersonalMountain] = useState([]);
+  const {isLoading, isError, data} = useQuery({
+    queryKey: ['mountains'],
+    queryFn: getMountains,
+  });
+  const [userFilteredMountain, setUserFilteredMountain] = useState([]);
+
+  const dispatch = useDispatch();
+
+  const {user, isloggined} = useSelector(state => state.user_auth);
+  const [googleLogin, setGoogleLogin] = useState();
+  useEffect(() => {
+    getMountains();
+  }, []);
+
+  useEffect(() => {
+    const fetchData = async () => {
+      if (isloggined && user) {
+        //추천리스트에 닉네임이 나와야하는데 못나오는중. 이때 authSlice를 통해 값을 업데이트..?
+        //이미지 또는 닉네임이 변경되면 유저 정보를 가져옴.
+        const userInfo = await getUserInfo(user.uid);
+        dispatch(userUpdate(userInfo));
+        // dispatch(login(userInfo));
+      }
+    };
+
+    fetchData();
+  }, [dispatch, isloggined, user.uid, user]);
+
+  // useEffect(() => {
+  //   // onAuthStateChanged를 사용하여 인증 상태 변화 감지
+  //   const unsubscribe = onAuthStateChanged(auth, user => {
+  //     if (user) {
+  //       // 사용자가 로그인한 경우, 사용자 정보 출력
+  //       console.log('로그인된 사용자 정보:', user.displayName);
+  //       setgoogleLogin(user.displayName);
+  //     } else {
+  //       // 사용자가 로그아웃한 경우
+  //       console.log('사용자 로그아웃');
+  //     }
+  //   });
+
+  //   return () => unsubscribe();
+  // }, []);
+
+  useEffect(() => {
+    if (!data) return;
+    const newMountains = [];
+    const numbers = []; // 10, 20, 30
+
+    for (let i = 0; i < ITEM_COUNT; i++) {
+      let randomNumber = getRandomInt(0, data.length);
+      while (numbers.includes(randomNumber)) {
+        randomNumber = getRandomInt(0, data.length);
+      }
+      numbers.push(randomNumber);
+      newMountains.push(data[randomNumber]);
+    }
+
+    setPersonalMountain(newMountains);
+  }, [data]);
+
+  // mountain
+  useEffect(() => {
+    if (!data) return;
+
+    const updateMountains = () => {
+      const newMountains = [];
+      const numbers = []; // 10, 20, 30
+
+      for (let i = 0; i < ITEM_COUNT; i++) {
+        let randomNumber = getRandomInt(0, data.length);
+        while (numbers.includes(randomNumber)) {
+          randomNumber = getRandomInt(0, data.length);
+        }
+        numbers.push(randomNumber);
+        newMountains.push(data[randomNumber]);
+      }
+
+      setMountains(newMountains);
+    };
+    updateMountains();
+    const interval = setInterval(updateMountains, 10000);
+
+    return () => clearInterval(interval);
+  }, [data]);
+
+  useEffect(() => {
+    try {
+      if (data) {
+        const userFilteredMountain = data.filter(
+          mountain => mountain.filterlocation === user.region && mountain.difficulty === user.difficulty,
+        );
+        setUserFilteredMountain(userFilteredMountain);
+      }
+    } catch (error) {
+      console.log(error);
+    }
+  }, [data, user]);
+
+  return (
+    <ScMountainList>
+      {isloggined ? (
+        userFilteredMountain.length > 0 ? (
+          <ScRecommendList>
+            <ScTitle>
+              <h1>
+                <span>{user.displayName}</span>님께 추천드립니다.
+              </h1>
+              <ScMountainIcon />
+            </ScTitle>
+            <ScMountainListWarapper>
+              {userFilteredMountain.map((item, index) => (
+                <MountainCard mountain={item} key={index} />
+              ))}
+            </ScMountainListWarapper>
+          </ScRecommendList>
+        ) : (
+          <ScNoResultText>
+            <p>{user.displayName}님의 지역과 난이도에 일치하는 산이 없습니다.</p>
+          </ScNoResultText>
+        )
+      ) : (
+        <ScNoResultText>
+          <p>로그인 하시면 맞춤 산을 추천드립니다.</p>
+        </ScNoResultText>
+      )}
+      <ScRecommendList>
+        <ScTitle>
+          <h1>
+            <span>한사랑 산악회 </span>추천 산
+          </h1>
+          <ScMountainIcon />
+        </ScTitle>
+        <ScMountainListWarapper>
+          {mountains.map((item, index) => (
+            <MountainCard mountain={item} key={index} />
+          ))}
+        </ScMountainListWarapper>
+      </ScRecommendList>
+    </ScMountainList>
+  );
+};
+
+export default RecommendList;
+
+const ScMountainList = styled.div`
+  padding-bottom: 50px;
+`;
+
+const ScRecommendList = styled.div`
+  max-width: 120%;
+  width: 920px;
+  margin: 20px auto;
+  height: fit-content;
   display: flex;
   flex-direction: column;
+  align-items: flex-start;
+  position: relative;
+  user-select: none;
+`;
+
+const ScTitle = styled.div`
+  display: flex;
+  flex-direction: row;
   justify-content: center;
   align-items: center;
-  gap: 1rem;
-
-  h1 {
-    padding: 1rem;
+  padding: 10px;
+  gap: 8px;
+  & h1 {
+    font-size: large;
   }
-
-  li {
-    width: 520px;
-    padding: 1rem 1.5rem;
-    background-color: white;
-    border-radius: 1rem;
-
-    &:hover {
-      cursor: pointer;
-      transform: scale(1.1);
-    }
-  }
-
-  img {
-    width: 2rem;
-    height: 2rem;
-    border-radius: 50%;
-  }
-  button {
-    background-color: transparent;
-    &:hover {
-      transform: scale(1.1) rotate(15deg);
-    }
-  }
-  time {
-    display: block;
-    font-size: 0.8rem;
-    color: #6c757d;
-    text-align: end;
+  & span {
+    color: var(--color-main);
   }
 `;
 
-const ScCommentBox = styled.div`
+const ScMountainIcon = styled(PiMountainsFill)`
+  font-size: 25px;
+  color: var(--color-main);
+`;
+
+const ScMountainListWarapper = styled.div`
+  width: 100%;
+  max-width: 920px;
   display: flex;
-  justify-content: space-between;
-`;
-const ScEditComment = styled.textarea`
-  width: 70%;
-  padding: 0.5rem;
-`;
-
-const ScComment = styled.p`
-  padding: 0.5rem;
+  flex-direction: row;
+  justify-content: flex-start;
+  flex-wrap: wrap;
+  gap: 20px;
+  margin: 0 auto;
 `;
 
-const ScUserInfo = styled.div`
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  gap: 0.5rem;
-`;
-
-const ScButtonBox = styled.div`
-  display: flex;
+const ScNoResultText = styled.div`
+  text-align: center;
+  margin: 50px auto;
+  width: fit-content;
+  background-color: #e8f6ef;
+  padding: 15px 30px;
+  border-radius: 20px;
 `;
