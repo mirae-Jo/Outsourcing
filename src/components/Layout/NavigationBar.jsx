@@ -1,7 +1,7 @@
 import React, {useEffect, useState} from 'react';
 import styled from 'styled-components';
 import LoginModal from 'components/Login/LoginModal';
-import {useLocation, useNavigate} from 'react-router';
+import {useNavigate} from 'react-router';
 import {auth} from 'shared/firebase';
 import {onAuthStateChanged} from '@firebase/auth';
 import {doc, getDoc} from '@firebase/firestore';
@@ -24,7 +24,7 @@ const NavigationBar = () => {
           const userData = userDocSnapshot.data();
           const avatarURL = userData.avatar;
           const userNickname = userData.nickname;
-          const userPhotopURL = userData.photoURL;
+          // const userPhotopURL = userData.photoURL;
 
           const googleProviderData = user.providerData.find(provider => provider.providerId === 'google.com');
 
@@ -40,7 +40,7 @@ const NavigationBar = () => {
     });
 
     return () => unsubscribe();
-  }, [displayName]);
+  }, [displayName, avatarUrl, userNickName]);
 
   useEffect(() => {
     if (displayName !== userNickName) {
@@ -51,7 +51,7 @@ const NavigationBar = () => {
       return () => clearTimeout(timer);
     }
     if (photoURL !== avatarUrl) setAvatarUrl(photoURL);
-  }, [displayName, photoURL]);
+  }, [displayName, photoURL, avatarUrl, userNickName]);
 
   const goHomeBT = () => {
     navigate(`/`);

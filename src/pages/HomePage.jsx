@@ -18,7 +18,7 @@ function HomePage() {
         dispatch(login({uid, displayName, photoURL}));
       }
     });
-  }, []);
+  }, [dispatch]);
 
   return (
     <>

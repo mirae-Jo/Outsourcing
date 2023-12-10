@@ -1,4 +1,4 @@
-import React, {useEffect, useRef, useState} from 'react';
+import React, {useEffect, useState} from 'react';
 import styled from 'styled-components';
 import {PiMountainsFill} from 'react-icons/pi';
 import {useQuery} from '@tanstack/react-query';
@@ -6,7 +6,7 @@ import MountainCard from 'common/MountainCard';
 import {getMountains} from 'common/api/mountains';
 import {useDispatch, useSelector} from 'react-redux';
 import {getUserInfo} from 'shared/firebase';
-import {login, userUpdate} from 'shared/redux/modules/authSlice';
+import {userUpdate} from 'shared/redux/modules/authSlice';
 const ITEM_COUNT = 4;
 
 // https://developer.mozilla.org/ko/docs/Web/JavaScript/Reference/Global_Objects/Math/random
@@ -28,7 +28,6 @@ const RecommendList = () => {
   const dispatch = useDispatch();
 
   const {user, isloggined} = useSelector(state => state.user_auth);
-  const [googleLogin, setGoogleLogin] = useState();
   useEffect(() => {
     getMountains();
   }, []);
@@ -36,8 +35,6 @@ const RecommendList = () => {
   useEffect(() => {
     const fetchData = async () => {
       if (isloggined && user) {
-        //추천리스트에 닉네임이 나와야하는데 못나오는중. 이때 authSlice를 통해 값을 업데이트..?
-        //이미지 또는 닉네임이 변경되면 유저 정보를 가져옴.
         const userInfo = await getUserInfo(user.uid);
         dispatch(userUpdate(userInfo));
         // dispatch(login(userInfo));
@@ -46,22 +43,6 @@ const RecommendList = () => {
 
     fetchData();
   }, [dispatch, isloggined, user.uid, user]);
-
-  // useEffect(() => {
-  //   // onAuthStateChanged를 사용하여 인증 상태 변화 감지
-  //   const unsubscribe = onAuthStateChanged(auth, user => {
-  //     if (user) {
-  //       // 사용자가 로그인한 경우, 사용자 정보 출력
-  //       console.log('로그인된 사용자 정보:', user.displayName);
-  //       setgoogleLogin(user.displayName);
-  //     } else {
-  //       // 사용자가 로그아웃한 경우
-  //       console.log('사용자 로그아웃');
-  //     }
-  //   });
-
-  //   return () => unsubscribe();
-  // }, []);
 
   useEffect(() => {
     if (!data) return;
@@ -117,6 +98,16 @@ const RecommendList = () => {
       console.log(error);
     }
   }, [data, user]);
+
+  if (isLoading) {
+    return <p>로딩중입니다...</p>;
+  }
+  if (isError) {
+    return <p>오류가 발생했습니다...</p>;
+  }
+  if (!data || data.length === 0) {
+    return <p>산 정보가 없습니다.</p>;
+  }
 
   return (
     <ScMountainList>
