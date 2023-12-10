@@ -83,6 +83,7 @@ const LoginModal = () => {
       setEmailValidationMessage('');
       setPasswordValidationMessage('');
       console.log(auth);
+
       await signInWithEmailAndPassword(auth, email, password);
       setIsLoginModal(false);
       setEmail('');
@@ -114,10 +115,10 @@ const LoginModal = () => {
       await signOut(auth);
       window.alert('로그아웃 되었습니다.');
       setUser(null);
-      // setTimeout(() => {
-      navigate('/');
-      //   window.location.reload();
-      // }, 500);
+      setTimeout(() => {
+        navigate('/');
+        window.location.reload();
+      }, 500);
       dispatch(logout());
     }
   };
@@ -132,7 +133,7 @@ const LoginModal = () => {
       // 사용자 정보가 없다면 Firestore에 저장
       await setDoc(userDocRef, {
         email: user.email,
-        nickName: user.displayName,
+        nickname: user.displayName,
         avatar: profilenormal,
         photoURL: user.photoURL,
         // 기타 필요한 사용자 정보 추가

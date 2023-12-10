@@ -7,7 +7,9 @@ import {getMountains} from 'common/api/mountains';
 import {useDispatch, useSelector} from 'react-redux';
 import {getUserInfo} from 'shared/firebase';
 import {login, userUpdate} from 'shared/redux/modules/authSlice';
-
+import {auth} from 'shared/firebase';
+import db from 'shared/firebase';
+import {onAuthStateChanged} from 'firebase/auth';
 const ITEM_COUNT = 4;
 
 // https://developer.mozilla.org/ko/docs/Web/JavaScript/Reference/Global_Objects/Math/random
@@ -27,7 +29,7 @@ const RecommendList = () => {
   const dispatch = useDispatch();
 
   const {user, isloggined} = useSelector(state => state.user_auth);
-
+  const [googleLogin, setGoogleLogin] = useState();
   useEffect(() => {
     getMountains();
   }, []);
@@ -45,6 +47,22 @@ const RecommendList = () => {
 
     fetchData();
   }, [dispatch, isloggined, user.uid]);
+
+  // useEffect(() => {
+  //   // onAuthStateChanged를 사용하여 인증 상태 변화 감지
+  //   const unsubscribe = onAuthStateChanged(auth, user => {
+  //     if (user) {
+  //       // 사용자가 로그인한 경우, 사용자 정보 출력
+  //       console.log('로그인된 사용자 정보:', user.displayName);
+  //       setgoogleLogin(user.displayName);
+  //     } else {
+  //       // 사용자가 로그아웃한 경우
+  //       console.log('사용자 로그아웃');
+  //     }
+  //   });
+
+  //   return () => unsubscribe();
+  // }, []);
 
   useEffect(() => {
     if (!data) return;

@@ -1,17 +1,17 @@
-import React, { useEffect, useState } from 'react';
+import React, {useEffect, useState} from 'react';
 import styled from 'styled-components';
 import LoginModal from 'components/Login/LoginModal';
-import { useLocation, useNavigate } from 'react-router';
-import { auth } from 'shared/firebase';
-import { onAuthStateChanged } from '@firebase/auth';
-import { doc, getDoc } from '@firebase/firestore';
+import {useLocation, useNavigate} from 'react-router';
+import {auth} from 'shared/firebase';
+import {onAuthStateChanged} from '@firebase/auth';
+import {doc, getDoc} from '@firebase/firestore';
 import db from 'shared/firebase';
 import loopy from '../../assets/imgs/loopy.jpeg';
-import { useSelector } from 'react-redux';
+import {useSelector} from 'react-redux';
 
 const NavigationBar = () => {
   const navigate = useNavigate();
-  const { displayName, photoURL } = useSelector((state) => state.user_auth).user;
+  const {displayName, photoURL} = useSelector(state => state.user_auth).user;
   console.log(displayName, photoURL);
   const [isLoginModal, setIsLoginModal] = useState(true);
   // const [userDisplayName, setUserDisplayName] = useState(null);
@@ -28,28 +28,34 @@ const NavigationBar = () => {
           const avatarURL = userData.avatar;
           const userNickname = userData.nickname;
           const userPhotopURL = userData.photoURL;
-
+          console.log(userData.photoURL);
           const googleProviderData = user.providerData.find(provider => provider.providerId === 'google.com');
-
+          console.log(googleProviderData);
           if (googleProviderData) {
             setAvatarUrl(userData.photoURL);
+            setUserNickName(userNickname || displayName); //구글 로그인 일때
+            console.log(userNickName);
           } else {
-            setAvatarUrl(avatarURL);
+            setAvatarUrl(avatarURL || userData.photoURL);
+            setUserNickName(userNickname);
           }
-
-          setUserNickName(userNickName);
         }
       }
     });
 
     return () => unsubscribe();
-  }, []);
+  }, [displayName]);
 
   useEffect(() => {
-    //닉네임만 변경하면 사진이 undefined로 변경됨. 
-    if (displayName !== userNickName) setUserNickName(displayName);
+    if (displayName !== userNickName) {
+      const timer = setTimeout(() => {
+        setUserNickName(displayName);
+      }, 0);
+
+      return () => clearTimeout(timer);
+    }
     if (photoURL !== avatarUrl) setAvatarUrl(photoURL);
-  }, [displayName, photoURL])
+  }, [displayName, photoURL]);
 
   const goHomeBT = () => {
     navigate(`/`);
