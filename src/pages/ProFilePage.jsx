@@ -98,11 +98,10 @@ export const ProFilePage = () => {
     event.preventDefault();
     // 변경된 내용이 있는지 확인
     const hasChanges = newNickname !== nickname || (newProfileImage && newProfileImage !== profileImage);
-
+    navigater('/');
     // 변경된 내용이 없는 경우에는 확인 메시지 없이 종료
     if (!hasChanges || !window.confirm('수정하시겠습니까?')) {
       setIsEditMode(false);
-      navigater(`/`);
       return;
     }
 
