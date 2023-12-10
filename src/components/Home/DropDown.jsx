@@ -3,41 +3,13 @@ import styled from 'styled-components';
 import {TiArrowSortedDown} from 'react-icons/ti';
 import FilteredMountain from './FilteredMountain';
 import {MdOutlineCancel} from 'react-icons/md';
+import {DROPDOWN_MENU, DISPLAY_NAME} from 'utils/dropdownMenu';
 
 const DropDown = () => {
   const [isOpen, setIsOpen] = useState(false);
   const [selectedCategories, setSelectedCategories] = useState({});
   const [selectedDetailCategories, setSelectedDetailCategories] = useState({});
   const dropdownRef = useRef(null);
-
-  const DROPDOWN_MENU = {
-    region: [
-      '강원도',
-      '경기도',
-      '경상남도',
-      '경상북도',
-      '광주광역시',
-      '대구광역시',
-      '대전광역시',
-      '부산광역시',
-      '서울특별시',
-      '울산광역시',
-      '인천광역시',
-      '전라남도',
-      '전라북도',
-      '제주특별자치도',
-      '충청남도',
-      '충청북도',
-    ],
-    difficulty: ['초급', '중급', '고급'],
-    duration: ['1시간 미만', '1~2시간', '2~3시간', '3~4시간', '4시간 이상'],
-  };
-
-  const displayName = {
-    region: '지역별',
-    difficulty: '난이도별',
-    duration: '소요시간별',
-  };
 
   useEffect(() => {
     const handleClickOutside = e => {
@@ -73,7 +45,7 @@ const DropDown = () => {
                   setSelectedCategories({[category]: true});
                 }}
               >
-                <button>{displayName[category]}</button>
+                <button>{DISPLAY_NAME[category]}</button>
                 <ScArrowIcon />
               </ScBtnWrapper>
               {isOpen && selectedCategories[category] && (

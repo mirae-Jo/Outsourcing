@@ -23,6 +23,7 @@ const RecommendList = () => {
     queryKey: ['mountains'],
     queryFn: getMountains,
   });
+  const [userFilteredMountain, setUserFilteredMountain] = useState([]);
 
   const dispatch = useDispatch();
 
@@ -34,17 +35,19 @@ const RecommendList = () => {
 
   useEffect(() => {
     const fetchData = async () => {
-      if (isloggined) {
+      if (isloggined && user) {
         //추천리스트에 닉네임이 나와야하는데 못나오는중. 이때 authSlice를 통해 값을 업데이트..?
         //이미지 또는 닉네임이 변경되면 유저 정보를 가져옴.
         const userInfo = await getUserInfo(user.uid);
         dispatch(userUpdate(userInfo));
+        // dispatch(login(userInfo));
         console.log('userInfo:', userInfo);
+        console.log('user in state:', user);
       }
     };
 
     fetchData();
-  }, [dispatch, isloggined, user.uid]);
+  }, [dispatch, isloggined, user.uid, user]);
 
   // useEffect(() => {
   //   // onAuthStateChanged를 사용하여 인증 상태 변화 감지
@@ -104,22 +107,45 @@ const RecommendList = () => {
     return () => clearInterval(interval);
   }, [data]);
 
+  // const userFilteredMountain = data.filter(mountain => {
+  //   return mountain.filterlocation === user.region && mountain.difficulty === user.difficulty;
+  // });
+
+  useEffect(() => {
+    try {
+      if (data) {
+        const userFilteredMountain = data.filter(
+          mountain => mountain.filterlocation === user.region && mountain.difficulty === user.difficulty,
+        );
+        setUserFilteredMountain(userFilteredMountain);
+      }
+    } catch (error) {
+      console.log(error);
+    }
+  }, [data, user]);
+
   return (
     <ScMountainList>
       {isloggined ? (
-        <ScRecommendList>
-          <ScTitle>
-            <h1>
-              <span>{user.displayName}</span>님께 추천드립니다.
-            </h1>
-            <ScMountainIcon />
-          </ScTitle>
-          <ScMountainListWarapper>
-            {personalMountain.map((item, index) => (
-              <MountainCard mountain={item} />
-            ))}
-          </ScMountainListWarapper>
-        </ScRecommendList>
+        userFilteredMountain ? (
+          <ScRecommendList>
+            <ScTitle>
+              <h1>
+                <span>{user.displayName}</span>님께 추천드립니다.
+              </h1>
+              <ScMountainIcon />
+            </ScTitle>
+            <ScMountainListWarapper>
+              {userFilteredMountain.map((item, index) => (
+                <MountainCard mountain={item} key={index} />
+              ))}
+            </ScMountainListWarapper>
+          </ScRecommendList>
+        ) : (
+          <ScNoResultText>
+            <p>{user.displayName}님의 지역과 난이도에 일치하는 산이 없습니다.</p>
+          </ScNoResultText>
+        )
       ) : (
         <ScNoResultText>
           <p>로그인 하시면 맞춤 산을 추천드립니다.</p>
@@ -171,13 +197,13 @@ const ScTitle = styled.div`
     font-size: large;
   }
   & span {
-    color: #1b9c85;
+    color: var(--color-main);
   }
 `;
 
 const ScMountainIcon = styled(PiMountainsFill)`
   font-size: 25px;
-  color: #1b9c85;
+  color: var(--color-main);
 `;
 
 const ScMountainListWarapper = styled.div`
@@ -185,7 +211,7 @@ const ScMountainListWarapper = styled.div`
   max-width: 920px;
   display: flex;
   flex-direction: row;
-  justify-content: center;
+  justify-content: flex-start;
   flex-wrap: wrap;
   gap: 20px;
   margin: 0 auto;
