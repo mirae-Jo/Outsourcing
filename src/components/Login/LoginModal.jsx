@@ -28,7 +28,6 @@ const LoginModal = () => {
   // 추가: 로그인 상태 변경 감지 및 유저 정보 업데이트
   useEffect(() => {
     const unsubscribe = onAuthStateChanged(auth, async user => {
-      console.log(user);
       if (user) {
         const {uid, displayName, photoURL, region, difficulty} = user;
         if (!displayName && !photoURL) {

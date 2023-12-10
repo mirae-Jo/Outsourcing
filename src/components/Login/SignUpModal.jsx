@@ -175,7 +175,8 @@ const ScModalOverlay = styled.div`
 
 const ScLoginMoDal = styled.div`
   width: 400px;
-  height: 450px;
+  height: fit-content;
+  padding: 30px;
   background-color: #fff;
   border-radius: 8px;
 
@@ -234,10 +235,12 @@ const ScSection = styled.section`
 `;
 
 const ScSelect = styled.section`
+  width: 300px;
   display: flex;
   flex-direction: row;
   gap: 20px;
   align-items: center;
+  justify-content: space-between;
   margin: 10px 0;
   color: black;
   p {
