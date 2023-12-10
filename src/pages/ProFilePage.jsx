@@ -142,7 +142,7 @@ export const ProFilePage = () => {
         // 이미지를 Firebase Storage에 업로드
         handleImageUpload(file);
       } catch (error) {
-        console.error('Error uploading image:', error);
+        console.error('업로드 에러', error);
       }
     }
   };
