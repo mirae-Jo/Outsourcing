@@ -44,8 +44,18 @@ const RecommendList = () => {
       }
     };
 
+<<<<<<< HEAD
     fetchData();
   }, [dispatch, isloggined, user.uid, user]);
+=======
+const ScCommentListLayout = styled.ul`
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  gap: 1rem;
+  margin-bottom: 50px;
+>>>>>>> f6c23185ad47fec32257d8f3f8c8dc8e9fe8bae5
 
   // useEffect(() => {
   //   // onAuthStateChanged를 사용하여 인증 상태 변화 감지
@@ -63,10 +73,19 @@ const RecommendList = () => {
   //   return () => unsubscribe();
   // }, []);
 
+<<<<<<< HEAD
   useEffect(() => {
     if (!data) return;
     const newMountains = [];
     const numbers = []; // 10, 20, 30
+=======
+  li {
+    width: 520px;
+    padding: 1rem 1.5rem;
+    background-color: white;
+    border-radius: 1rem;
+    background-color: var(--color-yellow);
+>>>>>>> f6c23185ad47fec32257d8f3f8c8dc8e9fe8bae5
 
     for (let i = 0; i < ITEM_COUNT; i++) {
       let randomNumber = getRandomInt(0, data.length);

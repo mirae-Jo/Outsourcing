@@ -15,7 +15,6 @@ export default function AddComment() {
 
   const handleSubmit = e => {
     e.preventDefault();
-    setText('');
     if (!user.uid) {
       alert('로그인 후 댓글을 작성해주세요!');
       return;
@@ -23,6 +22,7 @@ export default function AddComment() {
     const newComment = {...user, id: uuidv4(), comment: text, mountainName, createdAt: new Date()};
     addCommentStore(newComment);
     dispatch(addComment(newComment));
+    setText('');
   };
   const handleChange = e => {
     setText(e.target.value);
@@ -36,8 +36,8 @@ export default function AddComment() {
           <ScComment type="text" value={text} onChange={handleChange} placeholder="댓글을 작성해주세요" />
           <ScSubmitBtn>등록하기</ScSubmitBtn>
         </div>
-        <CommentList />
       </ScAddCommentLayout>
+      <CommentList />
     </>
   );
 }

@@ -68,7 +68,8 @@ export const addCommentStore = async comment => {
 export const deleteCommentStore = async id => {
   const deleted = query(collection(db, 'comments'), where('id', '==', id));
   const data = await getDocs(deleted);
-  return await deleteDoc(data.docs[0].ref);
+
+  return await deleteDoc(data.docs[0].ref, 'comments');
 };
 
 export const updateCommentStore = async (id, text) => {
