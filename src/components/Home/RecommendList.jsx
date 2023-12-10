@@ -19,6 +19,7 @@ function getRandomInt(min, max) {
 
 const RecommendList = () => {
   const [mountains, setMountains] = useState([]);
+  const [personalMountain, setPersonalMountain] = useState([]);
   const {isLoading, isError, data} = useQuery({
     queryKey: ['mountains'],
     queryFn: getMountains,
@@ -48,6 +49,7 @@ const RecommendList = () => {
     fetchData();
   }, [dispatch, isloggined, user.uid]);
 
+  // personalMointain
   useEffect(() => {
     if (!data) return;
     const newMountains = [];
@@ -61,18 +63,34 @@ const RecommendList = () => {
       numbers.push(randomNumber);
       newMountains.push(data[randomNumber]);
     }
-    setMountains(newMountains);
+
+    setPersonalMountain(newMountains);
   }, [data]);
 
-  if (isLoading) {
-    return <p>로딩중입니다...</p>;
-  }
-  if (isError) {
-    return <p>오류가 발생했습니다...</p>;
-  }
-  if (!data || data.length === 0) {
-    return <p>산 정보가 없습니다.</p>;
-  }
+  // mountain
+  useEffect(() => {
+    if (!data) return;
+
+    const updateMountains = () => {
+      const newMountains = [];
+      const numbers = []; // 10, 20, 30
+
+      for (let i = 0; i < ITEM_COUNT; i++) {
+        let randomNumber = getRandomInt(0, data.length);
+        while (numbers.includes(randomNumber)) {
+          randomNumber = getRandomInt(0, data.length);
+        }
+        numbers.push(randomNumber);
+        newMountains.push(data[randomNumber]);
+      }
+
+      setMountains(newMountains);
+    };
+    updateMountains();
+    const interval = setInterval(updateMountains, 10000);
+
+    return () => clearInterval(interval);
+  }, [data]);
 
   return (
     <ScMountainList>
@@ -85,7 +103,7 @@ const RecommendList = () => {
             <ScMountainIcon />
           </ScTitle>
           <ScMountainListWarapper>
-            {mountains.map((item, index) => (
+            {personalMountain.map((item, index) => (
               <MountainCard mountain={item} />
             ))}
           </ScMountainListWarapper>
@@ -137,13 +155,13 @@ const ScTitle = styled.div`
     font-size: large;
   }
   & span {
-    color: var(--color-main);
+    color: #1b9c85;
   }
 `;
 
 const ScMountainIcon = styled(PiMountainsFill)`
   font-size: 25px;
-  color: var(--color-main);
+  color: #1b9c85;
 `;
 
 const ScMountainListWarapper = styled.div`
