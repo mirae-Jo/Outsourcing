@@ -112,10 +112,9 @@ const LoginModal = () => {
       await signOut(auth);
       window.alert('로그아웃 되었습니다.');
       setUser(null);
-      setTimeout(() => {
-        navigate('/');
-        window.location.reload();
-      }, 500);
+
+      navigate('/');
+
       dispatch(logout());
     }
   };
@@ -166,9 +165,8 @@ const LoginModal = () => {
     } catch (error) {
       console.error(error);
     }
-    setTimeout(() => {
-      window.location.reload();
-    }, 300);
+
+    window.location.reload();
   };
 
   return (
