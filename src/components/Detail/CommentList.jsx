@@ -10,7 +10,6 @@ export default function CommentList() {
   const [editComment, setEditComment] = useState();
   const [text, setText] = useState('');
   const {comments} = useSelector(state => state.comments);
-  console.log(comments);
   const {user} = useSelector(state => state.user_auth);
   const [getComments, setGetComments] = useState(comments);
   const {mountainName} = useParams();

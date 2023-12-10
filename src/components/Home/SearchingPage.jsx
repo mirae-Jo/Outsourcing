@@ -32,7 +32,6 @@ function SearchingPage({searchAddress, setSearchAddress, setIsSearchCompleted, l
     const mountainName = item.name;
     return mountainName.includes(searchAddress);
   });
-  console.log(filteredData);
 
   return (
     <ScSearchingWrap>

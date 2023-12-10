@@ -35,7 +35,6 @@ const Search = () => {
     setSearchAddress(e.target.value);
     setIsSearchCompleted(false); // 검색어가 변경될 때마다 검색 완료 상태를 false로 설정
   };
-  console.log('searchAddress', searchAddress);
 
   return (
     <>

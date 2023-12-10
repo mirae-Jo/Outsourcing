@@ -28,12 +28,11 @@ const LoginModal = () => {
   // 추가: 로그인 상태 변경 감지 및 유저 정보 업데이트
   useEffect(() => {
     const unsubscribe = onAuthStateChanged(auth, async user => {
-      console.log(user);
       if (user) {
         const {uid, displayName, photoURL} = user;
         if (!displayName && !photoURL) {
           const userInfo = await getUserInfo(uid);
-          console.log(userInfo);
+
           setUser({...userInfo, uid});
           //일반 로그인한 경우 유저 정보 업데이트해줌.
           dispatch(userUpdate(userInfo));
@@ -82,14 +81,12 @@ const LoginModal = () => {
       // 이메일 유효성 검사 초기화
       setEmailValidationMessage('');
       setPasswordValidationMessage('');
-      console.log(auth);
 
       await signInWithEmailAndPassword(auth, email, password);
       setIsLoginModal(false);
       setEmail('');
       setPassword('');
     } catch (error) {
-      console.error(error);
       if (error.code === 'auth/invalid-email') {
         setEmailValidationMessage('이메일이 잘못되었습니다.');
         setEmail('');
@@ -138,9 +135,7 @@ const LoginModal = () => {
         photoURL: user.photoURL,
         // 기타 필요한 사용자 정보 추가
       });
-
       console.log('사용자 정보 Firestore에 저장 완료');
-      console.log(setDoc);
     } else {
       console.log('이미 사용자 정보가 Firestore에 존재합니다.');
     }

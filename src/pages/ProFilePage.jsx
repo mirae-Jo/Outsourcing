@@ -1,17 +1,17 @@
-import React, { useState, useEffect } from 'react';
+import React, {useState, useEffect} from 'react';
 import styled from 'styled-components';
-import { doc, getDoc, updateDoc, setDoc } from '@firebase/firestore';
-import { getDownloadURL, getStorage, ref, uploadBytes } from 'firebase/storage';
-import { auth } from 'shared/firebase';
+import {doc, getDoc, updateDoc, setDoc} from '@firebase/firestore';
+import {getDownloadURL, getStorage, ref, uploadBytes} from 'firebase/storage';
+import {auth} from 'shared/firebase';
 import db from 'shared/firebase';
-import { onAuthStateChanged } from 'firebase/auth';
-import { storage } from 'shared/firebase';
-import { useNavigate } from 'react-router';
-import { useDispatch, useSelector } from 'react-redux';
-import { userProfileUpdate } from 'shared/redux/modules/authSlice';
+import {onAuthStateChanged} from 'firebase/auth';
+import {storage} from 'shared/firebase';
+import {useNavigate} from 'react-router';
+import {useDispatch, useSelector} from 'react-redux';
+import {userProfileUpdate} from 'shared/redux/modules/authSlice';
 export const ProFilePage = () => {
-  const { user } = useSelector((state) => state.user_auth);
-  console.log(user);
+  const {user} = useSelector(state => state.user_auth);
+
   const [nickname, setNickname] = useState(user.displayName);
   const [profileImage, setProfileImage] = useState('');
   const [newNickname, setNewNickname] = useState('');
@@ -21,8 +21,6 @@ export const ProFilePage = () => {
   const dispatch = useDispatch();
   useEffect(() => {
     const unsubscribe = onAuthStateChanged(auth, user => {
-      console.log('user', user);
-
       // user 객체가 정의된 경우에만 fetchUserData 호출
       if (user) {
         fetchUserData(user);
@@ -34,8 +32,8 @@ export const ProFilePage = () => {
   }, []); // 빈 배열을 전달하여 최초 한 번만 실행되도록 설정
 
   useEffect(() => {
-    setNickname(user.displayName)
-  }, [user.displayName])
+    setNickname(user.displayName);
+  }, [user.displayName]);
   const fetchUserData = async user => {
     const userDocRef = doc(db, 'users', user.uid);
     const userDocSnapshot = await getDoc(userDocRef);
@@ -55,51 +53,7 @@ export const ProFilePage = () => {
     setIsEditMode(true);
   };
 
-  const handleSaveClick = async (event, user) => {
-    event.preventDefault(); // 기본 동작(새로고침) 막기
-    // 변경된 내용이 있는지 확인
-    const hasChanges = newNickname !== nickname || (newProfileImage && newProfileImage !== profileImage);
-
-    // 변경된 내용이 없는 경우에는 확인 메시지 없이 종료
-    if (!hasChanges || !window.confirm('수정하시겠습니까?')) {
-      setIsEditMode(false);
-      return;
-    }
-    const userDocRef = doc(db, 'users', user.uid);
-    console.log(userDocRef.photoURL);
-    // Firestore에 사용자 데이터가 있는지 확인
-    const userDocSnapshot = await getDoc(userDocRef);
-
-    if (userDocSnapshot.exists()) {
-      await updateDoc(userDocRef, {
-        nickname: newNickname !== '' ? newNickname : nickname,
-        // Google 로그인 사용자와 일반 사용자 모두 프로필 이미지 업데이트
-        photoURL: newProfileImage || profileImage,
-        avatar: newProfileImage || profileImage,
-      });
-      dispatch(userProfileUpdate({ displayName: newNickname, photoURL: newProfileImage }))
-
-    } else {
-      const userData = {
-        uid: auth.currentUser.uid,
-        nickname: newNickname || nickname,
-        // Google 로그인 사용자와 일반 사용자 모두 프로필 이미지 설정
-        photoURL: newProfileImage || profileImage,
-        avatar: newProfileImage || profileImage,
-        provider: auth.currentUser.providerData[0]?.providerId,
-      };
-      await setDoc(userDocRef, userData);
-    }
-
-    setNickname(nickname);
-    setProfileImage(newProfileImage || profileImage);
-    setIsEditMode(false);
-    // setTimeout(() => {
-    //   window.location.reload();
-    // }, 500);
-  };
-
-  //이미지 업로드
+  // 이미지 업로드
   const handleImageUpload = async file => {
     try {
       const storageRef = ref(storage, `images/${auth.currentUser.uid}/${file.name}`);
@@ -118,6 +72,9 @@ export const ProFilePage = () => {
           photoURL: downloadURL,
           avatar: downloadURL,
         });
+
+        // 저장 버튼이 클릭될 때만 Blob URL을 생성하도록 수정
+        setProfileImage(downloadURL);
       } else {
         // 데이터가 없는 경우 새로운 문서를 만들어 저장
         const userData = {
@@ -130,21 +87,63 @@ export const ProFilePage = () => {
         };
         await setDoc(userDocRef, userData);
       }
-
-      setProfileImage(downloadURL);
     } catch (error) {
       console.error('Error uploading image:', error);
     }
   };
+
+  // 저장 버튼 클릭 핸들러
+  const handleSaveClick = async (event, user) => {
+    event.preventDefault(); // 기본 동작(새로고침) 막기
+
+    // 변경된 내용이 있는지 확인
+    const hasChanges = newNickname !== nickname || (newProfileImage && newProfileImage !== profileImage);
+
+    // 변경된 내용이 없는 경우에는 확인 메시지 없이 종료
+    if (!hasChanges || !window.confirm('수정하시겠습니까?')) {
+      setIsEditMode(false);
+      return;
+    }
+
+    const userDocRef = doc(db, 'users', user.uid);
+    // Firestore에 사용자 데이터가 있는지 확인
+    const userDocSnapshot = await getDoc(userDocRef);
+
+    if (userDocSnapshot.exists()) {
+      await updateDoc(userDocRef, {
+        nickname: newNickname !== '' ? newNickname : nickname,
+        // Google 로그인 사용자와 일반 사용자 모두 프로필 이미지 업데이트
+        photoURL: newProfileImage || profileImage,
+        avatar: newProfileImage || profileImage,
+      });
+      dispatch(userProfileUpdate({displayName: newNickname, photoURL: newProfileImage}));
+    } else {
+      const userData = {
+        uid: auth.currentUser.uid,
+        nickname: newNickname || nickname,
+        // Google 로그인 사용자와 일반 사용자 모두 프로필 이미지 설정
+        photoURL: newProfileImage || profileImage,
+        avatar: newProfileImage || profileImage,
+        provider: auth.currentUser.providerData[0]?.providerId,
+      };
+      await setDoc(userDocRef, userData);
+    }
+
+    setNickname(newNickname || nickname);
+    setNewProfileImage(newProfileImage || profileImage);
+    setIsEditMode(false);
+  };
   // 파일 input에서 이미지를 선택하면 호출되는 함수
   const handleImageSelect = event => {
     const file = event.target.files[0];
-    const fileImg = URL.createObjectURL(file);
-    //선택한 사진으로 파일 미리보기
-    setNewProfileImage(fileImg);
 
     if (file) {
-      handleImageUpload(file);
+      try {
+        // 이미지를 Firebase Storage에 업로드
+        handleImageUpload(file);
+      } catch (error) {
+        console.error('업로드 에러', error);
+      }
     }
   };
   return (
