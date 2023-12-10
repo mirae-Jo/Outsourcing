@@ -12,20 +12,20 @@ const authslice = createSlice({
   },
   reducers: {
     login: (state, action) => {
+      console.log('로그인 중이니 로그인할게');
       state.isloggined = true;
-      let { uid, displayName, photoURL } = action.payload;
-      if (!displayName && !photoURL) {
-        displayName = localStorage.getItem('displayName', displayName);
-        photoURL = localStorage.getItem('photoURL', photoURL);
-      }
+      const {uid, displayName, photoURL} = action.payload;
+
       // const newDisplayName = displayName || localStorage.getItem('displayName');
       // const newPhotoURL = photoURL || localStorage.getItem('photoURL');
 
+      // console.log(action.payload);
       localStorage.setItem('uid', uid);
       localStorage.setItem('displayName', displayName);
       localStorage.setItem('photoURL', photoURL);
-      state.user = { uid, displayName, photoURL };
-      console.log('displayName', displayName, 'photoURL', photoURL);
+
+      // state.user = {uid, displayName: newDisplayName, photoURL: newPhotoURL};
+      // console.log(state.user);
     },
     logout: (state, action) => {
       state.isloggined = false;
@@ -43,9 +43,8 @@ const authslice = createSlice({
       localStorage.setItem('displayName', displayName);
       localStorage.setItem('photoURL', photoURL);
     },
-    },
     userProfileUpdate: (state, action) => {
-      let { displayName, photoURL } = action.payload;
+      let {displayName, photoURL} = action.payload;
       if (displayName) {
         state.user.displayName = displayName;
         localStorage.setItem('displayName', displayName);
@@ -54,10 +53,10 @@ const authslice = createSlice({
         state.user.photoURL = photoURL;
         localStorage.setItem('photoURL', photoURL);
       }
-    }
+    },
   },
 });
 
-export const {login, logout, userUpdate} = authslice.actions;
+export const {login, logout, userUpdate, userProfileUpdate} = authslice.actions;
 
 export default authslice.reducer;
