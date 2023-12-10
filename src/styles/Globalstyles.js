@@ -55,6 +55,7 @@ export const GlobalStyles = createGlobalStyle`
     textarea{
         resize:none;
         outline:none;
+        border: none;
     }
 
     

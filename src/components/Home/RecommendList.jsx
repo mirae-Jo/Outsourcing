@@ -1,12 +1,12 @@
-import React, {useEffect, useRef, useState} from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 import styled from 'styled-components';
-import {PiMountainsFill} from 'react-icons/pi';
-import {useQuery} from '@tanstack/react-query';
+import { PiMountainsFill } from 'react-icons/pi';
+import { useQuery } from '@tanstack/react-query';
 import MountainCard from 'common/MountainCard';
-import {getMountains} from 'common/api/mountains';
-import {useDispatch, useSelector} from 'react-redux';
-import {getUserInfo} from 'shared/firebase';
-import {login} from 'shared/redux/modules/authSlice';
+import { getMountains } from 'common/api/mountains';
+import { useDispatch, useSelector } from 'react-redux';
+import { getUserInfo } from 'shared/firebase';
+import { login } from 'shared/redux/modules/authSlice';
 
 const ITEM_COUNT = 4;
 
@@ -19,14 +19,14 @@ function getRandomInt(min, max) {
 
 const RecommendList = () => {
   const [mountains, setMountains] = useState([]);
-  const {isLoading, isError, data} = useQuery({
+  const { isLoading, isError, data } = useQuery({
     queryKey: ['mountains'],
     queryFn: getMountains,
   });
 
   const dispatch = useDispatch();
 
-  const {user, isloggined} = useSelector(state => state.user_auth);
+  const { user, isloggined } = useSelector(state => state.user_auth);
   console.log(user);
 
   useEffect(() => {
@@ -36,6 +36,7 @@ const RecommendList = () => {
   useEffect(() => {
     const fetchData = async () => {
       if (isloggined) {
+        //추천리스트에 닉네임이 나와야하는데 못나오는중. 이때 authSlice를 통해 값을 업데이트..?
         const userInfo = await getUserInfo(user.uid);
         console.log('userInfo:', userInfo);
         dispatch(login(user));
