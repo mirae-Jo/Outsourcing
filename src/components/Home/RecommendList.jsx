@@ -27,7 +27,6 @@ const RecommendList = () => {
   const dispatch = useDispatch();
 
   const {user, isloggined} = useSelector(state => state.user_auth);
-  console.log(user);
 
   useEffect(() => {
     getMountains();
@@ -38,7 +37,6 @@ const RecommendList = () => {
       if (isloggined) {
         const userInfo = await getUserInfo(user.uid);
         console.log('userInfo:', userInfo);
-        // dispatch(login(userInfo));
       }
     };
 
