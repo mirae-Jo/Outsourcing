@@ -3,14 +3,12 @@ import {useQuery} from '@tanstack/react-query';
 import {useParams} from 'react-router';
 import {styled} from 'styled-components';
 import AddComment from 'components/Detail/AddComment';
-import {useSelector} from 'react-redux';
 import {getMountains} from 'common/api/mountains';
 import {PiMountainsFill} from 'react-icons/pi';
 import MapDetail from 'components/Detail/MapDetail';
 
 function DetailPage() {
   const params = useParams();
-  const auth = useSelector(state => state.user_auth);
 
   const {
     isLoading,
@@ -35,7 +33,7 @@ function DetailPage() {
         return (
           <ScMountainInfoContainer key={name}>
             <ScMountainImgWrapper>
-              <img src={imgUrl} />
+              <img src={imgUrl} alt={name} />
               <ScSummary>
                 <h1>{name}</h1>
                 <p>{summary}</p>
