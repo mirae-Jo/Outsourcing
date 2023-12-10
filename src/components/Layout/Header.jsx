@@ -21,7 +21,6 @@ export default Header;
 const ScHeader = styled.div`
   width: 100%;
   height: fit-content;
-  /* background-color: #ffe194; */
   display: flex;
   flex-direction: column;
   align-items: center;

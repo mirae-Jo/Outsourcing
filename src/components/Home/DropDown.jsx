@@ -140,7 +140,7 @@ const ScDropDownWrapper = styled.div`
   position: relative;
   width: 200px;
   height: fit-content;
-  background-color: #f0eeee;
+  background-color: var(--color-main);
   display: flex;
   flex-direction: column;
   justify-content: center;
@@ -187,7 +187,7 @@ const ScDropDown = styled.div`
     transition: background-color 0.3s ease;
   }
   & li:hover {
-    color: #1b9c85;
+    color: var(--color-main);
   }
 `;
 
@@ -197,7 +197,7 @@ const ScArrowIcon = styled(TiArrowSortedDown)`
   top: 50%;
   transform: translateY(-50%);
   font-size: 25px;
-  color: #1b9c85;
+  color: var(--color-main);
   z-index: 10;
   cursor: pointer;
 `;
@@ -215,7 +215,7 @@ const ScDetailCategoryTag = styled.p`
   padding: 5px 15px;
   border-radius: 20px;
   color: white;
-  background-color: #1b9c85;
+  background-color: var(--color-main);
   display: flex;
   align-items: center;
 `;
