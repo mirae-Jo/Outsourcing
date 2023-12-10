@@ -77,7 +77,6 @@ const DropDown = () => {
 
       {/* 필터 태그 구현 */}
       <ScCategoryWrapper>
-        {console.log(selectedDetailCategories)}
         {Object.keys(selectedDetailCategories).map(
           category =>
             selectedDetailCategories[category] && (
