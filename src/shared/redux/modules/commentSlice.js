@@ -14,7 +14,6 @@ const commentSlice = createSlice({
   reducers: {
     addComment: (state, action) => {
       const {uid, id, comment, mountainName, displayName, photoURL, createdAt} = action.payload;
-      console.log({uid, id, comment, mountainName, displayName, photoURL, createdAt});
       state.comments.push({uid, id, comment, mountainName, displayName, photoURL, createdAt});
     },
     deleteComment: (state, action) => {
