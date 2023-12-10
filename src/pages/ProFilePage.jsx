@@ -1,12 +1,11 @@
 import React, {useState, useEffect} from 'react';
 import styled from 'styled-components';
 import {doc, getDoc, updateDoc, setDoc} from '@firebase/firestore';
-import {getDownloadURL, getStorage, ref, uploadBytes} from 'firebase/storage';
+import {getDownloadURL, ref, uploadBytes} from 'firebase/storage';
 import {auth} from 'shared/firebase';
 import db from 'shared/firebase';
 import {onAuthStateChanged} from 'firebase/auth';
 import {storage} from 'shared/firebase';
-import {useNavigate} from 'react-router';
 import {useDispatch, useSelector} from 'react-redux';
 import {userProfileUpdate} from 'shared/redux/modules/authSlice';
 export const ProFilePage = () => {
@@ -17,7 +16,6 @@ export const ProFilePage = () => {
   const [newNickname, setNewNickname] = useState('');
   const [newProfileImage, setNewProfileImage] = useState('');
   const [isEditMode, setIsEditMode] = useState(false);
-  const navigate = useNavigate();
   const dispatch = useDispatch();
   useEffect(() => {
     const unsubscribe = onAuthStateChanged(auth, user => {

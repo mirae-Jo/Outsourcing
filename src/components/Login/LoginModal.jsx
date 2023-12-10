@@ -44,7 +44,7 @@ const LoginModal = () => {
 
     // 컴포넌트가 언마운트될 때 cleanup
     return () => unsubscribe();
-  }, []);
+  }, [dispatch]);
 
   const openModal = event => {
     event.preventDefault();

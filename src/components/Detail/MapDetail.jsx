@@ -1,5 +1,5 @@
 import React, {useState} from 'react';
-import {Map, MapMarker, MapTypeId} from 'react-kakao-maps-sdk';
+import {Map, MapMarker} from 'react-kakao-maps-sdk';
 import styled from 'styled-components';
 
 function MapDetail({xCoordinate, yCoordinate, name}) {
