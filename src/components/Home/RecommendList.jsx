@@ -49,6 +49,24 @@ const RecommendList = () => {
     fetchData();
   }, [dispatch, isloggined, user.uid]);
 
+  // personalMointain
+  useEffect(() => {
+    if (!data) return;
+    const newMountains = [];
+    const numbers = []; // 10, 20, 30
+
+    for (let i = 0; i < ITEM_COUNT; i++) {
+      let randomNumber = getRandomInt(0, data.length);
+      while (numbers.includes(randomNumber)) {
+        randomNumber = getRandomInt(0, data.length);
+      }
+      numbers.push(randomNumber);
+      newMountains.push(data[randomNumber]);
+    }
+
+    setPersonalMountain(newMountains);
+  }, [data]);
+
   // mountain
   useEffect(() => {
     if (!data) return;
@@ -67,31 +85,6 @@ const RecommendList = () => {
       }
 
       setMountains(newMountains);
-    };
-    updateMountains();
-    const interval = setInterval(updateMountains, 10000);
-
-    return () => clearInterval(interval);
-  }, [data]);
-
-  // personalMointain
-  useEffect(() => {
-    if (!data) return;
-
-    const updateMountains = () => {
-      const newMountains = [];
-      const numbers = []; // 10, 20, 30
-
-      for (let i = 0; i < ITEM_COUNT; i++) {
-        let randomNumber = getRandomInt(0, data.length);
-        while (numbers.includes(randomNumber)) {
-          randomNumber = getRandomInt(0, data.length);
-        }
-        numbers.push(randomNumber);
-        newMountains.push(data[randomNumber]);
-      }
-
-      setPersonalMountain(newMountains);
     };
     updateMountains();
     const interval = setInterval(updateMountains, 10000);
