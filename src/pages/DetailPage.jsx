@@ -94,7 +94,7 @@ const ScMountainImgWrapper = styled.div`
 `;
 
 const ScSummary = styled.div`
-  width: 70%;
+  width: 60%;
   height: fit-content;
   position: absolute;
   left: 50%;
@@ -102,7 +102,7 @@ const ScSummary = styled.div`
   transform: translate(-50%, -50%);
   text-align: left;
   color: white;
-  min-width: 70%;
+  min-width: 60%;
   display: flex;
   flex-direction: column;
   gap: 15px;
