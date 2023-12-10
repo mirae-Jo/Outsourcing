@@ -3,7 +3,6 @@ import { useQuery } from '@tanstack/react-query';
 import { useParams } from 'react-router';
 import { styled } from 'styled-components';
 import AddComment from 'components/Detail/AddComment';
-import CommentList from 'components/Detail/CommentList';
 import { useSelector } from 'react-redux';
 import { getMountains } from 'common/api/mountains';
 
@@ -53,7 +52,6 @@ function DetailPage() {
       })}
 
       <AddComment />
-      {/* <CommentList /> */}
     </>
   );
 }

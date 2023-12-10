@@ -113,13 +113,12 @@ const LoginModal = () => {
     if (isConfirmed) {
       await signOut(auth);
       window.alert('로그아웃 되었습니다.');
-
-      setTimeout(() => {
-        navigate('/');
-        window.location.reload();
-      }, 500);
+      setUser(null);
+      // setTimeout(() => {
+      navigate('/');
+      //   window.location.reload();
+      // }, 500);
       dispatch(logout());
-      // 로그아웃 후 페이지 새로고침
     }
   };
   // Firestore에 사용자 정보 저장 함수
@@ -172,7 +171,7 @@ const LoginModal = () => {
       console.error(error);
     }
     //셋타임 아웃 삭제
-    window.location.reload();
+    //window.location.reload();
   };
 
   return (
